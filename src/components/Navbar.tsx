@@ -1,4 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
+import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import logo from "../assets/delassa.png";
 
 export default function Navbar() {
@@ -15,29 +16,29 @@ export default function Navbar() {
 
   return (
 
-    <header className="sticky top-0 z-50 px-6 pt-6">
+    <header className="sticky top-0 z-50 px-4 sm:px-6 pt-4 sm:pt-6">
 
-      <nav className="max-w-6xl mx-auto bg-[#fdf7f2] border border-[#ead8c7] rounded-full px-10 py-5 flex items-center justify-between shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
+      <nav className="max-w-6xl mx-auto bg-[#fdf7f2]/95 backdrop-blur-xl border border-[#ead8c7] rounded-full px-5 sm:px-8 lg:px-10 py-4 flex items-center justify-between shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
 
         {/* LOGO */}
 
-        <Link to="/" className="flex items-center gap-3">
+        <Link to="/" className="flex items-center gap-2 sm:gap-3 min-w-0">
 
           <img
             src={logo}
             alt="Delassa Logo"
-            className="w-14 h-14 object-contain"
+            className="w-11 h-11 sm:w-14 sm:h-14 object-contain"
           />
 
           <div>
 
-            <h1 className="text-3xl font-black italic tracking-tight text-[#3b2b26]">
+            <h1 className="text-2xl sm:text-3xl font-black italic tracking-tight text-[#3b2b26] leading-none">
 
               Delassa
 
             </h1>
 
-            <p className="text-[10px] tracking-[5px] uppercase text-[#a06f52] mt-1">
+            <p className="text-[8px] sm:text-[10px] tracking-[3px] sm:tracking-[5px] uppercase text-[#a06f52] mt-1">
 
               Homebakery
 
@@ -47,7 +48,7 @@ export default function Navbar() {
 
         </Link>
 
-        {/* MENU */}
+        {/* DESKTOP MENU */}
 
         <div className="hidden lg:flex items-center gap-10">
 
@@ -56,7 +57,7 @@ export default function Navbar() {
             <Link
               key={index}
               to={menu.path}
-              className={`relative text-[16px] font-medium transition duration-300 hover:text-[#c38358]
+              className={`relative text-[15px] font-medium transition duration-300 hover:text-[#c38358]
               ${
                 location.pathname === menu.path
                   ? "text-[#c38358]"
@@ -78,18 +79,32 @@ export default function Navbar() {
 
         </div>
 
-        {/* BUTTON */}
+        {/* RIGHT */}
 
-        <a
-          href="https://wa.me/6287715443313"
-          target="_blank"
-          rel="noreferrer"
-          className="bg-[#3b2b26] hover:bg-black transition-all duration-500 text-white px-8 py-4 rounded-full shadow-lg"
-        >
+        <div className="flex items-center gap-3">
 
-          Order Now
+          {/* MOBILE ICON */}
 
-        </a>
+          <button className="lg:hidden text-3xl text-[#3b2b26]">
+
+            <HiOutlineMenuAlt3 />
+
+          </button>
+
+          {/* BUTTON */}
+
+          <a
+            href="https://wa.me/6287715443313"
+            target="_blank"
+            rel="noreferrer"
+            className="bg-[#3b2b26] hover:bg-black transition-all duration-500 text-white px-5 sm:px-8 py-3 sm:py-4 rounded-full shadow-lg text-sm sm:text-base whitespace-nowrap"
+          >
+
+            Order Now
+
+          </a>
+
+        </div>
 
       </nav>
 
