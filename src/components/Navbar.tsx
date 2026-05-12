@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { HiOutlineMenuAlt3, HiX } from "react-icons/hi";
 import { FaInstagram, FaWhatsapp, FaTiktok } from "react-icons/fa";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import logo from "../assets/delassa.png";
 
 export default function Navbar() {
@@ -18,9 +18,33 @@ export default function Navbar() {
     { name: "Contact", path: "/contact" },
   ];
 
+  /* LOCK SCROLL */
+
+  useEffect(() => {
+
+    if (open) {
+
+      document.body.style.overflow = "hidden";
+
+    } else {
+
+      document.body.style.overflow = "auto";
+
+    }
+
+    return () => {
+
+      document.body.style.overflow = "auto";
+
+    };
+
+  }, [open]);
+
   return (
 
     <header className="sticky top-0 z-50 px-4 sm:px-6 pt-4 sm:pt-6">
+
+      {/* NAVBAR */}
 
       <nav className="max-w-6xl mx-auto bg-[#fdf7f2]/95 backdrop-blur-xl border border-[#ead8c7] rounded-full px-5 sm:px-8 py-4 flex items-center justify-between shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
 
@@ -87,7 +111,7 @@ export default function Navbar() {
 
         <div className="flex items-center gap-3">
 
-          {/* MOBILE BUTTON */}
+          {/* MOBILE MENU BUTTON */}
 
           <button
             onClick={() => setOpen(true)}
@@ -98,13 +122,13 @@ export default function Navbar() {
 
           </button>
 
-          {/* BUTTON */}
+          {/* ORDER BUTTON */}
 
           <a
             href="https://wa.me/6287715443313"
             target="_blank"
             rel="noreferrer"
-            className="bg-[#3b2b26] hover:bg-black transition-all duration-500 text-white px-5 sm:px-8 py-3 sm:py-4 rounded-full shadow-lg text-sm sm:text-base whitespace-nowrap"
+            className="bg-[#3b2b26] hover:bg-black transition-all duration-500 text-white px-5 sm:px-8 py-3 sm:py-4 rounded-full shadow-lg text-sm sm:text-base whitespace-nowrap hover:-translate-y-1"
           >
 
             Order Now
@@ -115,36 +139,52 @@ export default function Navbar() {
 
       </nav>
 
+      {/* OVERLAY */}
+
+      <div
+        onClick={() => setOpen(false)}
+        className={`fixed inset-0 bg-black/40 backdrop-blur-sm z-[998] transition-all duration-500 lg:hidden
+        ${
+          open
+            ? "opacity-100 visible"
+            : "opacity-0 invisible"
+        }`}
+      ></div>
+
       {/* MOBILE SIDEBAR */}
 
       <div
-        className={`fixed top-0 right-0 h-screen w-[85%] max-w-[340px] bg-[#3b2b26] z-[999] transition-all duration-500
-        ${open ? "translate-x-0" : "translate-x-full"}`}
+        className={`fixed top-0 right-0 h-screen w-[82%] max-w-[320px] bg-[#3b2b26] z-[999] transition-all duration-500
+        ${
+          open
+            ? "translate-x-0"
+            : "translate-x-full"
+        }`}
       >
 
-        <div className="p-8 h-full flex flex-col">
+        <div className="h-full px-7 py-8 flex flex-col">
 
           {/* TOP */}
 
-          <div className="flex items-center justify-between">
+          <div className="flex items-start justify-between">
 
             <div className="flex items-center gap-3">
 
               <img
                 src={logo}
                 alt="logo"
-                className="w-12 h-12 object-contain"
+                className="w-10 h-10 object-contain"
               />
 
               <div>
 
-                <h1 className="text-3xl font-black italic text-white">
+                <h1 className="text-[38px] leading-none font-black italic text-white">
 
                   Delassa
 
                 </h1>
 
-                <p className="text-[9px] tracking-[4px] uppercase text-[#d9b9a4] mt-1">
+                <p className="text-[9px] tracking-[5px] uppercase text-[#d9b9a4] mt-2">
 
                   Homebakery
 
@@ -154,9 +194,11 @@ export default function Navbar() {
 
             </div>
 
+            {/* CLOSE */}
+
             <button
               onClick={() => setOpen(false)}
-              className="text-4xl text-white"
+              className="text-4xl text-white mt-1"
             >
 
               <HiX />
@@ -167,7 +209,7 @@ export default function Navbar() {
 
           {/* MENU */}
 
-          <div className="flex flex-col gap-6 mt-16">
+          <div className="flex flex-col gap-7 mt-16">
 
             {menus.map((menu, index) => (
 
@@ -175,7 +217,7 @@ export default function Navbar() {
                 key={index}
                 to={menu.path}
                 onClick={() => setOpen(false)}
-                className={`text-[22px] font-bold transition duration-300
+                className={`text-[18px] font-semibold transition duration-300
                 ${
                   location.pathname === menu.path
                     ? "text-[#d9b9a4]"
@@ -191,81 +233,76 @@ export default function Navbar() {
 
           </div>
 
-          {/* BUTTON */}
+          {/* BOTTOM */}
 
-          <div className="mt-14">
+          <div className="mt-auto">
 
-            <p className="text-[#d9b9a4] text-sm leading-relaxed">
+            {/* CARD */}
 
-              Handmade brownies premium
-              dengan packaging aesthetic ✨
+            <div className="border border-[#5f4337] bg-[#4a3026] rounded-[24px] p-5">
 
-            </p>
+              <p className="text-[#e7c6b2] text-sm leading-relaxed">
 
-            <a
-              href="https://wa.me/6287715443313"
-              target="_blank"
-              rel="noreferrer"
-              className="mt-6 inline-flex bg-white text-[#3b2b26] px-8 py-4 rounded-2xl font-semibold"
-            >
+                Handmade brownies premium
+                dengan packaging aesthetic ✨
 
-              Contact Us
+              </p>
 
-            </a>
+              <a
+                href="https://wa.me/6287715443313"
+                target="_blank"
+                rel="noreferrer"
+                className="mt-5 inline-flex bg-white text-[#3b2b26] px-6 py-3 rounded-xl font-semibold text-sm"
+              >
 
-          </div>
+                Contact Us
 
-          {/* SOCIAL */}
+              </a>
 
-          <div className="flex items-center gap-4 mt-auto">
+            </div>
 
-            <a
-              href="https://instagram.com/delassa.homebakery"
-              target="_blank"
-              rel="noreferrer"
-              className="w-12 h-12 rounded-full bg-white flex items-center justify-center text-[#3b2b26] text-xl"
-            >
+            {/* SOCIAL */}
 
-              <FaInstagram />
+            <div className="flex items-center gap-4 mt-6">
 
-            </a>
+              <a
+                href="https://instagram.com/delassa.homebakery"
+                target="_blank"
+                rel="noreferrer"
+                className="w-11 h-11 rounded-full bg-white flex items-center justify-center text-[#3b2b26] text-lg"
+              >
 
-            <a
-              href="https://wa.me/6287715443313"
-              target="_blank"
-              rel="noreferrer"
-              className="w-12 h-12 rounded-full bg-white flex items-center justify-center text-[#3b2b26] text-xl"
-            >
+                <FaInstagram />
 
-              <FaWhatsapp />
+              </a>
 
-            </a>
+              <a
+                href="https://wa.me/6287715443313"
+                target="_blank"
+                rel="noreferrer"
+                className="w-11 h-11 rounded-full bg-white flex items-center justify-center text-[#3b2b26] text-lg"
+              >
 
-            <a
-              href="/"
-              className="w-12 h-12 rounded-full bg-white flex items-center justify-center text-[#3b2b26] text-xl"
-            >
+                <FaWhatsapp />
 
-              <FaTiktok />
+              </a>
 
-            </a>
+              <a
+                href="/"
+                className="w-11 h-11 rounded-full bg-white flex items-center justify-center text-[#3b2b26] text-lg"
+              >
+
+                <FaTiktok />
+
+              </a>
+
+            </div>
 
           </div>
 
         </div>
 
       </div>
-
-      {/* OVERLAY */}
-
-      {open && (
-
-        <div
-          onClick={() => setOpen(false)}
-          className="fixed inset-0 bg-black/40 z-[998] lg:hidden"
-        ></div>
-
-      )}
 
     </header>
   );
