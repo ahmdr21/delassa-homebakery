@@ -268,7 +268,7 @@ Terima kasih ✨`);
 
       {/* BANNER */}
 
-      <section className="max-w-7xl mx-auto px-5 sm:px-8 mt-20">
+      <section className="max-w-7xl mx-auto px-5 sm:px-8 mt-20 pb-20">
 
         <div className="grid md:grid-cols-2 gap-5">
 
