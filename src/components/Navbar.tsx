@@ -162,7 +162,7 @@ export default function Navbar() {
         }`}
       >
 
-        <div className="h-full px-5 py-5 flex flex-col">
+        <div className="h-full px-5 py-5 overflow-y-auto">
 
           {/* TOP */}
 
@@ -209,7 +209,7 @@ export default function Navbar() {
 
           {/* MENU */}
 
-          <div className="flex flex-col gap-1 mt-8">
+          <div className="flex flex-col gap-1 mt-6">
 
             {menus.map((menu, index) => (
 
@@ -235,7 +235,7 @@ export default function Navbar() {
 
           {/* BOTTOM */}
 
-          <div className="mt-auto">
+          <div className="mt-6">
 
             {/* CARD */}
 
