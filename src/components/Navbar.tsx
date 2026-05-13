@@ -162,84 +162,88 @@ export default function Navbar() {
         }`}
       >
 
-        <div className="h-full px-5 py-6 flex flex-col overflow-y-auto">
+        <div className="h-full px-5 py-6 flex flex-col justify-between overflow-y-auto">
 
           {/* TOP */}
 
-          <div className="flex items-start justify-between gap-4">
+          <div>
 
-            <div className="flex items-center gap-2 min-w-0">
+            <div className="flex items-start justify-between gap-4">
 
-              <img
-                src={logo}
-                alt="logo"
-                className="w-9 h-9 object-contain shrink-0"
-              />
+              <div className="flex items-center gap-2 min-w-0">
 
-              <div className="min-w-0">
+                <img
+                  src={logo}
+                  alt="logo"
+                  className="w-9 h-9 object-contain shrink-0"
+                />
 
-                <h1 className="text-[30px] leading-none font-black italic text-white truncate">
+                <div className="min-w-0">
 
-                  Delassa
+                  <h1 className="text-[26px] leading-none font-black italic text-white truncate">
 
-                </h1>
+                    Delassa
 
-                <p className="text-[8px] tracking-[4px] uppercase text-[#d9b9a4] mt-1">
+                  </h1>
 
-                  Homebakery
+                  <p className="text-[8px] tracking-[4px] uppercase text-[#d9b9a4] mt-1">
 
-                </p>
+                    Homebakery
+
+                  </p>
+
+                </div>
 
               </div>
 
-            </div>
+              {/* CLOSE */}
 
-            {/* CLOSE */}
-
-            <button
-              onClick={() => setOpen(false)}
-              className="text-3xl text-white shrink-0"
-            >
-
-              <HiX />
-
-            </button>
-
-          </div>
-
-          {/* MENU */}
-
-          <div className="flex flex-col gap-5 mt-12">
-
-            {menus.map((menu, index) => (
-
-              <Link
-                key={index}
-                to={menu.path}
+              <button
                 onClick={() => setOpen(false)}
-                className={`text-[16px] font-semibold transition duration-300
-                ${
-                  location.pathname === menu.path
-                    ? "text-[#d9b9a4]"
-                    : "text-white"
-                }`}
+                className="text-3xl text-white shrink-0"
               >
 
-                {menu.name}
+                <HiX />
 
-              </Link>
+              </button>
 
-            ))}
+            </div>
+
+            {/* MENU */}
+
+            <div className="flex flex-col gap-4 mt-10">
+
+              {menus.map((menu, index) => (
+
+                <Link
+                  key={index}
+                  to={menu.path}
+                  onClick={() => setOpen(false)}
+                  className={`text-[15px] font-semibold transition duration-300 py-1
+                  ${
+                    location.pathname === menu.path
+                      ? "text-[#d9b9a4]"
+                      : "text-white"
+                  }`}
+                >
+
+                  {menu.name}
+
+                </Link>
+
+              ))}
+
+            </div>
 
           </div>
 
           {/* BOTTOM */}
 
-          <div className="mt-auto pt-8">
+          <div className="pt-6">
 
             {/* CARD */}
 
-            <div className="border border-[#5f4337] bg-[#4a3026] rounded-[20px] p-4">
+            <div className="border border-[#5f4337] bg-[#4a3026] rounded-[18px] p-3.5">
 
               <p className="text-[#e7c6b2] text-[13px] leading-relaxed">
 
