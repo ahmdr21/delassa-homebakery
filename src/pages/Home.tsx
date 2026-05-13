@@ -336,44 +336,6 @@ Terima kasih ✨`);
 
       </section>
 
-      {/* NEWSLETTER */}
-
-      <section className="mt-24 bg-[#3b2b26] py-20 px-5">
-
-        <div className="max-w-4xl mx-auto text-center">
-
-          <p className="uppercase tracking-[4px] text-[#f3c6a3] text-sm font-semibold">
-
-            Get Update
-
-          </p>
-
-          <h2 className="mt-4 text-4xl sm:text-5xl font-black text-white">
-
-            Subscribe For Promo & New Menu ✨
-
-          </h2>
-
-          <div className="flex flex-col sm:flex-row gap-4 mt-8">
-
-            <input
-              type="text"
-              placeholder="Your email address"
-              className="flex-1 px-6 py-4 rounded-full outline-none"
-            />
-
-            <button className="bg-[#f3c6a3] hover:bg-white transition-all duration-300 px-8 py-4 rounded-full font-semibold text-[#3b2b26]">
-
-              Subscribe
-
-            </button>
-
-          </div>
-
-        </div>
-
-      </section>
-
     </main>
 
   );
