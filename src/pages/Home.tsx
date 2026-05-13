@@ -1,3 +1,7 @@
+import brownie1 from "../assets/brownie1.png";
+import brownie2 from "../assets/brownie2.png";
+import brownie3 from "../assets/brownie3.png";
+
 import { Link } from "react-router-dom";
 
 import { motion } from "framer-motion";
@@ -14,8 +18,7 @@ import "swiper/css/pagination";
 const slides = [
 
   {
-    image:
-      "https://images.pexels.com/photos/291528/pexels-photo-291528.jpeg",
+    image: brownie1,
 
     badge: "✨ Fresh baked everyday",
 
@@ -25,8 +28,7 @@ const slides = [
   },
 
   {
-    image:
-      "https://images.pexels.com/photos/2067396/pexels-photo-2067396.jpeg",
+    image: brownie2,
 
     badge: "🔥 Best Seller",
 
@@ -36,8 +38,7 @@ const slides = [
   },
 
   {
-    image:
-      "https://images.pexels.com/photos/1126359/pexels-photo-1126359.jpeg",
+    image: brownie3,
 
     badge: "🎁 Special Hampers",
 
@@ -47,7 +48,6 @@ const slides = [
   },
 
 ];
-
 export default function Home() {
 
   const message = encodeURIComponent(`Halo Delassa 👋
@@ -292,8 +292,8 @@ function HeroSlider() {
               <img
                 src={slide.image}
                 alt={slide.title}
-                loading="lazy"
-                className="absolute inset-0 w-full h-full object-cover"
+                 className="w-full h-full object-cover"
+  draggable={false}
               />
 
               {/* OVERLAY */}
