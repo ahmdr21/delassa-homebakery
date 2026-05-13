@@ -14,7 +14,7 @@ import brownie1 from "../assets/brownie1.png";
 import brownie2 from "../assets/brownie2.png";
 import brownie3 from "../assets/brownie3.png";
 
-/* DATA */
+/* SLIDES */
 
 const slides = [
 
@@ -54,7 +54,7 @@ Terima kasih ✨`);
 
       <section className="max-w-6xl mx-auto px-4 sm:px-6 pt-5 sm:pt-14 pb-14">
 
-        <div className="grid lg:grid-cols-2 gap-10 items-center">
+        <div className="grid lg:grid-cols-2 gap-7 lg:gap-14 items-center">
 
           {/* LEFT */}
 
@@ -82,7 +82,7 @@ Terima kasih ✨`);
 
             {/* TITLE */}
 
-            <h1 className="mt-5 text-[44px] sm:text-[72px] lg:text-[88px] leading-[0.9] tracking-[-2px] font-black text-[#3b2b26]">
+            <h1 className="mt-5 text-[38px] sm:text-[72px] lg:text-[88px] leading-[0.9] tracking-[-2px] font-black text-[#3b2b26]">
 
               Crafted
 
@@ -98,7 +98,7 @@ Terima kasih ✨`);
 
             {/* DESC */}
 
-            <p className="mt-5 text-[15px] sm:text-lg text-[#6f615a] leading-relaxed max-w-xl">
+            <p className="mt-5 text-[14px] sm:text-lg text-[#6f615a] leading-relaxed max-w-xl">
 
               Handmade brownies premium dengan rasa rich chocolate,
               packaging aesthetic,
@@ -108,7 +108,7 @@ Terima kasih ✨`);
 
             {/* MOBILE IMAGE */}
 
-            <div className="mt-7 lg:hidden">
+            <div className="mt-5 lg:hidden">
 
               <HeroSlider />
 
@@ -122,7 +122,7 @@ Terima kasih ✨`);
                 href={`https://wa.me/6287715443313?text=${message}`}
                 target="_blank"
                 rel="noreferrer"
-                className="bg-[#3b2b26] text-white px-5 py-3 rounded-xl text-sm font-medium shadow-lg"
+                className="bg-[#3b2b26] text-white px-4 py-2.5 rounded-xl text-sm font-medium shadow-lg"
               >
 
                 Order Sekarang
@@ -131,7 +131,7 @@ Terima kasih ✨`);
 
               <Link
                 to="/menu"
-                className="bg-white border border-[#ead8c7] px-5 py-3 rounded-xl text-sm font-medium"
+                className="bg-white border border-[#ead8c7] px-4 py-2.5 rounded-xl text-sm font-medium"
               >
 
                 View Menu
@@ -142,17 +142,17 @@ Terima kasih ✨`);
 
             {/* STATS */}
 
-            <div className="grid grid-cols-3 gap-3 mt-8">
+            <div className="grid grid-cols-3 gap-2 mt-8">
 
               <div>
 
-                <h3 className="text-[28px] sm:text-[40px] font-black text-[#c38358] leading-none">
+                <h3 className="text-[24px] sm:text-[40px] font-black text-[#c38358] leading-none">
 
                   290+
 
                 </h3>
 
-                <p className="text-[12px] sm:text-base text-gray-500 mt-1">
+                <p className="text-[11px] sm:text-base text-gray-500 mt-1">
 
                   Happy Clients
 
@@ -162,13 +162,13 @@ Terima kasih ✨`);
 
               <div>
 
-                <h3 className="text-[28px] sm:text-[40px] font-black text-[#c38358] leading-none">
+                <h3 className="text-[24px] sm:text-[40px] font-black text-[#c38358] leading-none">
 
                   4.9
 
                 </h3>
 
-                <p className="text-[12px] sm:text-base text-gray-500 mt-1">
+                <p className="text-[11px] sm:text-base text-gray-500 mt-1">
 
                   Rating
 
@@ -178,13 +178,13 @@ Terima kasih ✨`);
 
               <div>
 
-                <h3 className="text-[28px] sm:text-[40px] font-black text-[#c38358] leading-none">
+                <h3 className="text-[24px] sm:text-[40px] font-black text-[#c38358] leading-none">
 
                   100%
 
                 </h3>
 
-                <p className="text-[12px] sm:text-base text-gray-500 mt-1">
+                <p className="text-[11px] sm:text-base text-gray-500 mt-1">
 
                   Handmade
 
@@ -249,7 +249,7 @@ function HeroSlider() {
 
   return (
 
-    <div className="bg-white p-2 rounded-[28px] shadow-xl">
+    <div className="bg-white p-2 rounded-[28px] shadow-xl overflow-hidden">
 
       <Swiper
         modules={[Autoplay]}
@@ -266,15 +266,15 @@ function HeroSlider() {
 
           <SwiperSlide key={index}>
 
-            <div className="relative w-full h-[240px] sm:h-[520px]">
+            <div className="relative w-full h-[200px] sm:h-[520px] overflow-hidden">
 
               {/* IMAGE */}
 
               <img
                 src={slide.image}
                 alt="Brownies"
-                className="w-full h-full object-cover"
                 draggable={false}
+                className="w-full h-full object-cover"
               />
 
               {/* OVERLAY */}
