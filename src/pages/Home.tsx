@@ -1,35 +1,31 @@
 import { Link } from "react-router-dom";
-
 import { motion } from "framer-motion";
-
 import { Swiper, SwiperSlide } from "swiper/react";
-
 import { Autoplay } from "swiper/modules";
 
 import "swiper/css";
 
-/* LOCAL IMAGE */
 
-import brownie1 from "../assets/brownie1.png";
-import brownie2 from "../assets/brownie2.png";
-import brownie3 from "../assets/brownie3.png";
-
-/* SLIDES */
+import brownie1 from "../assets/brownie1.jpg";
+import brownie2 from "../assets/brownie2.jpg";
+import brownie3 from "../assets/brownie3.jpg";
 
 const slides = [
-
   {
     image: brownie1,
+    title: "Premium Brownies",
+    subtitle: "Handmade With Love",
   },
-
   {
     image: brownie2,
+    title: "Brownies Almond",
+    subtitle: "Crunchy & Elegant",
   },
-
   {
     image: brownie3,
+    title: "Mix Topping Series",
+    subtitle: "Best Seller Delassa",
   },
-
 ];
 
 export default function Home() {
@@ -46,83 +42,126 @@ Request Tambahan:
 
 Terima kasih ✨`);
 
-  return (
+return (
 
-    <main className="bg-[#fdf7f2] overflow-hidden">
+    <main className="bg-[#f7f3ef] overflow-hidden">
 
       {/* HERO */}
 
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 pt-5 sm:pt-14 pb-14">
+      <section className="relative w-full min-h-screen overflow-hidden">
 
-        <div className="grid lg:grid-cols-2 gap-7 lg:gap-14 items-center">
+        {/* BACKGROUND */}
 
-          {/* LEFT */}
+        <div className="absolute inset-0 z-0">
 
-          <motion.div
-            initial={{ opacity: 0, y: 25 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+          <Swiper
+            modules={[Autoplay]}
+            slidesPerView={1}
+            loop={true}
+            
+            autoplay={{
+              delay: 4000,
+              disableOnInteraction: false,
+            }}
+            className="w-full h-screen"
           >
+
+            {slides.map((slide, index) => (
+
+              <SwiperSlide key={index}>
+
+                <div className="relative w-full h-screen">
+
+                  <img
+                    src={slide.image}
+                    alt={slide.title}
+                    className="w-full h-full object-cover"
+                  />
+
+                  {/* OVERLAY */}
+
+                  <div className="absolute inset-0 bg-black/55"></div>
+
+                </div>
+
+              </SwiperSlide>
+
+            ))}
+
+          </Swiper>
+
+        </div>
+         {/* CONTENT */}
+
+        <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 lg:px-10 min-h-screen flex items-center">
+
+          <div className="max-w-3xl pt-28 sm:pt-24">
 
             {/* BADGE */}
 
-            <div className="inline-flex items-center gap-2 bg-[#f3e2d5] px-4 py-2 rounded-full">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-md border border-white/20 text-white px-5 py-3 rounded-full"
+            >
 
-              <span className="text-xs">
+              <span>
                 🍫
               </span>
 
-              <span className="text-[12px] sm:text-sm font-medium text-[#8b5f47]">
-
-                Premium Brownies & Hampers
-
+              <span className="text-[12px] sm:text-sm tracking-wide font-medium uppercase">
+                Premium Homebakery Bekasi
               </span>
 
-            </div>
+            </motion.div>
 
             {/* TITLE */}
 
-            <h1 className="mt-5 text-[38px] sm:text-[72px] lg:text-[88px] leading-[0.9] tracking-[-2px] font-black text-[#3b2b26]">
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7 }}
+              className="mt-7 text-[42px] sm:text-[64px] lg:text-[110px] leading-[0.92] font-black tracking-[-2px] text-white"
+            >
 
-              Crafted
+              DELASSA
 
-              <span className="block text-[#c38358]">
-
-                For Sweet
-
+              <span className="block text-[#f3c6a3]">
+                HOMEBAKERY
               </span>
 
-              Moments
-
-            </h1>
+            </motion.h1>
 
             {/* DESC */}
 
-            <p className="mt-5 text-[14px] sm:text-lg text-[#6f615a] leading-relaxed max-w-xl">
+            <motion.p
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="mt-6 text-[14px] sm:text-lg text-white/85 leading-relaxed max-w-2xl"
+            >
 
               Handmade brownies premium dengan rasa rich chocolate,
+              topping melimpah,
               packaging aesthetic,
-              dan sentuhan elegan untuk setiap momen spesialmu ✨
+              dan kualitas terbaik untuk setiap sweet moments ✨
 
-            </p>
+            </motion.p>
 
-            {/* MOBILE IMAGE */}
-
-            <div className="mt-5 lg:hidden">
-
-              <HeroSlider />
-
-            </div>
-
-            {/* MOBILE BUTTON */}
-
-            <div className="flex gap-3 mt-6 lg:hidden">
+            {/* BUTTON */}
+ <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9 }}
+              className="flex flex-wrap gap-4 mt-8"
+            >
 
               <a
                 href={`https://wa.me/6287715443313?text=${message}`}
                 target="_blank"
                 rel="noreferrer"
-                className="bg-[#3b2b26] text-white px-4 py-2.5 rounded-xl text-sm font-medium shadow-lg"
+                className="bg-[#3b2b26] hover:bg-black transition-all duration-300 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full font-medium shadow-2xl"
               >
 
                 Order Sekarang
@@ -131,165 +170,68 @@ Terima kasih ✨`);
 
               <Link
                 to="/menu"
-                className="bg-white border border-[#ead8c7] px-4 py-2.5 rounded-xl text-sm font-medium"
+                className="bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white hover:text-black transition-all duration-300 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full font-medium"
               >
 
                 View Menu
 
               </Link>
 
-            </div>
+            </motion.div>
+             {/* STATS */}
 
-            {/* STATS */}
-
-            <div className="grid grid-cols-3 gap-2 mt-8">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1 }}
+              className="grid grid-cols-3 gap-4 sm:gap-10 mt-10 sm:mt-14 max-w-xl"
+            >
 
               <div>
 
-                <h3 className="text-[24px] sm:text-[40px] font-black text-[#c38358] leading-none">
-
+                <h3 className="text-[24px] sm:text-[44px] font-black text-[#f3c6a3]">
                   290+
-
                 </h3>
 
-                <p className="text-[11px] sm:text-base text-gray-500 mt-1">
-
+                <p className="text-[11px] sm:text-base text-white/75 mt-1">
                   Happy Clients
-
                 </p>
 
               </div>
 
               <div>
 
-                <h3 className="text-[24px] sm:text-[40px] font-black text-[#c38358] leading-none">
-
+                <h3 className="text-[24px] sm:text-[44px] font-black text-[#f3c6a3]">
                   4.9
-
                 </h3>
 
-                <p className="text-[11px] sm:text-base text-gray-500 mt-1">
-
-                  Rating
-
+                <p className="text-[11px] sm:text-base text-white/75 mt-1">
+                  Customer Rating
                 </p>
 
               </div>
 
               <div>
 
-                <h3 className="text-[24px] sm:text-[40px] font-black text-[#c38358] leading-none">
-
+                <h3 className="text-[24px] sm:text-[44px] font-black text-[#f3c6a3]">
                   100%
-
                 </h3>
 
-                <p className="text-[11px] sm:text-base text-gray-500 mt-1">
-
+                <p className="text-[11px] sm:text-base text-white/75 mt-1">
                   Handmade
-
                 </p>
 
               </div>
 
-            </div>
+            </motion.div>
 
-            {/* DESKTOP BUTTON */}
-
-            <div className="hidden lg:flex gap-4 mt-10">
-
-              <a
-                href={`https://wa.me/6287715443313?text=${message}`}
-                target="_blank"
-                rel="noreferrer"
-                className="bg-[#3b2b26] hover:bg-black text-white px-7 py-4 rounded-2xl transition duration-300 shadow-xl"
-              >
-
-                Order Sekarang
-
-              </a>
-
-              <Link
-                to="/menu"
-                className="bg-white border border-[#ead8c7] hover:bg-[#fff8f3] px-7 py-4 rounded-2xl transition"
-              >
-
-                View Menu
-
-              </Link>
-
-            </div>
-
-          </motion.div>
-
-          {/* DESKTOP IMAGE */}
-
-          <motion.div
-            initial={{ opacity: 0, scale: 0.96 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6 }}
-            className="hidden lg:block"
-          >
-
-            <HeroSlider />
-
-          </motion.div>
+          </div>
 
         </div>
 
       </section>
 
     </main>
-  );
-}
-
-/* SLIDER */
-
-function HeroSlider() {
-
-  return (
-
-    <div className="bg-white p-2 rounded-[28px] shadow-xl overflow-hidden">
-
-      <Swiper
-        modules={[Autoplay]}
-        slidesPerView={1}
-        loop={true}
-        autoplay={{
-          delay: 3200,
-          disableOnInteraction: false,
-        }}
-        className="rounded-[22px] overflow-hidden"
-      >
-
-        {slides.map((slide, index) => (
-
-          <SwiperSlide key={index}>
-
-            <div className="relative w-full h-[200px] sm:h-[520px] overflow-hidden">
-
-              {/* IMAGE */}
-
-              <img
-                src={slide.image}
-                alt="Brownies"
-                draggable={false}
-                className="w-full h-full object-cover"
-              />
-
-              {/* OVERLAY */}
-
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
-
-            </div>
-
-          </SwiperSlide>
-
-        ))}
-
-      </Swiper>
-
-    </div>
 
   );
 }
