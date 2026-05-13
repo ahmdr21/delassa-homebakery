@@ -36,7 +36,7 @@ const products = [
 
 export default function Home() {
 
-  const message = encodeURIComponent(`Halo Delassa 👋
+  const message = encodeURIComponent(`Halo Delassa
 
 Saya ingin melakukan pemesanan brownies.
 
@@ -46,7 +46,7 @@ Varian Menu:
 Jumlah Order:
 Request Tambahan:
 
-Terima kasih ✨`);
+Terima kasih`);
 
   return (
 
@@ -83,30 +83,6 @@ Terima kasih ✨`);
 
             </div>
 
-            {/* FLOATING CARD */}
-
-            <div className="absolute -bottom-5 sm:bottom-8 -right-2 sm:-right-8 bg-white rounded-2xl shadow-2xl p-5 max-w-[230px] border border-[#f1e3d7]">
-
-              <p className="text-[11px] uppercase tracking-[2px] text-[#c38358] font-bold">
-
-                DELASSA SIGNATURE
-
-              </p>
-
-              <h3 className="mt-2 text-xl font-black text-[#3b2b26]">
-
-                Rich Chocolate Brownies
-
-              </h3>
-
-              <p className="mt-2 text-sm text-[#7a6a62] leading-relaxed">
-
-                Moist texture dengan premium chocolate topping ✨
-
-              </p>
-
-            </div>
-
           </motion.div>
 
           {/* RIGHT CONTENT */}
@@ -118,31 +94,15 @@ Terima kasih ✨`);
             className="text-center lg:text-left"
           >
 
-            {/* BADGE */}
-
-            <div className="inline-flex items-center gap-3 bg-[#f3e5d8] px-5 py-3 rounded-full">
-
-              <span>
-                🍫
-              </span>
-
-              <span className="uppercase tracking-[3px] text-[11px] sm:text-sm font-semibold text-[#8b5f47]">
-
-                Fresh Baked Everyday
-
-              </span>
-
-            </div>
-
             {/* TITLE */}
 
-            <h1 className="mt-6 text-[42px] sm:text-[72px] leading-[0.9] tracking-[-2px] font-black text-[#2f221d]">
+            <h1 className="text-[42px] sm:text-[72px] leading-[0.9] tracking-[-2px] font-black text-[#2f221d]">
 
               Brownies Premium
 
               <span className="block text-[#c38358]">
 
-                Untuk Sweet Moments ✨
+                Untuk Sweet Moments
 
               </span>
 
@@ -161,24 +121,6 @@ Terima kasih ✨`);
 
             </p>
 
-            {/* TRUST */}
-
-            <div className="flex flex-wrap justify-center lg:justify-start gap-3 mt-7">
-
-              <div className="bg-white shadow-lg border border-[#f1e3d7] px-4 py-2 rounded-full text-sm font-semibold text-[#3b2b26]">
-
-                ⭐ 4.9 Rating Customer
-
-              </div>
-
-              <div className="bg-[#3b2b26] text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg">
-
-                🔥 Fresh From Oven
-
-              </div>
-
-            </div>
-
             {/* BUTTON */}
 
             <div className="flex flex-wrap justify-center lg:justify-start gap-4 mt-9">
@@ -187,7 +129,7 @@ Terima kasih ✨`);
                 href={`https://wa.me/6287715443313?text=${message}`}
                 target="_blank"
                 rel="noreferrer"
-                className="bg-[#3b2b26] hover:bg-black text-white px-8 py-4 rounded-full font-semibold shadow-xl transition-all duration-300 hover:-translate-y-1"
+                className="bg-[#3b2b26] hover:bg-black text-white px-8 py-4 rounded-full font-semibold shadow-xl transition-all duration-300 hover:-translate-y-1 inline-flex items-center justify-center"
               >
 
                 Pesan via WhatsApp
@@ -289,6 +231,19 @@ Terima kasih ✨`);
 
                 </p>
 
+                {/* ORDER BUTTON */}
+
+                <a
+                  href={`https://wa.me/6287715443313?text=${message}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-5 bg-[#3b2b26] hover:bg-black text-white px-5 py-3 rounded-full text-sm font-semibold transition-all duration-300 inline-flex items-center justify-center w-full"
+                >
+
+                  Order Sekarang
+
+                </a>
+
               </div>
 
             </motion.div>
@@ -321,10 +276,6 @@ Terima kasih ✨`);
 
               <div className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-md border border-white/10 px-5 py-3 rounded-full">
 
-                <span>
-                  🍫
-                </span>
-
                 <span className="uppercase tracking-[3px] text-[11px] sm:text-sm font-semibold text-[#f3c6a3]">
 
                   Fresh From Oven
@@ -338,7 +289,7 @@ Terima kasih ✨`);
               <h2 className="mt-6 text-4xl sm:text-6xl leading-[1] font-black">
 
                 Made By Order,
-                Freshly Baked Everyday ✨
+                Freshly Baked Everyday
 
               </h2>
 
@@ -360,13 +311,13 @@ Terima kasih ✨`);
 
                 <div className="bg-white/5 border border-white/10 rounded-2xl px-5 py-4">
 
-                  ✔ Fresh baked after order
+                  ✔ Freshly baked upon order
 
                 </div>
 
                 <div className="bg-white/5 border border-white/10 rounded-2xl px-5 py-4">
 
-                  ✔ No overnight stock
+                  ✔ Handmade daily
 
                 </div>
 
