@@ -46,27 +46,27 @@ export default function Navbar() {
 
       {/* NAVBAR */}
 
-      <nav className="max-w-6xl mx-auto bg-[#fdf7f2]/95 backdrop-blur-xl border border-[#ead8c7] rounded-[26px] sm:rounded-full px-4 sm:px-8 py-4 flex items-center justify-between shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
+      <nav className="max-w-6xl mx-auto bg-[#fdf7f2]/95 backdrop-blur-xl border border-[#ead8c7] rounded-[24px] sm:rounded-full px-4 sm:px-8 py-3 sm:py-4 flex items-center justify-between shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
 
         {/* LEFT */}
 
-        <Link to="/" className="flex items-center gap-2 sm:gap-3 min-w-0">
+        <Link to="/" className="flex items-center gap-2 min-w-0">
 
           <img
             src={logo}
             alt="Delassa Logo"
-            className="w-10 h-10 sm:w-14 sm:h-14 object-contain shrink-0"
+            className="w-9 h-9 sm:w-14 sm:h-14 object-contain shrink-0"
           />
 
           <div className="min-w-0">
 
-            <h1 className="text-[28px] sm:text-3xl leading-none font-black italic tracking-tight text-[#3b2b26] truncate">
+            <h1 className="text-[24px] sm:text-3xl leading-none font-black italic tracking-tight text-[#3b2b26] truncate">
 
               Delassa
 
             </h1>
 
-            <p className="text-[7px] sm:text-[10px] tracking-[3px] sm:tracking-[4px] uppercase text-[#a06f52] mt-1">
+            <p className="text-[7px] sm:text-[10px] tracking-[3px] sm:tracking-[4px] uppercase text-[#a06f52] mt-[2px]">
 
               Homebakery
 
@@ -109,13 +109,13 @@ export default function Navbar() {
 
         {/* RIGHT */}
 
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-2">
 
           {/* MOBILE BUTTON */}
 
           <button
             onClick={() => setOpen(true)}
-            className="lg:hidden text-[34px] text-[#3b2b26] shrink-0"
+            className="lg:hidden text-[30px] text-[#3b2b26] shrink-0"
           >
 
             <HiOutlineMenuAlt3 />
@@ -128,10 +128,10 @@ export default function Navbar() {
             href="https://wa.me/6287715443313"
             target="_blank"
             rel="noreferrer"
-            className="bg-[#3b2b26] hover:bg-black transition-all duration-500 text-white px-4 sm:px-8 py-3 sm:py-4 rounded-full shadow-lg text-sm sm:text-base whitespace-nowrap hover:-translate-y-1"
+            className="bg-[#3b2b26] hover:bg-black transition-all duration-500 text-white px-4 sm:px-8 py-2.5 sm:py-4 rounded-full shadow-lg text-[13px] sm:text-base whitespace-nowrap"
           >
 
-            Order Now
+            Order
 
           </a>
 
@@ -143,7 +143,7 @@ export default function Navbar() {
 
       <div
         onClick={() => setOpen(false)}
-        className={`fixed inset-0 bg-black/40 backdrop-blur-sm z-[998] transition-all duration-500 lg:hidden
+        className={`fixed inset-0 bg-black/40 backdrop-blur-sm z-[998] transition-all duration-300 lg:hidden
         ${
           open
             ? "opacity-100 visible"
@@ -154,7 +154,7 @@ export default function Navbar() {
       {/* MOBILE SIDEBAR */}
 
       <div
-        className={`fixed top-0 right-0 h-screen w-[78%] max-w-[290px] bg-[#3b2b26] z-[999] transition-all duration-500
+        className={`fixed top-0 right-0 h-screen w-[76%] max-w-[270px] bg-[#3b2b26] z-[999] transition-all duration-300
         ${
           open
             ? "translate-x-0"
@@ -162,90 +162,86 @@ export default function Navbar() {
         }`}
       >
 
-        <div className="h-full px-5 py-6 flex flex-col justify-between overflow-y-auto">
+        <div className="h-full px-5 py-5 flex flex-col">
 
           {/* TOP */}
 
-          <div>
+          <div className="flex items-start justify-between">
 
-            <div className="flex items-start justify-between gap-4">
+            <div className="flex items-center gap-2">
 
-              <div className="flex items-center gap-2 min-w-0">
+              <img
+                src={logo}
+                alt="logo"
+                className="w-8 h-8 object-contain"
+              />
 
-                <img
-                  src={logo}
-                  alt="logo"
-                  className="w-9 h-9 object-contain shrink-0"
-                />
+              <div>
 
-                <div className="min-w-0">
+                <h1 className="text-[22px] leading-none font-black italic text-white">
 
-                  <h1 className="text-[26px] leading-none font-black italic text-white truncate">
+                  Delassa
 
-                    Delassa
+                </h1>
 
-                  </h1>
+                <p className="text-[7px] tracking-[3px] uppercase text-[#d9b9a4] mt-1">
 
-                  <p className="text-[8px] tracking-[4px] uppercase text-[#d9b9a4] mt-1">
+                  Homebakery
 
-                    Homebakery
-
-                  </p>
-
-                </div>
+                </p>
 
               </div>
 
-              {/* CLOSE */}
+            </div>
 
-              <button
+            {/* CLOSE */}
+
+            <button
+              onClick={() => setOpen(false)}
+              className="text-[30px] text-white"
+            >
+
+              <HiX />
+
+            </button>
+
+          </div>
+
+          {/* MENU */}
+
+          <div className="flex flex-col gap-1 mt-8">
+
+            {menus.map((menu, index) => (
+
+              <Link
+                key={index}
+                to={menu.path}
                 onClick={() => setOpen(false)}
-                className="text-3xl text-white shrink-0"
+                className={`text-[15px] font-semibold py-3 border-b border-[#5a3d31] transition duration-300
+                ${
+                  location.pathname === menu.path
+                    ? "text-[#d9b9a4]"
+                    : "text-white"
+                }`}
               >
 
-                <HiX />
+                {menu.name}
 
-              </button>
+              </Link>
 
-            </div>
-
-            {/* MENU */}
-
-            <div className="flex flex-col gap-4 mt-10">
-
-              {menus.map((menu, index) => (
-
-                <Link
-                  key={index}
-                  to={menu.path}
-                  onClick={() => setOpen(false)}
-                  className={`text-[15px] font-semibold transition duration-300 py-1
-                  ${
-                    location.pathname === menu.path
-                      ? "text-[#d9b9a4]"
-                      : "text-white"
-                  }`}
-                >
-
-                  {menu.name}
-
-                </Link>
-
-              ))}
-
-            </div>
+            ))}
 
           </div>
 
           {/* BOTTOM */}
 
-          <div className="pt-6">
+          <div className="mt-auto">
 
             {/* CARD */}
 
-            <div className="border border-[#5f4337] bg-[#4a3026] rounded-[18px] p-3.5">
+            <div className="border border-[#5f4337] bg-[#4a3026] rounded-[16px] p-3.5">
 
-              <p className="text-[#e7c6b2] text-[13px] leading-relaxed">
+              <p className="text-[#e7c6b2] text-[12px] leading-relaxed">
 
                 Handmade brownies premium
                 dengan packaging aesthetic ✨
@@ -256,7 +252,7 @@ export default function Navbar() {
                 href="https://wa.me/6287715443313"
                 target="_blank"
                 rel="noreferrer"
-                className="mt-4 inline-flex bg-white text-[#3b2b26] px-5 py-2.5 rounded-xl font-semibold text-sm"
+                className="mt-3 inline-flex bg-white text-[#3b2b26] px-4 py-2 rounded-lg font-semibold text-[13px]"
               >
 
                 Contact Us
@@ -267,13 +263,13 @@ export default function Navbar() {
 
             {/* SOCIAL */}
 
-            <div className="flex items-center gap-3 mt-5">
+            <div className="flex items-center gap-3 mt-4">
 
               <a
                 href="https://instagram.com/delassa.homebakery"
                 target="_blank"
                 rel="noreferrer"
-                className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#3b2b26] text-base"
+                className="w-9 h-9 rounded-full bg-white flex items-center justify-center text-[#3b2b26] text-sm"
               >
 
                 <FaInstagram />
@@ -284,7 +280,7 @@ export default function Navbar() {
                 href="https://wa.me/6287715443313"
                 target="_blank"
                 rel="noreferrer"
-                className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#3b2b26] text-base"
+                className="w-9 h-9 rounded-full bg-white flex items-center justify-center text-[#3b2b26] text-sm"
               >
 
                 <FaWhatsapp />
@@ -293,7 +289,7 @@ export default function Navbar() {
 
               <a
                 href="/"
-                className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#3b2b26] text-base"
+                className="w-9 h-9 rounded-full bg-white flex items-center justify-center text-[#3b2b26] text-sm"
               >
 
                 <FaTiktok />
