@@ -66,7 +66,7 @@ Terima kasih ✨`);
 
       {/* HERO */}
 
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 pt-10 sm:pt-16 pb-20 grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 pt-10 sm:pt-16 pb-20 grid lg:grid-cols-2 gap-8 lg:gap-14 items-center">
 
         {/* LEFT */}
 
@@ -118,9 +118,9 @@ Terima kasih ✨`);
 
           </p>
 
-          {/* BUTTON */}
+          {/* DESKTOP BUTTON */}
 
-          <div className="flex flex-wrap gap-4 mt-9">
+          <div className="hidden lg:flex flex-wrap gap-4 mt-9">
 
             <a
               href={`https://wa.me/6287715443313?text=${message}`}
@@ -242,7 +242,7 @@ Terima kasih ✨`);
                     <img
                       src={slide.image}
                       alt={slide.title}
-                      className="w-full h-[420px] sm:h-[560px] object-cover"
+                      className="w-full h-[300px] sm:h-[560px] object-cover"
                     />
 
                     {/* OVERLAY */}
@@ -280,6 +280,32 @@ Terima kasih ✨`);
               ))}
 
             </Swiper>
+
+          </div>
+
+          {/* MOBILE BUTTON */}
+
+          <div className="flex flex-wrap gap-4 mt-8 lg:hidden">
+
+            <a
+              href={`https://wa.me/6287715443313?text=${message}`}
+              target="_blank"
+              rel="noreferrer"
+              className="bg-[#3b2b26] hover:bg-black text-white px-6 py-4 rounded-2xl transition-all duration-500 shadow-xl"
+            >
+
+              Order Sekarang
+
+            </a>
+
+            <Link
+              to="/menu"
+              className="bg-white border border-[#ead8c7] hover:bg-[#fff8f3] px-6 py-4 rounded-2xl transition"
+            >
+
+              View Menu
+
+            </Link>
 
           </div>
 
