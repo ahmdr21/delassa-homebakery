@@ -1,30 +1,28 @@
 import { Link } from "react-router-dom";
+
 import { motion } from "framer-motion";
+
 import { Swiper, SwiperSlide } from "swiper/react";
+
 import { Autoplay } from "swiper/modules";
 
 import "swiper/css";
 
-
-import brownie1 from "../assets/brownie1.png";
-import brownie2 from "../assets/brownie2.png";
-import brownie3 from "../assets/brownie3.png";
+import brownie1 from "../assets/brownie1.jpg";
+import brownie2 from "../assets/brownie2.jpg";
+import brownie3 from "../assets/brownie3.jpg";
 
 const slides = [
   {
     image: brownie1,
-    title: "Premium Brownies",
-    subtitle: "Handmade With Love",
   },
+
   {
     image: brownie2,
-    title: "Brownies Almond",
-    subtitle: "Crunchy & Elegant",
   },
+
   {
     image: brownie3,
-    title: "Mix Topping Series",
-    subtitle: "Best Seller Delassa",
   },
 ];
 
@@ -42,15 +40,15 @@ Request Tambahan:
 
 Terima kasih ✨`);
 
-return (
+  return (
 
     <main className="bg-[#f7f3ef] overflow-hidden">
 
       {/* HERO */}
 
-      <section className="relative w-full min-h-screen overflow-hidden">
+      <section className="relative min-h-screen overflow-hidden">
 
-        {/* BACKGROUND */}
+        {/* BACKGROUND SLIDER */}
 
         <div className="absolute inset-0 z-0">
 
@@ -58,7 +56,6 @@ return (
             modules={[Autoplay]}
             slidesPerView={1}
             loop={true}
-            
             autoplay={{
               delay: 4000,
               disableOnInteraction: false,
@@ -72,15 +69,17 @@ return (
 
                 <div className="relative w-full h-screen">
 
+                  {/* IMAGE */}
+
                   <img
                     src={slide.image}
-                    alt={slide.title}
+                    alt="Brownies"
                     className="w-full h-full object-cover"
                   />
 
                   {/* OVERLAY */}
 
-                  <div className="absolute inset-0 bg-black/55"></div>
+                  <div className="absolute inset-0 bg-black/60"></div>
 
                 </div>
 
@@ -91,9 +90,10 @@ return (
           </Swiper>
 
         </div>
-         {/* CONTENT */}
 
-        <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 lg:px-10 min-h-screen flex items-center">
+        {/* CONTENT */}
+
+        <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 min-h-screen flex items-center">
 
           <div className="max-w-3xl pt-28 sm:pt-24">
 
@@ -103,15 +103,17 @@ return (
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-md border border-white/20 text-white px-5 py-3 rounded-full"
+              className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 px-5 py-3 rounded-full text-white"
             >
 
               <span>
                 🍫
               </span>
 
-              <span className="text-[12px] sm:text-sm tracking-wide font-medium uppercase">
-                Premium Homebakery Bekasi
+              <span className="text-[12px] sm:text-sm uppercase tracking-wide font-medium">
+
+                Fresh Baked Everyday
+
               </span>
 
             </motion.div>
@@ -122,18 +124,20 @@ return (
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7 }}
-              className="mt-7 text-[42px] sm:text-[64px] lg:text-[110px] leading-[0.92] font-black tracking-[-2px] text-white"
+              className="mt-7 text-[42px] sm:text-[70px] lg:text-[110px] leading-[0.92] font-black tracking-[-2px] text-white"
             >
 
-              DELASSA
+              Brownies Premium
 
               <span className="block text-[#f3c6a3]">
-                HOMEBAKERY
+
+                Untuk Sweet Moments
+
               </span>
 
             </motion.h1>
 
-            {/* DESC */}
+            {/* DESCRIPTION */}
 
             <motion.p
               initial={{ opacity: 0, y: 30 }}
@@ -142,15 +146,35 @@ return (
               className="mt-6 text-[14px] sm:text-lg text-white/85 leading-relaxed max-w-2xl"
             >
 
-              Handmade brownies premium dengan rasa rich chocolate,
-              topping melimpah,
-              packaging aesthetic,
-              dan kualitas terbaik untuk setiap sweet moments ✨
+              Handmade brownies dengan rich chocolate premium,
+              tekstur moist lumer,
+              dan packaging aesthetic yang cocok untuk hampers,
+              hadiah spesial,
+              atau teman ngopi favoritmu ✨
 
             </motion.p>
 
+            {/* SOCIAL PROOF */}
+
+            <div className="flex flex-wrap items-center gap-3 mt-6">
+
+              <div className="bg-[#f3c6a3] text-[#3b2b26] px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
+
+                ⭐ 4.9 Rating Customer
+
+              </div>
+
+              <div className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-4 py-2 rounded-full text-sm font-medium">
+
+                🔥 Best Seller Bekasi
+
+              </div>
+
+            </div>
+
             {/* BUTTON */}
- <motion.div
+
+            <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.9 }}
@@ -164,7 +188,7 @@ return (
                 className="bg-[#3b2b26] hover:bg-black transition-all duration-300 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full font-medium shadow-2xl"
               >
 
-                Order Sekarang
+                Pesan via WhatsApp
 
               </a>
 
@@ -173,12 +197,31 @@ return (
                 className="bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white hover:text-black transition-all duration-300 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full font-medium"
               >
 
-                View Menu
+                Lihat Menu
 
               </Link>
 
             </motion.div>
-             {/* STATS */}
+
+            {/* BENEFITS */}
+
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-8 text-white/85 text-sm">
+
+              <div>
+                ✔ Premium ingredients
+              </div>
+
+              <div>
+                ✔ Fresh from oven
+              </div>
+
+              <div>
+                ✔ Same day order available
+              </div>
+
+            </div>
+
+            {/* STATS */}
 
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -190,11 +233,15 @@ return (
               <div>
 
                 <h3 className="text-[24px] sm:text-[44px] font-black text-[#f3c6a3]">
+
                   290+
+
                 </h3>
 
                 <p className="text-[11px] sm:text-base text-white/75 mt-1">
+
                   Happy Clients
+
                 </p>
 
               </div>
@@ -202,11 +249,15 @@ return (
               <div>
 
                 <h3 className="text-[24px] sm:text-[44px] font-black text-[#f3c6a3]">
+
                   4.9
+
                 </h3>
 
                 <p className="text-[11px] sm:text-base text-white/75 mt-1">
+
                   Customer Rating
+
                 </p>
 
               </div>
@@ -214,11 +265,15 @@ return (
               <div>
 
                 <h3 className="text-[24px] sm:text-[44px] font-black text-[#f3c6a3]">
+
                   100%
+
                 </h3>
 
                 <p className="text-[11px] sm:text-base text-white/75 mt-1">
+
                   Handmade
+
                 </p>
 
               </div>
