@@ -9,11 +9,13 @@ import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 
+/* SLIDES */
+
 const slides = [
 
   {
     image:
-      "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?q=80&w=1200&auto=format&fit=crop",
+      "https://images.pexels.com/photos/291528/pexels-photo-291528.jpeg",
 
     badge: "✨ Fresh baked everyday",
 
@@ -24,7 +26,7 @@ const slides = [
 
   {
     image:
-      "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?q=80&w=1200&auto=format&fit=crop",
+      "https://images.pexels.com/photos/2067396/pexels-photo-2067396.jpeg",
 
     badge: "🔥 Best Seller",
 
@@ -35,7 +37,7 @@ const slides = [
 
   {
     image:
-      "https://images.unsplash.com/photo-1519869325930-281384150729?q=80&w=1200&auto=format&fit=crop",
+      "https://images.pexels.com/photos/1126359/pexels-photo-1126359.jpeg",
 
     badge: "🎁 Special Hampers",
 
@@ -63,6 +65,8 @@ Terima kasih ✨`);
   return (
 
     <main className="bg-[#fdf7f2] min-h-screen overflow-hidden">
+
+      {/* HERO */}
 
       <section className="max-w-6xl mx-auto px-4 sm:px-6 pt-10 sm:pt-16 pb-20">
 
@@ -108,7 +112,7 @@ Terima kasih ✨`);
 
             </h1>
 
-            {/* DESC */}
+            {/* DESCRIPTION */}
 
             <p className="text-[#6f615a] text-base sm:text-lg leading-relaxed max-w-xl mt-7">
 
@@ -118,7 +122,7 @@ Terima kasih ✨`);
 
             </p>
 
-            {/* MOBILE IMAGE */}
+            {/* MOBILE SLIDER */}
 
             <div className="mt-8 lg:hidden">
 
@@ -234,13 +238,13 @@ Terima kasih ✨`);
 
           </motion.div>
 
-          {/* DESKTOP IMAGE */}
+          {/* DESKTOP SLIDER */}
 
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8 }}
-            className="hidden lg:block relative"
+            className="hidden lg:block"
           >
 
             <HeroSlider />
@@ -255,13 +259,13 @@ Terima kasih ✨`);
   );
 }
 
-/* SLIDER */
+/* HERO SLIDER */
 
 function HeroSlider() {
 
   return (
 
-    <div className="relative bg-white/60 backdrop-blur-xl border border-white/50 rounded-[36px] p-3 shadow-2xl">
+    <div className="relative bg-white rounded-[30px] p-2 shadow-xl overflow-hidden">
 
       <Swiper
         modules={[Autoplay, Pagination]}
@@ -274,21 +278,22 @@ function HeroSlider() {
         pagination={{
           clickable: true,
         }}
-        className="rounded-[30px] overflow-hidden"
+        className="rounded-[24px] overflow-hidden"
       >
 
         {slides.map((slide, index) => (
 
           <SwiperSlide key={index}>
 
-            <div className="relative">
+            <div className="relative w-full h-[320px] sm:h-[560px] overflow-hidden rounded-[24px]">
 
               {/* IMAGE */}
 
               <img
                 src={slide.image}
                 alt={slide.title}
-                className="w-full h-[320px] sm:h-[560px] object-cover"
+                loading="lazy"
+                className="absolute inset-0 w-full h-full object-cover"
               />
 
               {/* OVERLAY */}
@@ -297,9 +302,9 @@ function HeroSlider() {
 
               {/* CONTENT */}
 
-              <div className="absolute bottom-0 left-0 p-5 sm:p-8 text-white">
+              <div className="absolute bottom-0 left-0 p-5 sm:p-8 text-white z-10">
 
-                <div className="inline-flex bg-white text-[#3b2b26] text-xs font-semibold px-4 py-2 rounded-full mb-4">
+                <div className="inline-flex bg-white text-[#3b2b26] text-xs font-semibold px-4 py-2 rounded-full mb-4 shadow">
 
                   {slide.badge}
 
