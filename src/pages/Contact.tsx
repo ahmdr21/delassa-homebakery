@@ -20,7 +20,7 @@ Terima kasih`);
 
   return (
 
-    <main className="bg-[#faf7f2]">
+    <main className="bg-[#faf7f2] overflow-hidden">
 
       <section className="max-w-6xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
 
@@ -54,122 +54,101 @@ Terima kasih`);
 
         </div>
 
-        {/* CONTACT CARD */}
+        {/* CONTACT INFO */}
 
-        <div className="mt-14 bg-white border border-[#f1e3d7] rounded-[32px] p-6 sm:p-10 shadow-[0_15px_60px_rgba(0,0,0,0.06)]">
+        <div className="flex flex-wrap items-center justify-center gap-10 mt-16">
 
-          <div className="grid md:grid-cols-3 gap-5">
+          {/* WHATSAPP */}
 
-            {/* WHATSAPP */}
+          <a
+            href={`https://wa.me/6287715443313?text=${message}`}
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-4 text-[#3b2b26] hover:opacity-70 transition-all duration-300"
+          >
 
-            <a
-              href={`https://wa.me/6287715443313?text=${message}`}
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center gap-4 border border-[#f1e3d7] hover:border-[#25D366] rounded-[24px] p-5 transition-all duration-300 hover:-translate-y-1"
-            >
+            <div className="w-14 h-14 rounded-full bg-[#25D366] text-white flex items-center justify-center text-2xl shrink-0 shadow-lg">
 
-              <div className="w-14 h-14 rounded-full bg-[#25D366] text-white flex items-center justify-center text-2xl shrink-0">
-
-                <FaWhatsapp />
-
-              </div>
-
-              <div>
-
-                <p className="text-sm text-[#9b8d86]">
-
-                  WhatsApp
-
-                </p>
-
-                <h3 className="text-lg font-black text-[#3b2b26]">
-
-                  0877-1544-3313
-
-                </h3>
-
-              </div>
-
-            </a>
-
-            {/* INSTAGRAM */}
-
-            <a
-              href="https://instagram.com/delassahomebakery"
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center gap-4 border border-[#f1e3d7] hover:border-pink-400 rounded-[24px] p-5 transition-all duration-300 hover:-translate-y-1"
-            >
-
-              <div className="w-14 h-14 rounded-full bg-gradient-to-br from-pink-500 to-orange-400 text-white flex items-center justify-center text-2xl shrink-0">
-
-                <FaInstagram />
-
-              </div>
-
-              <div>
-
-                <p className="text-sm text-[#9b8d86]">
-
-                  Instagram
-
-                </p>
-
-                <h3 className="text-lg font-black text-[#3b2b26]">
-
-                  @delassahomebakery
-
-                </h3>
-
-              </div>
-
-            </a>
-
-            {/* LOCATION */}
-
-            <div className="flex items-center gap-4 border border-[#f1e3d7] rounded-[24px] p-5">
-
-              <div className="w-14 h-14 rounded-full bg-[#c38358] text-white flex items-center justify-center text-2xl shrink-0">
-
-                <FaLocationDot />
-
-              </div>
-
-              <div>
-
-                <p className="text-sm text-[#9b8d86]">
-
-                  Location
-
-                </p>
-
-                <h3 className="text-lg font-black text-[#3b2b26]">
-
-                  Bekasi Selatan
-
-                </h3>
-
-              </div>
+              <FaWhatsapp />
 
             </div>
 
-          </div>
+            <div className="text-left">
 
-          {/* CTA */}
+              <p className="text-sm text-[#9b8d86] font-medium font-sans">
 
-          <div className="mt-10 text-center">
+                WhatsApp
 
-            <a
-              href={`https://wa.me/6287715443313?text=${message}`}
-              target="_blank"
-              rel="noreferrer"
-              className="bg-[#3b2b26] hover:bg-black text-white px-10 py-5 rounded-full font-semibold text-lg inline-flex items-center justify-center transition-all duration-300 hover:-translate-y-1 shadow-xl"
-            >
+              </p>
 
-              Chat WhatsApp Sekarang
+              <h3 className="mt-1 text-[18px] font-bold text-[#2f221d] leading-tight">
 
-            </a>
+                0877-1544-3313
+
+              </h3>
+
+            </div>
+
+          </a>
+
+          {/* INSTAGRAM */}
+
+          <a
+            href="https://instagram.com/delassa.homebakery"
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-4 text-[#3b2b26] hover:opacity-70 transition-all duration-300"
+          >
+
+            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-pink-500 to-orange-400 text-white flex items-center justify-center text-2xl shrink-0 shadow-lg">
+
+              <FaInstagram />
+
+            </div>
+
+            <div className="text-left">
+
+              <p className="text-sm text-[#9b8d86] font-medium font-sans">
+
+                Instagram
+
+              </p>
+
+              <h3 className="mt-1 text-[18px] font-bold text-[#2f221d] leading-tight font-['Poppins']">
+
+                @delassa.homebakery
+
+              </h3>
+
+            </div>
+
+          </a>
+
+          {/* LOCATION */}
+
+          <div className="flex items-center gap-4 text-[#3b2b26]">
+
+            <div className="w-14 h-14 rounded-full bg-[#c38358] text-white flex items-center justify-center text-2xl shrink-0 shadow-lg">
+
+              <FaLocationDot />
+
+            </div>
+
+            <div className="text-left">
+
+              <p className="text-sm text-[#9b8d86] font-medium font-sans">
+
+                Location
+
+              </p>
+
+              <h3 className="mt-1 text-[18px] font-bold text-[#2f221d] leading-tight font-['Poppins']">
+
+                Bekasi Selatan
+
+              </h3>
+
+            </div>
 
           </div>
 

@@ -98,7 +98,7 @@ export default function Footer() {
               {/* THREADS */}
 
               <a
-                href="https://threads.net/@delassahomebakery"
+                href="https://threads.net/@delassa.homebakery"
                 target="_blank"
                 rel="noreferrer"
                 className="flex items-center gap-3 text-[#3b2b26] hover:text-[#c38358] transition-all duration-300"
@@ -152,7 +152,7 @@ export default function Footer() {
               {/* EMAIL */}
 
               <a
-                href="mailto:delassahomebakery@gmail.com"
+                href="mailto:delassa.homebakery@gmail.com"
                 className="flex items-start gap-3 text-[#3b2b26] hover:text-[#c38358] transition-all duration-300"
               >
 
