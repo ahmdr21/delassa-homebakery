@@ -1,7 +1,3 @@
-import brownie1 from "../assets/brownie1.png";
-import brownie2 from "../assets/brownie2.png";
-import brownie3 from "../assets/brownie3.png";
-
 import { Link } from "react-router-dom";
 
 import { motion } from "framer-motion";
@@ -12,6 +8,12 @@ import { Autoplay, Pagination } from "swiper/modules";
 
 import "swiper/css";
 import "swiper/css/pagination";
+
+/* LOCAL IMAGES */
+
+import brownie1 from "../assets/brownie1.png";
+import brownie2 from "../assets/brownie2.png";
+import brownie3 from "../assets/brownie3.png";
 
 /* SLIDES */
 
@@ -32,9 +34,9 @@ const slides = [
 
     badge: "🔥 Best Seller",
 
-    title: "Brownies Mix Topping",
+    title: "Brownies Almond",
 
-    desc: "Perpaduan topping premium favorit customer Delassa.",
+    desc: "Brownies premium dengan topping almond crunchy favorit customer.",
   },
 
   {
@@ -42,12 +44,13 @@ const slides = [
 
     badge: "🎁 Special Hampers",
 
-    title: "Elegant Dessert Box",
+    title: "Brownies Mix Topping",
 
-    desc: "Perfect untuk hadiah spesial dan sweet moments bersama orang tersayang.",
+    desc: "Perpaduan topping premium untuk sweet moments spesial.",
   },
 
 ];
+
 export default function Home() {
 
   const message = encodeURIComponent(`Halo Delassa 👋
@@ -68,9 +71,9 @@ Terima kasih ✨`);
 
       {/* HERO */}
 
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 pt-10 sm:pt-16 pb-20">
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 pt-6 sm:pt-16 pb-16 sm:pb-20">
 
-        <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+        <div className="grid lg:grid-cols-2 gap-7 lg:gap-14 items-center">
 
           {/* LEFT */}
 
@@ -82,13 +85,13 @@ Terima kasih ✨`);
 
             {/* BADGE */}
 
-            <div className="inline-flex items-center gap-3 bg-[#f4e3d4] px-5 py-3 rounded-full">
+            <div className="inline-flex items-center gap-2 bg-[#f4e3d4] px-4 py-2.5 rounded-full">
 
-              <span>
+              <span className="text-sm">
                 🍫
               </span>
 
-              <span className="text-sm font-medium text-[#8b5f47]">
+              <span className="text-[13px] sm:text-sm font-medium text-[#8b5f47]">
 
                 Premium Brownies & Hampers
 
@@ -98,7 +101,7 @@ Terima kasih ✨`);
 
             {/* TITLE */}
 
-            <h1 className="text-[52px] sm:text-[72px] lg:text-[90px] font-black leading-[0.9] tracking-[-3px] mt-7 text-[#3b2b26]">
+            <h1 className="text-[42px] leading-[0.92] sm:text-[72px] lg:text-[90px] font-black tracking-[-2px] sm:tracking-[-3px] mt-6 text-[#3b2b26]">
 
               Crafted
 
@@ -114,7 +117,7 @@ Terima kasih ✨`);
 
             {/* DESCRIPTION */}
 
-            <p className="text-[#6f615a] text-base sm:text-lg leading-relaxed max-w-xl mt-7">
+            <p className="text-[#6f615a] text-[15px] sm:text-lg leading-relaxed max-w-xl mt-6">
 
               Handmade brownies premium dengan rasa rich chocolate,
               packaging aesthetic,
@@ -124,7 +127,7 @@ Terima kasih ✨`);
 
             {/* MOBILE SLIDER */}
 
-            <div className="mt-8 lg:hidden">
+            <div className="mt-7 lg:hidden">
 
               <HeroSlider />
 
@@ -132,13 +135,13 @@ Terima kasih ✨`);
 
             {/* MOBILE BUTTON */}
 
-            <div className="flex flex-wrap gap-4 mt-8 lg:hidden">
+            <div className="flex flex-wrap gap-3 mt-7 lg:hidden">
 
               <a
                 href={`https://wa.me/6287715443313?text=${message}`}
                 target="_blank"
                 rel="noreferrer"
-                className="bg-[#3b2b26] text-white px-6 py-4 rounded-2xl shadow-xl"
+                className="bg-[#3b2b26] text-white px-5 py-3 rounded-xl shadow-lg text-sm font-medium"
               >
 
                 Order Sekarang
@@ -147,7 +150,7 @@ Terima kasih ✨`);
 
               <Link
                 to="/menu"
-                className="bg-white border border-[#ead8c7] px-6 py-4 rounded-2xl"
+                className="bg-white border border-[#ead8c7] px-5 py-3 rounded-xl text-sm font-medium"
               >
 
                 View Menu
@@ -158,17 +161,17 @@ Terima kasih ✨`);
 
             {/* STATS */}
 
-            <div className="grid grid-cols-3 gap-5 mt-10 max-w-lg">
+            <div className="grid grid-cols-3 gap-2 mt-9 max-w-lg">
 
               <div>
 
-                <h3 className="text-3xl sm:text-4xl font-black text-[#c38358]">
+                <h3 className="text-2xl sm:text-4xl font-black text-[#c38358]">
 
                   290+
 
                 </h3>
 
-                <p className="text-sm sm:text-base text-gray-500 mt-2">
+                <p className="text-[12px] sm:text-base text-gray-500 mt-1">
 
                   Happy Clients
 
@@ -178,13 +181,13 @@ Terima kasih ✨`);
 
               <div>
 
-                <h3 className="text-3xl sm:text-4xl font-black text-[#c38358]">
+                <h3 className="text-2xl sm:text-4xl font-black text-[#c38358]">
 
                   4.9
 
                 </h3>
 
-                <p className="text-sm sm:text-base text-gray-500 mt-2">
+                <p className="text-[12px] sm:text-base text-gray-500 mt-1">
 
                   Rating
 
@@ -194,13 +197,13 @@ Terima kasih ✨`);
 
               <div>
 
-                <h3 className="text-3xl sm:text-4xl font-black text-[#c38358]">
+                <h3 className="text-2xl sm:text-4xl font-black text-[#c38358]">
 
                   100%
 
                 </h3>
 
-                <p className="text-sm sm:text-base text-gray-500 mt-2">
+                <p className="text-[12px] sm:text-base text-gray-500 mt-1">
 
                   Handmade
 
@@ -265,7 +268,7 @@ function HeroSlider() {
 
   return (
 
-    <div className="relative bg-white rounded-[30px] p-2 shadow-xl overflow-hidden">
+    <div className="relative bg-white rounded-[26px] p-2 shadow-xl overflow-hidden">
 
       <Swiper
         modules={[Autoplay, Pagination]}
@@ -278,22 +281,22 @@ function HeroSlider() {
         pagination={{
           clickable: true,
         }}
-        className="rounded-[24px] overflow-hidden"
+        className="rounded-[22px] overflow-hidden"
       >
 
         {slides.map((slide, index) => (
 
           <SwiperSlide key={index}>
 
-            <div className="relative w-full h-[320px] sm:h-[560px] overflow-hidden rounded-[24px]">
+            <div className="relative w-full h-[250px] sm:h-[560px] overflow-hidden rounded-[22px]">
 
               {/* IMAGE */}
 
               <img
                 src={slide.image}
                 alt={slide.title}
-                 className="w-full h-full object-cover"
-  draggable={false}
+                draggable={false}
+                className="w-full h-full object-cover"
               />
 
               {/* OVERLAY */}
@@ -302,21 +305,21 @@ function HeroSlider() {
 
               {/* CONTENT */}
 
-              <div className="absolute bottom-0 left-0 p-5 sm:p-8 text-white z-10">
+              <div className="absolute bottom-0 left-0 p-4 sm:p-8 text-white z-10">
 
-                <div className="inline-flex bg-white text-[#3b2b26] text-xs font-semibold px-4 py-2 rounded-full mb-4 shadow">
+                <div className="inline-flex bg-white text-[#3b2b26] text-[11px] sm:text-xs font-semibold px-3 py-2 rounded-full mb-3 shadow">
 
                   {slide.badge}
 
                 </div>
 
-                <h2 className="text-2xl sm:text-4xl font-black leading-tight">
+                <h2 className="text-xl sm:text-4xl font-black leading-tight">
 
                   {slide.title}
 
                 </h2>
 
-                <p className="mt-3 text-white/90 text-sm sm:text-base max-w-md leading-relaxed">
+                <p className="mt-2 text-white/90 text-[13px] sm:text-base max-w-md leading-relaxed">
 
                   {slide.desc}
 
