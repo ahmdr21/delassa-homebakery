@@ -6,9 +6,9 @@ import { Autoplay } from "swiper/modules";
 import "swiper/css";
 
 
-import brownie1 from "../assets/brownie1.jpg";
-import brownie2 from "../assets/brownie2.jpg";
-import brownie3 from "../assets/brownie3.jpg";
+import brownie1 from "../assets/brownie1.png";
+import brownie2 from "../assets/brownie2.png";
+import brownie3 from "../assets/brownie3.png";
 
 const slides = [
   {
