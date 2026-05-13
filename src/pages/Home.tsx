@@ -64,255 +64,270 @@ Terima kasih ✨`);
 
     <main className="bg-[#fdf7f2] min-h-screen overflow-hidden">
 
-      {/* HERO */}
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 pt-10 sm:pt-16 pb-20">
 
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 pt-10 sm:pt-16 pb-20 grid lg:grid-cols-2 gap-8 lg:gap-14 items-center">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
 
-        {/* LEFT */}
+          {/* LEFT */}
 
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
 
-          {/* BADGE */}
+            {/* BADGE */}
 
-          <div className="inline-flex items-center gap-3 bg-[#f4e3d4] px-5 py-3 rounded-full">
+            <div className="inline-flex items-center gap-3 bg-[#f4e3d4] px-5 py-3 rounded-full">
 
-            <span className="text-lg">
-              🍫
-            </span>
+              <span>
+                🍫
+              </span>
 
-            <span className="text-sm font-medium text-[#8b5f47]">
+              <span className="text-sm font-medium text-[#8b5f47]">
 
-              Premium Brownies & Hampers
+                Premium Brownies & Hampers
 
-            </span>
-
-          </div>
-
-          {/* TITLE */}
-
-          <h1 className="text-[52px] sm:text-[72px] lg:text-[90px] font-black leading-[0.9] tracking-[-3px] mt-7 text-[#3b2b26]">
-
-            Crafted
-
-            <span className="block text-[#c38358]">
-
-              For Sweet
-
-            </span>
-
-            Moments
-
-          </h1>
-
-          {/* DESC */}
-
-          <p className="text-[#6f615a] text-base sm:text-lg leading-relaxed max-w-xl mt-7">
-
-            Handmade brownies premium dengan rasa rich chocolate,
-            packaging aesthetic,
-            dan sentuhan elegan untuk setiap momen spesialmu ✨
-
-          </p>
-
-          {/* DESKTOP BUTTON */}
-
-          <div className="hidden lg:flex flex-wrap gap-4 mt-9">
-
-            <a
-              href={`https://wa.me/6287715443313?text=${message}`}
-              target="_blank"
-              rel="noreferrer"
-              className="bg-[#3b2b26] hover:bg-black text-white px-7 py-4 rounded-2xl transition-all duration-500 shadow-xl hover:-translate-y-1"
-            >
-
-              Order Sekarang
-
-            </a>
-
-            <Link
-              to="/menu"
-              className="bg-white border border-[#ead8c7] hover:bg-[#fff8f3] px-7 py-4 rounded-2xl transition"
-            >
-
-              View Menu
-
-            </Link>
-
-          </div>
-
-          {/* STATS */}
-
-          <div className="grid grid-cols-3 gap-5 mt-12 max-w-lg">
-
-            <div>
-
-              <h3 className="text-3xl sm:text-4xl font-black text-[#c38358]">
-
-                290+
-
-              </h3>
-
-              <p className="text-sm sm:text-base text-gray-500 mt-2">
-
-                Happy Clients
-
-              </p>
+              </span>
 
             </div>
 
-            <div>
+            {/* TITLE */}
 
-              <h3 className="text-3xl sm:text-4xl font-black text-[#c38358]">
+            <h1 className="text-[52px] sm:text-[72px] lg:text-[90px] font-black leading-[0.9] tracking-[-3px] mt-7 text-[#3b2b26]">
 
-                4.9
+              Crafted
 
-              </h3>
+              <span className="block text-[#c38358]">
 
-              <p className="text-sm sm:text-base text-gray-500 mt-2">
+                For Sweet
 
-                Rating
+              </span>
 
-              </p>
+              Moments
+
+            </h1>
+
+            {/* DESC */}
+
+            <p className="text-[#6f615a] text-base sm:text-lg leading-relaxed max-w-xl mt-7">
+
+              Handmade brownies premium dengan rasa rich chocolate,
+              packaging aesthetic,
+              dan sentuhan elegan untuk setiap momen spesialmu ✨
+
+            </p>
+
+            {/* MOBILE IMAGE */}
+
+            <div className="mt-8 lg:hidden">
+
+              <HeroSlider />
 
             </div>
 
-            <div>
+            {/* MOBILE BUTTON */}
 
-              <h3 className="text-3xl sm:text-4xl font-black text-[#c38358]">
+            <div className="flex flex-wrap gap-4 mt-8 lg:hidden">
 
-                100%
+              <a
+                href={`https://wa.me/6287715443313?text=${message}`}
+                target="_blank"
+                rel="noreferrer"
+                className="bg-[#3b2b26] text-white px-6 py-4 rounded-2xl shadow-xl"
+              >
 
-              </h3>
+                Order Sekarang
 
-              <p className="text-sm sm:text-base text-gray-500 mt-2">
+              </a>
 
-                Handmade
+              <Link
+                to="/menu"
+                className="bg-white border border-[#ead8c7] px-6 py-4 rounded-2xl"
+              >
 
-              </p>
+                View Menu
+
+              </Link>
 
             </div>
 
-          </div>
+            {/* STATS */}
 
-        </motion.div>
+            <div className="grid grid-cols-3 gap-5 mt-10 max-w-lg">
 
-        {/* RIGHT */}
+              <div>
 
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8 }}
-          className="relative"
-        >
+                <h3 className="text-3xl sm:text-4xl font-black text-[#c38358]">
 
-          {/* BLUR */}
+                  290+
 
-          <div className="absolute -top-10 -right-10 w-52 h-52 bg-[#f2ddcb] rounded-full blur-3xl opacity-60"></div>
+                </h3>
 
-          {/* SLIDER */}
+                <p className="text-sm sm:text-base text-gray-500 mt-2">
 
-          <div className="relative bg-white/60 backdrop-blur-xl border border-white/50 rounded-[36px] p-3 shadow-2xl">
+                  Happy Clients
 
-            <Swiper
-              modules={[Autoplay, Pagination]}
-              slidesPerView={1}
-              loop={true}
-              autoplay={{
-                delay: 3500,
-                disableOnInteraction: false,
-              }}
-              pagination={{
-                clickable: true,
-              }}
-              className="rounded-[30px] overflow-hidden"
-            >
+                </p>
 
-              {slides.map((slide, index) => (
+              </div>
 
-                <SwiperSlide key={index}>
+              <div>
 
-                  <div className="relative">
+                <h3 className="text-3xl sm:text-4xl font-black text-[#c38358]">
 
-                    {/* IMAGE */}
+                  4.9
 
-                    <img
-                      src={slide.image}
-                      alt={slide.title}
-                      className="w-full h-[300px] sm:h-[560px] object-cover"
-                    />
+                </h3>
 
-                    {/* OVERLAY */}
+                <p className="text-sm sm:text-base text-gray-500 mt-2">
 
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent"></div>
+                  Rating
 
-                    {/* CONTENT */}
+                </p>
 
-                    <div className="absolute bottom-0 left-0 p-5 sm:p-8 text-white">
+              </div>
 
-                      <div className="inline-flex bg-white text-[#3b2b26] text-xs font-semibold px-4 py-2 rounded-full mb-4">
+              <div>
 
-                        {slide.badge}
+                <h3 className="text-3xl sm:text-4xl font-black text-[#c38358]">
 
-                      </div>
+                  100%
 
-                      <h2 className="text-2xl sm:text-4xl font-black leading-tight">
+                </h3>
 
-                        {slide.title}
+                <p className="text-sm sm:text-base text-gray-500 mt-2">
 
-                      </h2>
+                  Handmade
 
-                      <p className="mt-3 text-white/90 text-sm sm:text-base max-w-md leading-relaxed">
+                </p>
 
-                        {slide.desc}
+              </div>
 
-                      </p>
+            </div>
 
-                    </div>
+            {/* DESKTOP BUTTON */}
 
-                  </div>
+            <div className="hidden lg:flex flex-wrap gap-4 mt-10">
 
-                </SwiperSlide>
+              <a
+                href={`https://wa.me/6287715443313?text=${message}`}
+                target="_blank"
+                rel="noreferrer"
+                className="bg-[#3b2b26] hover:bg-black text-white px-7 py-4 rounded-2xl transition-all duration-500 shadow-xl hover:-translate-y-1"
+              >
 
-              ))}
+                Order Sekarang
 
-            </Swiper>
+              </a>
 
-          </div>
+              <Link
+                to="/menu"
+                className="bg-white border border-[#ead8c7] hover:bg-[#fff8f3] px-7 py-4 rounded-2xl transition"
+              >
 
-          {/* MOBILE BUTTON */}
+                View Menu
 
-          <div className="flex flex-wrap gap-4 mt-8 lg:hidden">
+              </Link>
 
-            <a
-              href={`https://wa.me/6287715443313?text=${message}`}
-              target="_blank"
-              rel="noreferrer"
-              className="bg-[#3b2b26] hover:bg-black text-white px-6 py-4 rounded-2xl transition-all duration-500 shadow-xl"
-            >
+            </div>
 
-              Order Sekarang
+          </motion.div>
 
-            </a>
+          {/* DESKTOP IMAGE */}
 
-            <Link
-              to="/menu"
-              className="bg-white border border-[#ead8c7] hover:bg-[#fff8f3] px-6 py-4 rounded-2xl transition"
-            >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8 }}
+            className="hidden lg:block relative"
+          >
 
-              View Menu
+            <HeroSlider />
 
-            </Link>
+          </motion.div>
 
-          </div>
-
-        </motion.div>
+        </div>
 
       </section>
 
     </main>
+  );
+}
+
+/* SLIDER */
+
+function HeroSlider() {
+
+  return (
+
+    <div className="relative bg-white/60 backdrop-blur-xl border border-white/50 rounded-[36px] p-3 shadow-2xl">
+
+      <Swiper
+        modules={[Autoplay, Pagination]}
+        slidesPerView={1}
+        loop={true}
+        autoplay={{
+          delay: 3500,
+          disableOnInteraction: false,
+        }}
+        pagination={{
+          clickable: true,
+        }}
+        className="rounded-[30px] overflow-hidden"
+      >
+
+        {slides.map((slide, index) => (
+
+          <SwiperSlide key={index}>
+
+            <div className="relative">
+
+              {/* IMAGE */}
+
+              <img
+                src={slide.image}
+                alt={slide.title}
+                className="w-full h-[320px] sm:h-[560px] object-cover"
+              />
+
+              {/* OVERLAY */}
+
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent"></div>
+
+              {/* CONTENT */}
+
+              <div className="absolute bottom-0 left-0 p-5 sm:p-8 text-white">
+
+                <div className="inline-flex bg-white text-[#3b2b26] text-xs font-semibold px-4 py-2 rounded-full mb-4">
+
+                  {slide.badge}
+
+                </div>
+
+                <h2 className="text-2xl sm:text-4xl font-black leading-tight">
+
+                  {slide.title}
+
+                </h2>
+
+                <p className="mt-3 text-white/90 text-sm sm:text-base max-w-md leading-relaxed">
+
+                  {slide.desc}
+
+                </p>
+
+              </div>
+
+            </div>
+
+          </SwiperSlide>
+
+        ))}
+
+      </Swiper>
+
+    </div>
+
   );
 }
