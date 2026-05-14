@@ -12,7 +12,6 @@ const products = [
 
     image: classicImg,
 
-    tag: "Classic",
   },
 
   {
@@ -23,7 +22,6 @@ const products = [
 
     image: almondImg,
 
-    tag: "Premium",
   },
 
   {
@@ -34,7 +32,6 @@ const products = [
 
     image: cookiesImg,
 
-    tag: "Favorite",
   },
 
   {
@@ -45,7 +42,6 @@ const products = [
 
     image: mixImg,
 
-    tag: "Special",
   },
 ];
 
@@ -114,18 +110,6 @@ Terima kasih`);
               {/* IMAGE */}
 
               <div className="relative overflow-hidden">
-
-                {/* TAG */}
-
-                <div className="absolute top-4 left-4 z-10 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full border border-[#ead8c7]">
-
-                  <p className="text-[11px] uppercase tracking-[2px] font-semibold text-[#8b5f47]">
-
-                    {item.tag}
-
-                  </p>
-
-                </div>
 
                 <img
                   src={item.image}
