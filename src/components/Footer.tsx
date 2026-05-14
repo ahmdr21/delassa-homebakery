@@ -57,8 +57,7 @@ export default function Footer() {
 
             <p className="mt-4 text-[#7a6a62] text-[14px] leading-relaxed max-w-sm">
 
-              Crafted with love to make every sweet moment
-              feel more special ✨
+              Crafted with love to make every sweet moment feel more special
 
             </p>
 

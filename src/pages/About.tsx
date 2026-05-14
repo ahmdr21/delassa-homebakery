@@ -97,7 +97,7 @@ Terima kasih`);
               dengan rich chocolate,
               tekstur moist,
               dan sentuhan handmade
-              yang dibuat fresh setiap hari ✨
+              yang dibuat fresh setiap hari
 
             </p>
 

@@ -117,7 +117,7 @@ Terima kasih`);
               topping melimpah,
               dan packaging aesthetic untuk hampers,
               hadiah spesial,
-              atau sweet moments favoritmu ✨
+              atau sweet moments favoritmu
 
             </p>
 

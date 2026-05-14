@@ -49,7 +49,7 @@ Terima kasih`);
 
             Hubungi Delassa untuk pemesanan brownies premium,
             hampers aesthetic,
-            dan dessert favoritmu ✨
+            dan dessert favoritmu
 
           </p>
 
