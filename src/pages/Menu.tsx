@@ -4,19 +4,19 @@ const products = [
     title: "Brownies Classic",
 
     description:
-      "Brownies coklat premium dengan tekstur lembut, moist, dan rich chocolate.",
+      "Rich chocolate brownies dengan tekstur moist dan rasa premium yang lembut di setiap gigitan.",
 
     image:
       "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?q=80&w=1200&auto=format&fit=crop",
 
-    tag: "Best Seller",
+    tag: "Classic",
   },
 
   {
     title: "Brownies Almond",
 
     description:
-      "Dipadukan topping almond crunchy dengan rasa gurih yang elegan.",
+      "Perpaduan brownies premium dengan topping almond crunchy yang gurih dan elegan.",
 
     image:
       "https://images.unsplash.com/photo-1519869325930-281384150729?q=80&w=1200&auto=format&fit=crop",
@@ -28,7 +28,7 @@ const products = [
     title: "Brownies Cookies",
 
     description:
-      "Kombinasi brownies lembut dengan cookies crunchy favorit.",
+      "Kombinasi brownies moist dengan topping cookies favorit untuk sweet moments spesial.",
 
     image:
       "https://images.unsplash.com/photo-1541783245831-57d6fb0926d3?q=80&w=1200&auto=format&fit=crop",
@@ -37,10 +37,10 @@ const products = [
   },
 
   {
-    title: "Brownies Mix Topping",
+    title: "Mix Topping",
 
     description:
-      "Special brownies dengan berbagai topping premium pilihan.",
+      "Special brownies dengan berbagai topping premium pilihan yang melimpah dan aesthetic.",
 
     image:
       "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?q=80&w=1200&auto=format&fit=crop",
@@ -52,102 +52,130 @@ const products = [
 
 export default function Menu() {
 
+  const message = encodeURIComponent(`Halo Delassa
+
+Saya ingin melakukan pemesanan brownies.
+
+Nama:
+Tanggal Pickup Pemesanan:
+Varian Menu:
+Jumlah Order:
+Request Tambahan:
+
+Terima kasih`);
+
   return (
 
-    <section className="max-w-6xl mx-auto px-5 sm:px-6 py-20 sm:py-24">
+    <main className="bg-[#faf7f2] overflow-hidden">
 
-      {/* HEADER */}
+      <section className="max-w-6xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
 
-      <div className="text-center">
+        {/* HEADER */}
 
-        <p className="uppercase tracking-[5px] text-[#c38358] text-xs sm:text-sm font-medium">
+        <div className="text-center">
 
-          Our Menu
+          <p className="uppercase tracking-[4px] text-[#c38358] text-sm font-semibold">
 
-        </p>
+            Our Menu
 
-        <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-[#3b2b26] mt-5 leading-tight">
+          </p>
 
-          Signature Brownies ✨
+          <h1 className="mt-5 text-[42px] sm:text-[68px] leading-[0.95] tracking-[-3px] font-black text-[#2f221d]">
 
-        </h2>
+            Signature
+            <span className="block text-[#c38358]">
 
-        <p className="text-sm sm:text-base text-gray-500 mt-5 max-w-2xl mx-auto leading-relaxed">
+              Brownies ✨
 
-          Handmade brownies premium dengan berbagai varian
-          rasa favorit dan topping pilihan.
+            </span>
 
-        </p>
+          </h1>
 
-      </div>
+          <p className="mt-6 text-[#7a6a62] text-[15px] sm:text-lg leading-relaxed max-w-2xl mx-auto">
 
-      {/* GRID MENU */}
+            Handmade brownies premium dengan rich chocolate,
+            topping melimpah,
+            dan sentuhan aesthetic untuk sweet moments favoritmu.
 
-      <div className="grid md:grid-cols-2 gap-6 sm:gap-8 mt-14 sm:mt-16">
+          </p>
 
-        {products.map((item, index) => (
+        </div>
 
-          <div
-            key={index}
-            className="group bg-white rounded-[26px] sm:rounded-[30px] overflow-hidden border border-[#f1e3d7] hover:-translate-y-2 hover:shadow-[0_25px_50px_rgba(0,0,0,0.08)] transition-all duration-500"
-          >
+        {/* GRID */}
 
-            {/* IMAGE */}
+        <div className="grid md:grid-cols-2 gap-6 sm:gap-8 mt-14">
 
-            <div className="relative overflow-hidden">
+          {products.map((item, index) => (
 
-              {/* TAG */}
+            <div
+              key={index}
+              className="group bg-white border border-[#ead8c7] rounded-[28px] overflow-hidden hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)] transition-all duration-500"
+            >
 
-              <div className="absolute top-4 left-4 z-10 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full shadow-sm border border-[#f1e3d7]">
+              {/* IMAGE */}
 
-                <p className="text-xs font-semibold text-[#8b5f47]">
+              <div className="relative overflow-hidden">
 
-                  {item.tag}
+                {/* TAG */}
 
-                </p>
+                <div className="absolute top-4 left-4 z-10 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full border border-[#ead8c7]">
+
+                  <p className="text-[11px] uppercase tracking-[2px] font-semibold text-[#8b5f47]">
+
+                    {item.tag}
+
+                  </p>
+
+                </div>
+
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  className="w-full h-[240px] sm:h-[280px] object-cover group-hover:scale-105 transition duration-700"
+                />
 
               </div>
 
-              <img
-                src={item.image}
-                alt={item.title}
-                className="w-full h-[220px] sm:h-[260px] object-cover group-hover:scale-105 transition duration-700"
-              />
+              {/* CONTENT */}
+
+              <div className="p-6 sm:p-7">
+
+                <h3 className="text-[30px] leading-tight font-black text-[#2f221d]">
+
+                  {item.title}
+
+                </h3>
+
+                <p className="mt-4 text-[#7a6a62] text-[15px] sm:text-base leading-relaxed">
+
+                  {item.description}
+
+                </p>
+
+                {/* BUTTON */}
+
+                <a
+                  href={`https://wa.me/6287715443313?text=${message}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex mt-6 bg-[#3b2b26] hover:bg-black text-white px-6 py-3 rounded-full text-sm font-semibold transition-all duration-300 shadow-lg hover:-translate-y-[2px]"
+                >
+
+                  Order Menu
+
+                </a>
+
+              </div>
 
             </div>
 
-            {/* CONTENT */}
+          ))}
 
-            <div className="p-6 sm:p-7">
+        </div>
 
-              <h3 className="text-2xl sm:text-3xl font-black text-[#3b2b26] leading-tight">
+      </section>
 
-                {item.title}
+    </main>
 
-              </h3>
-
-              <p className="text-sm sm:text-base text-gray-500 leading-relaxed mt-3">
-
-                {item.description}
-
-              </p>
-
-              {/* BUTTON */}
-
-              <button className="mt-6 bg-[#3b2b26] hover:bg-black transition-all duration-300 text-white px-6 py-3 rounded-full text-sm shadow-lg hover:shadow-xl">
-
-                Order Menu
-
-              </button>
-
-            </div>
-
-          </div>
-
-        ))}
-
-      </div>
-
-    </section>
   );
 }

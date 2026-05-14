@@ -13,13 +13,13 @@ export default function Footer() {
 
   return (
 
-    <footer className="bg-[#faf7f2] border-t border-[#ead8c7]">
+    <footer className="bg-[#faf7f2] border-t border-[#ead8c7] mt-20">
 
       {/* TOP */}
 
-      <div className="max-w-7xl mx-auto px-5 sm:px-8 py-12">
+      <div className="max-w-6xl mx-auto px-5 sm:px-8 py-10">
 
-        <div className="grid lg:grid-cols-3 gap-10">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-10">
 
           {/* LEFT */}
 
@@ -32,18 +32,18 @@ export default function Footer() {
               <img
                 src={logo}
                 alt="Delassa Logo"
-                className="w-14 h-14 object-contain"
+                className="w-12 h-12 object-contain"
               />
 
               <div>
 
-                <h2 className="text-4xl leading-none font-black italic text-[#3b2b26]">
+                <h2 className="text-[32px] leading-none font-black italic tracking-tight text-[#2f221d]">
 
                   Delassa
 
                 </h2>
 
-                <p className="text-[10px] tracking-[4px] uppercase text-[#c38358] mt-2">
+                <p className="text-[8px] tracking-[4px] uppercase text-[#b07b5d] mt-1">
 
                   Homebakery
 
@@ -55,47 +55,39 @@ export default function Footer() {
 
             {/* TAGLINE */}
 
-            <p className="mt-5 text-[#7a6a62] text-[15px] leading-relaxed max-w-sm">
+            <p className="mt-4 text-[#7a6a62] text-[14px] leading-relaxed max-w-sm">
 
-              Crafted with love to make every
-              sweet moment feel more special ✨
+              Crafted with love to make every sweet moment
+              feel more special ✨
 
             </p>
 
           </div>
 
-          {/* SOCIAL */}
+          {/* RIGHT */}
 
-          <div>
+          <div className="flex flex-col sm:flex-row gap-8 sm:gap-14">
 
-            <h3 className="text-2xl font-black text-[#3b2b26]">
+            {/* SOCIAL */}
 
-              Follow Us
-
-            </h3>
-
-            <div className="mt-6 flex flex-col gap-4">
-
-              {/* INSTAGRAM */}
+            <div className="space-y-4">
 
               <a
-                href="https://instagram.com/delassahomebakery"
+                href="https://instagram.com/delassa.homebakery"
                 target="_blank"
                 rel="noreferrer"
                 className="flex items-center gap-3 text-[#3b2b26] hover:text-[#c38358] transition-all duration-300"
               >
 
-                <FaInstagram className="text-xl" />
+                <FaInstagram className="text-lg shrink-0" />
 
-                <span className="text-[16px]">
+                <span className="text-[15px] font-medium">
 
                   Instagram
 
                 </span>
 
               </a>
-
-              {/* THREADS */}
 
               <a
                 href="https://threads.net/@delassa.homebakery"
@@ -104,9 +96,9 @@ export default function Footer() {
                 className="flex items-center gap-3 text-[#3b2b26] hover:text-[#c38358] transition-all duration-300"
               >
 
-                <SiThreads className="text-xl" />
+                <SiThreads className="text-lg shrink-0" />
 
-                <span className="text-[16px]">
+                <span className="text-[15px] font-medium">
 
                   Threads
 
@@ -116,32 +108,20 @@ export default function Footer() {
 
             </div>
 
-          </div>
+            {/* CONTACT */}
 
-          {/* CONTACT */}
-
-          <div>
-
-            <h3 className="text-2xl font-black text-[#3b2b26]">
-
-              Contact Us
-
-            </h3>
-
-            <div className="mt-6 flex flex-col gap-4">
-
-              {/* PHONE */}
+            <div className="space-y-4">
 
               <a
                 href="https://wa.me/6287715443313"
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-start gap-3 text-[#3b2b26] hover:text-[#c38358] transition-all duration-300"
+                className="flex items-center gap-3 text-[#3b2b26] hover:text-[#c38358] transition-all duration-300"
               >
 
-                <FaWhatsapp className="text-xl mt-1 shrink-0" />
+                <FaWhatsapp className="text-lg shrink-0" />
 
-                <span className="text-[16px]">
+                <span className="text-[15px] font-medium">
 
                   0877-1544-3313
 
@@ -149,16 +129,14 @@ export default function Footer() {
 
               </a>
 
-              {/* EMAIL */}
-
               <a
                 href="mailto:delassa.homebakery@gmail.com"
-                className="flex items-start gap-3 text-[#3b2b26] hover:text-[#c38358] transition-all duration-300"
+                className="flex items-center gap-3 text-[#3b2b26] hover:text-[#c38358] transition-all duration-300"
               >
 
-                <FaEnvelope className="text-xl mt-1 shrink-0" />
+                <FaEnvelope className="text-lg shrink-0" />
 
-                <span className="text-[16px] break-all">
+                <span className="text-[15px] font-medium break-all">
 
                   delassahomebakery@gmail.com
 
@@ -166,17 +144,13 @@ export default function Footer() {
 
               </a>
 
-              {/* ADDRESS */}
-
               <div className="flex items-start gap-3 text-[#3b2b26]">
 
-                <FaLocationDot className="text-xl mt-1 shrink-0" />
+                <FaLocationDot className="text-lg mt-[2px] shrink-0" />
 
-                <span className="text-[16px] leading-relaxed">
+                <span className="text-[15px] font-medium leading-relaxed">
 
-                  Bekasi Selatan,
-                  Jawa Barat,
-                  Indonesia
+                  Bekasi Selatan, Jawa Barat
 
                 </span>
 
@@ -192,9 +166,9 @@ export default function Footer() {
 
       {/* BOTTOM */}
 
-      <div className="bg-[#3b2b26] py-5 px-5 text-center">
+      <div className="bg-[#4a2f25] py-6 text-center px-5">
 
-        <p className="text-white/70 text-sm">
+        <p className="text-white/80 text-[14px]">
 
           Copyright © 2026 | Delassa Homebakery
 

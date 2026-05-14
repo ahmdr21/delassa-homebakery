@@ -1,8 +1,16 @@
 import { Link, useLocation } from "react-router-dom";
-import { HiOutlineMenuAlt3, HiX } from "react-icons/hi";
-import { FaInstagram, FaWhatsapp } from "react-icons/fa";
-import { SiThreads } from "react-icons/si";
+
 import { useState, useEffect } from "react";
+
+import { HiOutlineMenuAlt3, HiX } from "react-icons/hi";
+
+import {
+  FaInstagram,
+  FaWhatsapp,
+} from "react-icons/fa";
+
+import { SiThreads } from "react-icons/si";
+
 import logo from "../assets/delassa.png";
 
 export default function Navbar() {
@@ -24,26 +32,22 @@ Request Tambahan:
 Terima kasih`);
 
   const menus = [
+
     { name: "Home", path: "/" },
+
     { name: "About", path: "/about" },
+
     { name: "Menu", path: "/menu" },
-    { name: "Testimoni", path: "/testimoni" },
+
     { name: "Contact", path: "/contact" },
+
   ];
 
-  /* LOCK SCROLL */
+  /* LOCK BODY */
 
   useEffect(() => {
 
-    if (open) {
-
-      document.body.style.overflow = "hidden";
-
-    } else {
-
-      document.body.style.overflow = "auto";
-
-    }
+    document.body.style.overflow = open ? "hidden" : "auto";
 
     return () => {
 
@@ -55,102 +59,115 @@ Terima kasih`);
 
   return (
 
-    <header className="sticky top-0 z-50 px-3 sm:px-6 pt-3 sm:pt-6">
+    <>
 
-      {/* NAVBAR */}
+      {/* HEADER */}
 
-      <nav className="max-w-6xl mx-auto bg-[#fdf7f2]/95 backdrop-blur-xl border border-[#ead8c7] rounded-[24px] sm:rounded-full px-4 sm:px-8 py-3 sm:py-4 flex items-center justify-between shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
+      <header className="fixed top-0 left-0 w-full z-[9999] px-4 sm:px-6 py-4 bg-[#faf7f2]">
 
-        {/* LEFT */}
+        {/* NAVBAR */}
 
-        <Link to="/" className="flex items-center gap-2 min-w-0">
+        <nav className="max-w-6xl mx-auto bg-[#fffaf5] border border-[#ead8c7] rounded-full px-5 sm:px-8 py-3 flex items-center justify-between shadow-[0_8px_30px_rgba(0,0,0,0.05)]">
 
-          <img
-            src={logo}
-            alt="Delassa Logo"
-            className="w-9 h-9 sm:w-14 sm:h-14 object-contain shrink-0"
-          />
+          {/* LEFT */}
 
-          <div className="min-w-0">
+          <Link
+            to="/"
+            className="flex items-center gap-3 shrink-0"
+          >
 
-            <h1 className="text-[24px] sm:text-3xl leading-none font-black italic tracking-tight text-[#3b2b26] truncate">
+            <img
+              src={logo}
+              alt="Delassa"
+              className="w-10 h-10 sm:w-14 sm:h-14 object-contain"
+            />
 
-              Delassa
+            <div>
 
-            </h1>
+              <h1 className="text-[26px] sm:text-[34px] leading-none italic font-black tracking-tight text-[#2f221d]">
 
-            <p className="text-[7px] sm:text-[10px] tracking-[3px] sm:tracking-[4px] uppercase text-[#a06f52] mt-[2px]">
+                Delassa
 
-              Homebakery
+              </h1>
 
-            </p>
+              <p className="text-[7px] sm:text-[10px] uppercase tracking-[4px] text-[#b07b5d] mt-[2px]">
+
+                Homebakery
+
+              </p>
+
+            </div>
+
+          </Link>
+
+          {/* DESKTOP MENU */}
+
+          <div className="hidden lg:flex items-center gap-10">
+
+            {menus.map((menu, index) => (
+
+              <Link
+                key={index}
+                to={menu.path}
+                className={`relative text-[15px] font-medium transition-all duration-300
+                ${
+                  location.pathname === menu.path
+                    ? "text-[#c38358]"
+                    : "text-[#3b2b26] hover:text-[#c38358]"
+                }`}
+              >
+
+                {menu.name}
+
+                {location.pathname === menu.path && (
+
+                  <span className="absolute left-0 -bottom-2 w-full h-[2px] rounded-full bg-[#c38358]"></span>
+
+                )}
+
+              </Link>
+
+            ))}
 
           </div>
 
-        </Link>
+          {/* RIGHT */}
 
-        {/* DESKTOP MENU */}
+          <div className="flex items-center gap-3">
 
-        <div className="hidden lg:flex items-center gap-10">
+            {/* MOBILE BUTTON */}
 
-          {menus.map((menu, index) => (
-
-            <Link
-              key={index}
-              to={menu.path}
-              className={`relative text-[15px] font-medium transition duration-300 hover:text-[#c38358]
-              ${
-                location.pathname === menu.path
-                  ? "text-[#c38358]"
-                  : "text-[#3b2b26]"
-              }`}
+            <button
+              onClick={() => setOpen(true)}
+              className="lg:hidden text-[30px] text-[#3b2b26]"
             >
 
-              {menu.name}
+              <HiOutlineMenuAlt3 />
 
-              {location.pathname === menu.path && (
+            </button>
 
-                <span className="absolute left-0 -bottom-3 w-full h-[3px] rounded-full bg-[#c38358]"></span>
+            {/* ORDER BUTTON */}
 
-              )}
+            <a
+              href={`https://wa.me/6287715443313?text=${message}`}
+              target="_blank"
+              rel="noreferrer"
+              className="bg-[#3b2b26] hover:bg-black text-white px-5 sm:px-8 py-3 rounded-full text-[14px] sm:text-[15px] font-semibold transition-all duration-300 shadow-lg hover:-translate-y-[2px]"
+            >
 
-            </Link>
+              Order
 
-          ))}
+            </a>
 
-        </div>
+          </div>
 
-        {/* RIGHT */}
+        </nav>
 
-        <div className="flex items-center gap-2">
+      </header>
 
-          {/* MOBILE BUTTON */}
+      {/* SPACER */}
 
-          <button
-            onClick={() => setOpen(true)}
-            className="lg:hidden text-[30px] text-[#3b2b26] shrink-0"
-          >
-
-            <HiOutlineMenuAlt3 />
-
-          </button>
-
-          {/* ORDER BUTTON */}
-
-          <a
-            href={`https://wa.me/6287715443313?text=${message}`}
-            target="_blank"
-            rel="noreferrer"
-            className="bg-[#3b2b26] hover:bg-black transition-all duration-500 text-white px-4 sm:px-8 py-2.5 sm:py-4 rounded-full shadow-lg text-[13px] sm:text-base whitespace-nowrap inline-flex items-center justify-center"
-          >
-
-            Order
-
-          </a>
-
-        </div>
-
-      </nav>
+      <div className="h-[120px]"></div>
 
       {/* OVERLAY */}
 
@@ -164,10 +181,10 @@ Terima kasih`);
         }`}
       ></div>
 
-      {/* MOBILE SIDEBAR */}
+      {/* MOBILE MENU */}
 
       <div
-        className={`fixed top-0 right-0 h-screen w-[76%] max-w-[270px] bg-[#3b2b26] z-[999] transition-all duration-300
+        className={`fixed top-0 right-0 h-screen w-[78%] max-w-[280px] bg-[#3b2b26] z-[9999] transition-all duration-300
         ${
           open
             ? "translate-x-0"
@@ -175,7 +192,7 @@ Terima kasih`);
         }`}
       >
 
-        <div className="h-full px-5 py-5 overflow-y-auto">
+        <div className="h-full flex flex-col px-6 py-6">
 
           {/* TOP */}
 
@@ -186,18 +203,18 @@ Terima kasih`);
               <img
                 src={logo}
                 alt="logo"
-                className="w-8 h-8 object-contain"
+                className="w-9 h-9 object-contain"
               />
 
               <div>
 
-                <h1 className="text-[22px] leading-none font-black italic text-white">
+                <h1 className="text-[24px] italic font-black text-white leading-none">
 
                   Delassa
 
                 </h1>
 
-                <p className="text-[7px] tracking-[3px] uppercase text-[#d9b9a4] mt-1">
+                <p className="text-[7px] uppercase tracking-[4px] text-[#d7b8a5] mt-[2px]">
 
                   Homebakery
 
@@ -211,7 +228,7 @@ Terima kasih`);
 
             <button
               onClick={() => setOpen(false)}
-              className="text-[30px] text-white"
+              className="text-[32px] text-white"
             >
 
               <HiX />
@@ -222,7 +239,7 @@ Terima kasih`);
 
           {/* MENU */}
 
-          <div className="flex flex-col gap-1 mt-6">
+          <div className="flex flex-col mt-10">
 
             {menus.map((menu, index) => (
 
@@ -230,10 +247,10 @@ Terima kasih`);
                 key={index}
                 to={menu.path}
                 onClick={() => setOpen(false)}
-                className={`text-[15px] font-semibold py-3 border-b border-[#5a3d31] transition duration-300
+                className={`py-4 border-b border-[#5a3d31] text-[15px] font-medium transition-all duration-300
                 ${
                   location.pathname === menu.path
-                    ? "text-[#d9b9a4]"
+                    ? "text-[#d7b8a5]"
                     : "text-white"
                 }`}
               >
@@ -246,58 +263,32 @@ Terima kasih`);
 
           </div>
 
-          {/* BOTTOM */}
+          {/* SOCIAL */}
 
-          <div className="mt-6">
+          <div className="mt-auto">
 
-            {/* CARD */}
+            <div className="flex items-center gap-3 pt-8">
 
-            <div className="border border-[#5f4337] bg-[#4a3026] rounded-[16px] p-3.5">
-
-              <p className="text-[#e7c6b2] text-[12px] leading-relaxed">
-
-                Handmade brownies premium
-                dengan packaging aesthetic ✨
-
-              </p>
-
-              <a
-                href={`https://wa.me/6287715443313?text=${message}`}
-                target="_blank"
-                rel="noreferrer"
-                className="mt-3 inline-flex bg-white text-[#3b2b26] px-4 py-2 rounded-lg font-semibold text-[13px]"
-              >
-
-                Contact Us
-
-              </a>
-
-            </div>
-
-            {/* SOCIAL */}
-
-            <div className="flex items-center gap-3 mt-4">
-
-              {/* INSTAGRAM */}
+              {/* IG */}
 
               <a
                 href="https://instagram.com/delassa.homebakery"
                 target="_blank"
                 rel="noreferrer"
-                className="w-9 h-9 rounded-full bg-white flex items-center justify-center text-[#3b2b26] text-sm"
+                className="w-10 h-10 rounded-full bg-white text-[#3b2b26] flex items-center justify-center text-sm"
               >
 
                 <FaInstagram />
 
               </a>
 
-              {/* WHATSAPP */}
+              {/* WA */}
 
               <a
                 href={`https://wa.me/6287715443313?text=${message}`}
                 target="_blank"
                 rel="noreferrer"
-                className="w-9 h-9 rounded-full bg-white flex items-center justify-center text-[#3b2b26] text-sm"
+                className="w-10 h-10 rounded-full bg-white text-[#3b2b26] flex items-center justify-center text-sm"
               >
 
                 <FaWhatsapp />
@@ -310,7 +301,7 @@ Terima kasih`);
                 href="https://threads.net/@delassa.homebakery"
                 target="_blank"
                 rel="noreferrer"
-                className="w-9 h-9 rounded-full bg-white flex items-center justify-center text-[#3b2b26] text-sm"
+                className="w-10 h-10 rounded-full bg-white text-[#3b2b26] flex items-center justify-center text-sm"
               >
 
                 <SiThreads />
@@ -325,6 +316,7 @@ Terima kasih`);
 
       </div>
 
-    </header>
+    </>
+
   );
 }
