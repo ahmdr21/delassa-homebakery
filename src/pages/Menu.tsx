@@ -1,7 +1,7 @@
-import classicImg from "../assets/browniesclassic3.png";
-import almondImg from "../assets/browniesalmond1.png";
-import cookiesImg from "../assets/browniescoockies1.png";
-import mixImg from "../assets/mixtopping3.png";
+import classicImg from "../assets/browniesclassic3.webp";
+import almondImg from "../assets/browniesalmond1.webp";
+import cookiesImg from "../assets/browniescoockies1.webp";
+import mixImg from "../assets/mixtopping3.webp";
 
 const products = [
   {

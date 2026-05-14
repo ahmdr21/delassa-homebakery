@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
-import brownie1 from "../assets/browniesalmond1.png";
-import brownie2 from "../assets/browniescoockies1.png";
-import brownie3 from "../assets/mixtopping3.png";
+import brownie1 from "../assets/browniesalmond1.webp";
+import brownie2 from "../assets/browniescoockies1.webp";
+import brownie3 from "../assets/mixtopping3.webp";
 
 const products = [
   {
@@ -13,7 +13,7 @@ const products = [
   },
 
   {
-    title: "Brownies Coockies",
+    title: "Brownies Cookies",
     price: "Start From RpxxK",
     image: brownie2,
   },
