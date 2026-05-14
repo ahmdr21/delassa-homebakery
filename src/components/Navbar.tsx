@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { HiOutlineMenuAlt3, HiX } from "react-icons/hi";
-import { FaInstagram, FaWhatsapp, FaTiktok } from "react-icons/fa";
+import { FaInstagram, FaWhatsapp } from "react-icons/fa";
+import { SiThreads } from "react-icons/si";
 import { useState, useEffect } from "react";
 import logo from "../assets/delassa.png";
 
@@ -9,6 +10,18 @@ export default function Navbar() {
   const location = useLocation();
 
   const [open, setOpen] = useState(false);
+
+  const message = encodeURIComponent(`Halo Delassa
+
+Saya ingin melakukan pemesanan brownies.
+
+Nama:
+Tanggal Pickup Pemesanan:
+Varian Menu:
+Jumlah Order:
+Request Tambahan:
+
+Terima kasih`);
 
   const menus = [
     { name: "Home", path: "/" },
@@ -122,28 +135,18 @@ export default function Navbar() {
 
           </button>
 
-         {/* ORDER BUTTON */}
+          {/* ORDER BUTTON */}
 
-<a
-  href={`https://wa.me/6287715443313?text=${encodeURIComponent(`Halo Delassa
+          <a
+            href={`https://wa.me/6287715443313?text=${message}`}
+            target="_blank"
+            rel="noreferrer"
+            className="bg-[#3b2b26] hover:bg-black transition-all duration-500 text-white px-4 sm:px-8 py-2.5 sm:py-4 rounded-full shadow-lg text-[13px] sm:text-base whitespace-nowrap inline-flex items-center justify-center"
+          >
 
-Saya ingin melakukan pemesanan brownies.
+            Order
 
-Nama:
-Tanggal Pickup Pemesanan:
-Varian Menu:
-Jumlah Order:
-Request Tambahan:
-
-Terima kasih`)}`}
-  target="_blank"
-  rel="noreferrer"
-  className="bg-[#3b2b26] hover:bg-black transition-all duration-500 text-white px-4 sm:px-8 py-2.5 sm:py-4 rounded-full shadow-lg text-[13px] sm:text-base whitespace-nowrap inline-flex items-center justify-center"
->
-
-  Order
-
-</a>
+          </a>
 
         </div>
 
@@ -259,7 +262,7 @@ Terima kasih`)}`}
               </p>
 
               <a
-                href="https://wa.me/6287715443313"
+                href={`https://wa.me/6287715443313?text=${message}`}
                 target="_blank"
                 rel="noreferrer"
                 className="mt-3 inline-flex bg-white text-[#3b2b26] px-4 py-2 rounded-lg font-semibold text-[13px]"
@@ -275,6 +278,8 @@ Terima kasih`)}`}
 
             <div className="flex items-center gap-3 mt-4">
 
+              {/* INSTAGRAM */}
+
               <a
                 href="https://instagram.com/delassa.homebakery"
                 target="_blank"
@@ -286,8 +291,10 @@ Terima kasih`)}`}
 
               </a>
 
+              {/* WHATSAPP */}
+
               <a
-                href="https://wa.me/6287715443313"
+                href={`https://wa.me/6287715443313?text=${message}`}
                 target="_blank"
                 rel="noreferrer"
                 className="w-9 h-9 rounded-full bg-white flex items-center justify-center text-[#3b2b26] text-sm"
@@ -297,12 +304,16 @@ Terima kasih`)}`}
 
               </a>
 
+              {/* THREADS */}
+
               <a
-                href="/"
+                href="https://threads.net/@delassa.homebakery"
+                target="_blank"
+                rel="noreferrer"
                 className="w-9 h-9 rounded-full bg-white flex items-center justify-center text-[#3b2b26] text-sm"
               >
 
-                <FaTiktok />
+                <SiThreads />
 
               </a>
 
