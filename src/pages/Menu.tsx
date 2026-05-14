@@ -1,13 +1,16 @@
-const products = [
+import classicImg from "../assets/browniesclassic3.png";
+import almondImg from "../assets/browniesalmond1.png";
+import cookiesImg from "../assets/browniescoockies1.png";
+import mixImg from "../assets/mixtopping3.png";
 
+const products = [
   {
     title: "Brownies Classic",
 
     description:
       "Rich chocolate brownies dengan tekstur moist dan rasa premium yang lembut di setiap gigitan.",
 
-    image:
-      "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?q=80&w=1200&auto=format&fit=crop",
+    image: classicImg,
 
     tag: "Classic",
   },
@@ -18,8 +21,7 @@ const products = [
     description:
       "Perpaduan brownies premium dengan topping almond crunchy yang gurih dan elegan.",
 
-    image:
-      "https://images.unsplash.com/photo-1519869325930-281384150729?q=80&w=1200&auto=format&fit=crop",
+    image: almondImg,
 
     tag: "Premium",
   },
@@ -30,24 +32,21 @@ const products = [
     description:
       "Kombinasi brownies moist dengan topping cookies favorit untuk sweet moments spesial.",
 
-    image:
-      "https://images.unsplash.com/photo-1541783245831-57d6fb0926d3?q=80&w=1200&auto=format&fit=crop",
+    image: cookiesImg,
 
     tag: "Favorite",
   },
 
   {
-    title: "Mix Topping",
+    title: "Brownies Mix Topping",
 
     description:
-      "Special brownies dengan berbagai topping premium pilihan yang melimpah dan aesthetic.",
+      "Rich chocolate brownies dengan topping caramel biscuit, choco ball, sliced almond, chocolate cream biscuit, dan roasted peanut crumble untuk rasa yang lebih crunchy dan manis.",
 
-    image:
-      "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?q=80&w=1200&auto=format&fit=crop",
+    image: mixImg,
 
     tag: "Special",
   },
-
 ];
 
 export default function Menu() {

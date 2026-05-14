@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-import brownie2 from "../assets/brownie2.png";
+import brownie2 from "../assets/mixtopping2.png";
 
 export default function About() {
 

@@ -1,26 +1,26 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
-import brownie1 from "../assets/brownie1.png";
-import brownie2 from "../assets/brownie2.png";
-import brownie3 from "../assets/brownie3.png";
+import brownie1 from "../assets/browniesalmond1.png";
+import brownie2 from "../assets/browniescoockies1.png";
+import brownie3 from "../assets/mixtopping3.png";
 
 const products = [
   {
     title: "Brownies Almond",
-    price: "Start From Rp45K",
+    price: "Start From RpxxK",
     image: brownie1,
   },
 
   {
-    title: "Brownies Premium",
-    price: "Start From Rp55K",
+    title: "Brownies Coockies",
+    price: "Start From RpxxK",
     image: brownie2,
   },
 
   {
     title: "Mix Topping",
-    price: "Start From Rp60K",
+    price: "Start From RpxxK",
     image: brownie3,
   },
 ];
