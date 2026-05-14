@@ -113,7 +113,7 @@ Terima kasih`);
             <p className="mt-6 text-[#6f615a] text-[15px] sm:text-lg leading-relaxed max-w-xl mx-auto lg:mx-0">
 
               Handmade brownies dengan rich chocolate premium,
-              tekstur moist lumer,
+              tekstur moist,
               topping melimpah,
               dan packaging aesthetic untuk hampers,
               hadiah spesial,
