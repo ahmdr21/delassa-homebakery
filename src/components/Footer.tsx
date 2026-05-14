@@ -169,7 +169,7 @@ export default function Footer() {
 
         <p className="text-white/80 text-[14px]">
 
-          Copyright © 2025-2026 | Delassa Homebakery
+          Copyright © 2025 - 2026 | Delassa Homebakery
 
         </p>
 
