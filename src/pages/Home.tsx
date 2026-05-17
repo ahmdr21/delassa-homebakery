@@ -395,7 +395,7 @@ export default function Home() {
 
             <img
               src={freshImage}
-              alt="Freshly Baked Brownies"
+              alt="Freshly"
               loading="lazy"
               decoding="async"
               className="
