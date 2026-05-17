@@ -394,7 +394,7 @@ export default function Home() {
             {/* IMAGE */}
 
             <img
-              src={freshImage}
+              src={bannerDesktop1}
               alt="Freshly Baked Brownies"
               loading="lazy"
               decoding="async"
