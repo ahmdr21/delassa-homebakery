@@ -15,8 +15,13 @@ import bannerMobile1 from "../assets/bannerdesktop1.webp";
 import bannerMobile2 from "../assets/bannerdesktop2.webp";
 import bannerMobile3 from "../assets/bannerdesktop3.webp";
 
-/* CONTENT IMAGE */
+/* FRESH SECTION */
 import freshImage from "../assets/fresh.jpg";
+
+/* PRODUCT IMAGE */
+import almondImg from "../assets/browniesalmond1.webp";
+import cookiesImg from "../assets/browniescoockies1.webp";
+import mixImg from "../assets/mixtopping3.webp";
 
 /* ====================================================== */
 /* DATA */
@@ -58,12 +63,7 @@ export default function Home() {
 
   return (
 
-    <main
-      className="
-        bg-[#f7f3ef]
-        overflow-hidden
-      "
-    >
+    <main className="bg-[#f7f3ef] overflow-hidden">
 
       {/* ====================================================== */}
       {/* HERO BANNER */}
@@ -72,45 +72,34 @@ export default function Home() {
       <section
         className="
           w-full
-
-          px-4
-          sm:px-6
+          px-3
+          sm:px-5
           lg:px-8
 
-          pt-5
-          sm:pt-6
+          pt-3
+          sm:pt-5
         "
       >
 
-        <div
-          className="
-            max-w-[1500px]
-            mx-auto
-          "
-        >
+        <div className="max-w-[1500px] mx-auto">
 
-          {/* ====================================================== */}
           {/* SLIDER */}
-          {/* ====================================================== */}
 
           <div
             className="
               relative
-
               overflow-hidden
 
-              rounded-[28px]
-              sm:rounded-[36px]
-
-              shadow-[0_15px_40px_rgba(0,0,0,0.06)]
+              rounded-[22px]
+              sm:rounded-[34px]
 
               bg-[#efe7df]
+
+              shadow-[0_10px_30px_rgba(0,0,0,0.05)]
             "
           >
 
-            {/* ====================================================== */}
-            {/* DESKTOP IMAGE */}
-            {/* ====================================================== */}
+            {/* DESKTOP */}
 
             <img
               src={desktopBanners[currentSlide]}
@@ -128,46 +117,40 @@ export default function Home() {
 
                 object-cover
                 object-center
-
-                select-none
               "
             />
 
-            {/* ====================================================== */}
-            {/* MOBILE IMAGE */}
-            {/* ====================================================== */}
+            {/* MOBILE */}
 
-            <img
-              src={mobileBanners[currentSlide]}
-              alt="Delassa Banner Mobile"
-              loading="eager"
-              fetchPriority="high"
-              decoding="async"
-              className="
-                block
-                md:hidden
+<img
+  src={mobileBanners[currentSlide]}
+  alt="Delassa Banner Mobile"
+  loading="eager"
+  fetchPriority="high"
+  decoding="async"
+  className="
+    block
+    md:hidden
 
-                w-full
+    w-full
 
-                aspect-[4/5]
+    h-auto
 
-                object-cover
-                object-center
+    object-contain
 
-                select-none
-              "
-            />
+    bg-[#efe7df]
 
-            {/* ====================================================== */}
+    select-none
+  "
+/>
             {/* DOTS */}
-            {/* ====================================================== */}
 
             <div
               className="
                 absolute
 
-                bottom-4
-                sm:bottom-6
+                bottom-3
+                sm:bottom-5
 
                 left-1/2
                 -translate-x-1/2
@@ -212,7 +195,7 @@ export default function Home() {
 
       <section
         className="
-          pt-20
+          pt-14
           sm:pt-24
 
           px-5
@@ -220,12 +203,7 @@ export default function Home() {
         "
       >
 
-        <div
-          className="
-            max-w-[1300px]
-            mx-auto
-          "
-        >
+        <div className="max-w-[1200px] mx-auto">
 
           {/* TITLE */}
 
@@ -237,9 +215,10 @@ export default function Home() {
 
                 uppercase
 
-                tracking-[5px]
+                tracking-[4px]
+                sm:tracking-[5px]
 
-                text-[12px]
+                text-[11px]
                 sm:text-[13px]
 
                 font-semibold
@@ -252,15 +231,16 @@ export default function Home() {
 
             <h2
               className="
-                mt-5
+                mt-4
+                sm:mt-5
 
                 text-[#2f221d]
 
                 font-black
 
-                leading-[0.95]
+                leading-[1]
 
-                text-[42px]
+                text-[34px]
                 sm:text-[60px]
                 lg:text-[82px]
               "
@@ -272,30 +252,20 @@ export default function Home() {
 
             </h2>
 
-          </div>
-
-          {/* DESCRIPTION */}
-
-          <div
-            className="
-              mt-10
-              sm:mt-12
-
-              max-w-[920px]
-              mx-auto
-            "
-          >
-
             <p
               className="
-                text-center
+                mt-6
+                sm:mt-8
+
+                max-w-[920px]
+                mx-auto
 
                 text-[#5f534d]
 
                 leading-relaxed
 
-                text-[18px]
-                sm:text-[22px]
+                text-[15px]
+                sm:text-[20px]
               "
             >
 
@@ -319,11 +289,11 @@ export default function Home() {
 
               justify-center
 
-              gap-x-8
-              gap-y-4
+              gap-x-5
+              gap-y-3
 
-              mt-12
-              sm:mt-14
+              mt-8
+              sm:mt-12
             "
           >
 
@@ -338,8 +308,8 @@ export default function Home() {
                 className="
                   text-[#6c5a51]
 
-                  text-[15px]
-                  sm:text-[18px]
+                  text-[13px]
+                  sm:text-[17px]
 
                   font-medium
                 "
@@ -363,20 +333,15 @@ export default function Home() {
 
       <section
         className="
-          pt-20
+          pt-14
           sm:pt-24
 
-          px-4
+          px-3
           sm:px-8
         "
       >
 
-        <div
-          className="
-            max-w-[1500px]
-            mx-auto
-          "
-        >
+        <div className="max-w-[1500px] mx-auto">
 
           <div
             className="
@@ -384,29 +349,29 @@ export default function Home() {
 
               overflow-hidden
 
-              rounded-[30px]
+              rounded-[24px]
               sm:rounded-[40px]
             "
           >
 
             {/* IMAGE */}
 
-<img
-  src={freshImage}
-  alt="Freshly Baked Brownies"
-  loading="lazy"
-  decoding="async"
-  className="
-    w-full
+            <img
+              src={freshImage}
+              alt="Freshly Baked Brownies"
+              loading="lazy"
+              decoding="async"
+              className="
+                w-full
 
-    h-[420px]
-    sm:h-[520px]
-    lg:h-[620px]
+                h-[480px]
+                sm:h-[560px]
+                lg:h-[620px]
 
-    object-cover
-    object-center
-  "
-/>
+                object-cover
+                object-center
+              "
+            />
 
             {/* OVERLAY */}
 
@@ -415,10 +380,15 @@ export default function Home() {
                 absolute
                 inset-0
 
-                bg-gradient-to-r
-                from-[#2f221de8]
-                via-[#2f221d99]
-                to-transparent
+                bg-gradient-to-t
+                from-[#2f221df4]
+                via-[#2f221dc7]
+                to-[#2f221d34]
+
+                sm:bg-gradient-to-r
+                sm:from-[#2f221de8]
+                sm:via-[#2f221d99]
+                sm:to-transparent
               "
             />
 
@@ -430,17 +400,21 @@ export default function Home() {
                 inset-0
 
                 flex
-                items-center
+                items-end
+                sm:items-center
               "
             >
 
               <div
                 className="
-                  px-6
+                  px-5
                   sm:px-12
                   lg:px-16
 
-                  max-w-[720px]
+                  pb-8
+                  sm:pb-0
+
+                  max-w-[760px]
                 "
               >
 
@@ -450,9 +424,9 @@ export default function Home() {
 
                     uppercase
 
-                    tracking-[5px]
+                    tracking-[4px]
 
-                    text-[12px]
+                    text-[11px]
                     sm:text-[14px]
 
                     font-semibold
@@ -465,15 +439,15 @@ export default function Home() {
 
                 <h2
                   className="
-                    mt-5
+                    mt-4
 
                     text-white
 
                     font-black
 
-                    leading-[0.9]
+                    leading-[0.92]
 
-                    text-[50px]
+                    text-[46px]
                     sm:text-[78px]
                     lg:text-[110px]
                   "
@@ -487,13 +461,14 @@ export default function Home() {
 
                 <p
                   className="
-                    mt-6
+                    mt-4
+                    sm:mt-6
 
                     text-white/90
 
                     leading-relaxed
 
-                    text-[16px]
+                    text-[15px]
                     sm:text-[21px]
 
                     max-w-[620px]
@@ -523,22 +498,18 @@ export default function Home() {
 
       <section
         className="
-          pt-20
+          pt-14
           sm:pt-24
 
           pb-10
+          sm:pb-16
 
           px-5
           sm:px-8
         "
       >
 
-        <div
-          className="
-            max-w-[1300px]
-            mx-auto
-          "
-        >
+        <div className="max-w-[1300px] mx-auto">
 
           {/* TITLE */}
 
@@ -550,9 +521,9 @@ export default function Home() {
 
                 uppercase
 
-                tracking-[5px]
+                tracking-[4px]
 
-                text-[12px]
+                text-[11px]
                 sm:text-[13px]
 
                 font-semibold
@@ -573,7 +544,7 @@ export default function Home() {
 
                 leading-none
 
-                text-[42px]
+                text-[36px]
                 sm:text-[60px]
                 lg:text-[72px]
               "
@@ -593,24 +564,25 @@ export default function Home() {
               sm:grid-cols-2
               lg:grid-cols-3
 
-              gap-6
+              gap-5
               sm:gap-8
 
-              mt-14
+              mt-10
+              sm:mt-14
             "
           >
 
             {[
               {
-                image: bannerDesktop1,
+                image: almondImg,
                 title: "Brownies Almond",
               },
               {
-                image: bannerDesktop2,
+                image: cookiesImg,
                 title: "Brownies Cookies",
               },
               {
-                image: bannerDesktop3,
+                image: mixImg,
                 title: "Brownies Mix Topping",
               },
             ].map((item, index) => (
@@ -622,11 +594,12 @@ export default function Home() {
 
                   bg-white
 
-                  rounded-[28px]
+                  rounded-[24px]
+                  sm:rounded-[28px]
 
                   overflow-hidden
 
-                  shadow-[0_12px_35px_rgba(0,0,0,0.05)]
+                  shadow-[0_10px_30px_rgba(0,0,0,0.05)]
 
                   hover:-translate-y-2
 
@@ -647,7 +620,8 @@ export default function Home() {
                     className="
                       w-full
 
-                      h-[240px]
+                      h-[220px]
+                      sm:h-[240px]
 
                       object-cover
                       object-center
@@ -663,7 +637,12 @@ export default function Home() {
 
                 {/* CONTENT */}
 
-                <div className="p-6">
+                <div
+                  className="
+                    p-5
+                    sm:p-6
+                  "
+                >
 
                   <h3
                     className="
@@ -671,7 +650,10 @@ export default function Home() {
 
                       font-bold
 
-                      text-[28px]
+                      leading-tight
+
+                      text-[24px]
+                      sm:text-[28px]
                     "
                   >
 
@@ -687,7 +669,8 @@ export default function Home() {
 
                       leading-relaxed
 
-                      text-[15px]
+                      text-[14px]
+                      sm:text-[15px]
                     "
                   >
 
@@ -706,6 +689,8 @@ export default function Home() {
                       mt-5
 
                       text-[#b07b5d]
+
+                      text-[14px]
 
                       font-semibold
 
