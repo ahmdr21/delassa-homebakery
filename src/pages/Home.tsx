@@ -393,22 +393,22 @@ export default function Home() {
 
             {/* IMAGE */}
 
-            <img
-              src={bannerDesktop1}
-              alt="Freshly Baked Brownies"
-              loading="lazy"
-              decoding="async"
-              className="
-                w-full
+<img
+  src={freshImage}
+  alt="Freshly Baked Brownies"
+  loading="lazy"
+  decoding="async"
+  className="
+    w-full
 
-                h-[420px]
-                sm:h-[520px]
-                lg:h-[620px]
+    h-[420px]
+    sm:h-[520px]
+    lg:h-[620px]
 
-                object-cover
-                object-center
-              "
-            />
+    object-cover
+    object-center
+  "
+/>
 
             {/* OVERLAY */}
 
