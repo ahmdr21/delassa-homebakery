@@ -1,85 +1,86 @@
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Pagination } from "swiper/modules";
+/* ====================================================== */
+/* ASSETS */
+/* ====================================================== */
 
-import "swiper/css";
-import "swiper/css/pagination";
+import logo from "../assets/delassa.webp";
 
-import brownie1 from "../assets/browniesalmond1.webp";
-import brownie2 from "../assets/browniescoockies1.webp";
-import brownie3 from "../assets/mixtopping3.webp";
+/* DESKTOP BANNER */
+import bannerDesktop1 from "../assets/bannerdesktop1.webp";
+import bannerDesktop2 from "../assets/bannerdesktop2.webp";
+import bannerDesktop3 from "../assets/bannerdesktop3.webp";
 
-/* BANNER */
-import banner1 from "../assets/bannerdesktop1.webp";
-import banner2 from "../assets/bannerdesktop6.webp";
-import banner3 from "../assets/bannerdesktop3.webp";
+/* MOBILE BANNER */
+import bannerMobile1 from "../assets/bannerdesktop1.webp";
+import bannerMobile2 from "../assets/bannerdesktop2.webp";
+import bannerMobile3 from "../assets/bannerdesktop3.webp";
+
+/* CONTENT IMAGE */
+import freshImage from "../assets/bannerdesktop7.webp";
+
+/* ====================================================== */
+/* DATA */
+/* ====================================================== */
+
+const desktopBanners = [
+  bannerDesktop1,
+  bannerDesktop2,
+  bannerDesktop3,
+];
+
+const mobileBanners = [
+  bannerMobile1,
+  bannerMobile2,
+  bannerMobile3,
+];
 
 export default function Home() {
 
-  const message = encodeURIComponent(`Halo Delassa
+  const [currentSlide, setCurrentSlide] = useState(0);
 
-Saya ingin melakukan pemesanan brownies.
+  /* ====================================================== */
+  /* AUTO SLIDE */
+  /* ====================================================== */
 
-Nama:
-Tanggal Pickup:
-Varian:
-Jumlah:
-Catatan:
+  useEffect(() => {
 
-Terima kasih`);
+    const interval = setInterval(() => {
 
-  /* ================================================= */
-  /* BANNERS */
-  /* ================================================= */
+      setCurrentSlide((prev) =>
+        prev === desktopBanners.length - 1 ? 0 : prev + 1
+      );
 
-  const banners = [
-    banner1,
-    banner2,
-    banner3,
-  ];
+    }, 5000);
 
-  /* ================================================= */
-  /* PRODUCTS */
-  /* ================================================= */
+    return () => clearInterval(interval);
 
-  const products = [
-    {
-      title: "Brownies Almond",
-      image: brownie1,
-      desc: "Brownies fudgy premium dengan topping almond melimpah dan rich chocolate yang lumer di setiap gigitan.",
-    },
-
-    {
-      title: "Brownies Cookies",
-      image: brownie2,
-      desc: "Perpaduan brownies cokelat premium dengan cookies lembut dan choco chips melimpah.",
-    },
-
-    {
-      title: "Mix Topping",
-      image: brownie3,
-      desc: "Brownies dengan berbagai topping favorit dalam satu box untuk setiap sweet moments.",
-    },
-  ];
+  }, []);
 
   return (
 
-    <main className="bg-[#faf7f2] overflow-x-hidden">
+    <main
+      className="
+        bg-[#f7f3ef]
+        overflow-hidden
+      "
+    >
 
-      {/* ================================================= */}
-      {/* HERO */}
-      {/* ================================================= */}
+      {/* ====================================================== */}
+      {/* HERO BANNER */}
+      {/* ====================================================== */}
 
       <section
-        id="home"
         className="
-          px-3
-          sm:px-5
+          w-full
+
+          px-4
+          sm:px-6
           lg:px-8
 
-          pt-3
-          sm:pt-5
+          pt-5
+          sm:pt-6
         "
       >
 
@@ -87,179 +88,229 @@ Terima kasih`);
           className="
             max-w-[1500px]
             mx-auto
-
-            overflow-hidden
-
-            rounded-[22px]
-            sm:rounded-[34px]
-
-            shadow-[0_12px_40px_rgba(0,0,0,0.06)]
           "
         >
 
-          <Swiper
-            modules={[Autoplay, Pagination]}
-            slidesPerView={1}
-            loop={true}
-            speed={900}
-            autoplay={{
-              delay: 4000,
-              disableOnInteraction: false,
-            }}
-            pagination={{
-              clickable: true,
-            }}
-            className="rounded-[22px] sm:rounded-[34px]"
+          {/* ====================================================== */}
+          {/* SLIDER */}
+          {/* ====================================================== */}
+
+          <div
+            className="
+              relative
+
+              overflow-hidden
+
+              rounded-[28px]
+              sm:rounded-[36px]
+
+              shadow-[0_15px_40px_rgba(0,0,0,0.06)]
+
+              bg-[#efe7df]
+            "
           >
 
-            {banners.map((banner, index) => (
+            {/* ====================================================== */}
+            {/* DESKTOP IMAGE */}
+            {/* ====================================================== */}
 
-              <SwiperSlide key={index}>
+            <img
+              src={desktopBanners[currentSlide]}
+              alt="Delassa Banner"
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
+              className="
+                hidden
+                md:block
 
-                <div
-                  className="
-                    relative
-                    w-full
+                w-full
 
-                    bg-[#f3ebe3]
+                aspect-[16/7]
 
-                    h-[210px]
-                    sm:h-[380px]
-                    md:h-[500px]
-                    lg:h-[680px]
-                  "
-                >
+                object-cover
+                object-center
 
-                  <img
-                    src={banner}
-                    alt={`Banner ${index + 1}`}
-                    className="
-                      w-full
-                      h-full
+                select-none
+              "
+            />
 
-                      object-cover
+            {/* ====================================================== */}
+            {/* MOBILE IMAGE */}
+            {/* ====================================================== */}
 
-                      object-[18%]
-                      sm:object-center
-                    "
-                  />
+            <img
+              src={mobileBanners[currentSlide]}
+              alt="Delassa Banner Mobile"
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
+              className="
+                block
+                md:hidden
 
-                </div>
+                w-full
 
-              </SwiperSlide>
+                aspect-[4/5]
 
-            ))}
+                object-cover
+                object-center
 
-          </Swiper>
+                select-none
+              "
+            />
+
+            {/* ====================================================== */}
+            {/* DOTS */}
+            {/* ====================================================== */}
+
+            <div
+              className="
+                absolute
+
+                bottom-4
+                sm:bottom-6
+
+                left-1/2
+                -translate-x-1/2
+
+                flex
+                items-center
+                gap-2
+              "
+            >
+
+              {desktopBanners.map((_, index) => (
+
+                <button
+                  key={index}
+                  onClick={() => setCurrentSlide(index)}
+                  className={`
+                    rounded-full
+                    transition-all
+                    duration-300
+
+                    ${
+                      currentSlide === index
+                        ? "w-5 h-2 bg-[#b07b5d]"
+                        : "w-2 h-2 bg-white/80"
+                    }
+                  `}
+                />
+
+              ))}
+
+            </div>
+
+          </div>
 
         </div>
 
       </section>
 
-      {/* ================================================= */}
+      {/* ====================================================== */}
       {/* ABOUT */}
-      {/* ================================================= */}
+      {/* ====================================================== */}
 
       <section
-        id="about"
         className="
-          py-14
-          sm:py-20
-          lg:py-28
+          pt-20
+          sm:pt-24
 
           px-5
-          sm:px-6
-          lg:px-8
+          sm:px-8
         "
       >
 
         <div
           className="
-            max-w-[1000px]
+            max-w-[1300px]
             mx-auto
-
-            text-center
           "
         >
 
-          {/* SMALL TITLE */}
+          {/* TITLE */}
 
-          <p
+          <div className="text-center">
+
+            <p
+              className="
+                text-[#c58b67]
+
+                uppercase
+
+                tracking-[5px]
+
+                text-[12px]
+                sm:text-[13px]
+
+                font-semibold
+              "
+            >
+
+              About Delassa
+
+            </p>
+
+            <h2
+              className="
+                mt-5
+
+                text-[#2f221d]
+
+                font-black
+
+                leading-[0.95]
+
+                text-[42px]
+                sm:text-[60px]
+                lg:text-[82px]
+              "
+            >
+
+              Homemade Brownies
+              <br />
+              With Premium Taste
+
+            </h2>
+
+          </div>
+
+          {/* DESCRIPTION */}
+
+          <div
             className="
-              uppercase
+              mt-10
+              sm:mt-12
 
-              tracking-[3px]
-
-              text-[#c38358]
-
-              text-[10px]
-              sm:text-sm
-
-              font-semibold
-            "
-          >
-
-            About Delassa
-
-          </p>
-
-          {/* BIG TITLE */}
-
-          <h2
-            className="
-              mt-4
-
-              text-[30px]
-              sm:text-[48px]
-              lg:text-[72px]
-
-              leading-[1.05]
-
-              tracking-[-1px]
-              sm:tracking-[-2px]
-
-              font-black
-
-              text-[#2f221d]
-            "
-          >
-
-            Homemade Brownies
-            <br />
-            With Premium Taste
-
-          </h2>
-
-          {/* DESC */}
-
-          <p
-            className="
-              mt-5
-              sm:mt-8
-
-              text-[#746861]
-
-              text-[14px]
-              sm:text-[17px]
-
-              leading-relaxed
-
-              max-w-[820px]
+              max-w-[920px]
               mx-auto
             "
           >
 
-            Delassa Home Bakery menghadirkan brownies premium
-            dengan tekstur fudgy,
-            rich chocolate,
-            dan topping melimpah yang dibuat fresh setiap hari.
+            <p
+              className="
+                text-center
 
-            Setiap produk dibuat menggunakan bahan berkualitas
-            dengan tampilan aesthetic yang cocok untuk hampers,
-            hadiah spesial,
-            maupun teman menikmati sweet moments favoritmu.
+                text-[#5f534d]
 
-          </p>
+                leading-relaxed
+
+                text-[18px]
+                sm:text-[22px]
+              "
+            >
+
+              Delassa Home Bakery menghadirkan brownies premium
+              dengan tekstur fudgy, rich chocolate, dan topping
+              melimpah yang dibuat fresh setiap hari.
+              Setiap produk dibuat menggunakan bahan berkualitas
+              untuk menciptakan rasa manis yang hangat,
+              aesthetic, dan memorable di setiap gigitan.
+
+            </p>
+
+          </div>
 
           {/* FEATURES */}
 
@@ -268,50 +319,35 @@ Terima kasih`);
               flex
               flex-wrap
 
-              items-center
               justify-center
 
-              gap-x-6
-              gap-y-3
+              gap-x-8
+              gap-y-4
 
-              mt-10
-              sm:mt-12
+              mt-12
+              sm:mt-14
             "
           >
 
             {[
-              "Premium ingredients",
-              "Made by order",
-              "Fresh from oven",
+              "✓ Premium Ingredients",
+              "✓ Made by order",
+              "✓ Fresh from oven",
             ].map((item, index) => (
 
               <div
                 key={index}
                 className="
-                  flex
-                  items-center
-                  gap-2
+                  text-[#6c5a51]
 
-                  text-[#746861]
-
-                  text-[13px]
-                  sm:text-[15px]
+                  text-[15px]
+                  sm:text-[18px]
 
                   font-medium
                 "
               >
 
-                <span className="text-[#8b6b52]">
-
-                  ✓
-
-                </span>
-
-                <span>
-
-                  {item}
-
-                </span>
+                {item}
 
               </div>
 
@@ -323,23 +359,188 @@ Terima kasih`);
 
       </section>
 
-      {/* ================================================= */}
-      {/* PRODUCTS */}
-      {/* ================================================= */}
+      {/* ====================================================== */}
+      {/* FRESHLY BAKED */}
+      {/* ====================================================== */}
 
       <section
-        id="products"
         className="
-          pb-16
-          sm:pb-24
+          pt-20
+          sm:pt-24
 
           px-4
-          sm:px-6
-          lg:px-8
+          sm:px-8
         "
       >
 
-        <div className="max-w-[1500px] mx-auto">
+        <div
+          className="
+            max-w-[1500px]
+            mx-auto
+          "
+        >
+
+          <div
+            className="
+              relative
+
+              overflow-hidden
+
+              rounded-[30px]
+              sm:rounded-[40px]
+            "
+          >
+
+            {/* IMAGE */}
+
+            <img
+              src={freshImage}
+              alt="Freshly Baked Brownies"
+              loading="lazy"
+              decoding="async"
+              className="
+                w-full
+
+                h-[420px]
+                sm:h-[520px]
+                lg:h-[620px]
+
+                object-cover
+                object-center
+              "
+            />
+
+            {/* OVERLAY */}
+
+            <div
+              className="
+                absolute
+                inset-0
+
+                bg-gradient-to-r
+                from-[#2f221de8]
+                via-[#2f221d99]
+                to-transparent
+              "
+            />
+
+            {/* CONTENT */}
+
+            <div
+              className="
+                absolute
+                inset-0
+
+                flex
+                items-center
+              "
+            >
+
+              <div
+                className="
+                  px-6
+                  sm:px-12
+                  lg:px-16
+
+                  max-w-[720px]
+                "
+              >
+
+                <p
+                  className="
+                    text-[#efbb90]
+
+                    uppercase
+
+                    tracking-[5px]
+
+                    text-[12px]
+                    sm:text-[14px]
+
+                    font-semibold
+                  "
+                >
+
+                  Made By Order
+
+                </p>
+
+                <h2
+                  className="
+                    mt-5
+
+                    text-white
+
+                    font-black
+
+                    leading-[0.9]
+
+                    text-[50px]
+                    sm:text-[78px]
+                    lg:text-[110px]
+                  "
+                >
+
+                  Freshly Baked
+                  <br />
+                  Everyday
+
+                </h2>
+
+                <p
+                  className="
+                    mt-6
+
+                    text-white/90
+
+                    leading-relaxed
+
+                    text-[16px]
+                    sm:text-[21px]
+
+                    max-w-[620px]
+                  "
+                >
+
+                  Setiap brownies dibuat setelah pesanan masuk,
+                  menggunakan premium ingredients pilihan
+                  untuk menjaga rasa, aroma, dan tekstur
+                  tetap fresh saat sampai ke tanganmu.
+
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      {/* ====================================================== */}
+      {/* MENU */}
+      {/* ====================================================== */}
+
+      <section
+        className="
+          pt-20
+          sm:pt-24
+
+          pb-10
+
+          px-5
+          sm:px-8
+        "
+      >
+
+        <div
+          className="
+            max-w-[1300px]
+            mx-auto
+          "
+        >
 
           {/* TITLE */}
 
@@ -347,20 +548,20 @@ Terima kasih`);
 
             <p
               className="
+                text-[#c58b67]
+
                 uppercase
 
-                tracking-[3px]
+                tracking-[5px]
 
-                text-[#c38358]
-
-                text-[10px]
-                sm:text-sm
+                text-[12px]
+                sm:text-[13px]
 
                 font-semibold
               "
             >
 
-              Signature Menu
+              Our Products
 
             </p>
 
@@ -368,182 +569,161 @@ Terima kasih`);
               className="
                 mt-4
 
-                text-[30px]
-                sm:text-[52px]
-                lg:text-[72px]
-
-                leading-[1.05]
-
-                tracking-[-1px]
-                sm:tracking-[-2px]
+                text-[#2f221d]
 
                 font-black
 
-                text-[#2f221d]
+                leading-none
+
+                text-[42px]
+                sm:text-[60px]
+                lg:text-[72px]
               "
             >
 
-              Crafted For
-              <br />
-              Sweet Moments
+              Best Seller Brownies
 
             </h2>
 
           </div>
 
-          {/* GRID */}
+          {/* PRODUCT GRID */}
 
           <div
             className="
               grid
-              grid-cols-1
-              md:grid-cols-2
-              xl:grid-cols-3
+              sm:grid-cols-2
+              lg:grid-cols-3
 
-              gap-5
+              gap-6
               sm:gap-8
 
-              mt-10
-              sm:mt-16
+              mt-14
             "
           >
 
-            {products.map((item, index) => (
+            {[
+              {
+                image: bannerDesktop1,
+                title: "Brownies Almond",
+              },
+              {
+                image: bannerDesktop2,
+                title: "Brownies Cookies",
+              },
+              {
+                image: bannerDesktop3,
+                title: "Brownies Mix Topping",
+              },
+            ].map((item, index) => (
 
-              <motion.div
+              <div
                 key={index}
-                whileHover={{ y: -6 }}
-                transition={{ duration: 0.3 }}
-                className="group"
+                className="
+                  group
+
+                  bg-white
+
+                  rounded-[28px]
+
+                  overflow-hidden
+
+                  shadow-[0_12px_35px_rgba(0,0,0,0.05)]
+
+                  hover:-translate-y-2
+
+                  transition-all
+                  duration-500
+                "
               >
 
-                <div
-                  className="
-                    bg-white
+                {/* IMAGE */}
 
-                    rounded-[24px]
-                    sm:rounded-[30px]
+                <div className="overflow-hidden">
 
-                    overflow-hidden
-
-                    shadow-[0_10px_30px_rgba(0,0,0,0.05)]
-
-                    h-full
-                  "
-                >
-
-                  {/* IMAGE */}
-
-                  <div className="overflow-hidden">
-
-                    <img
-                      src={item.image}
-                      alt={item.title}
-                      className="
-                        w-full
-
-                        h-[220px]
-                        sm:h-[320px]
-
-                        object-cover
-                        object-center
-
-                        transition
-                        duration-500
-
-                        group-hover:scale-105
-                      "
-                    />
-
-                  </div>
-
-                  {/* CONTENT */}
-
-                  <div
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    loading="lazy"
+                    decoding="async"
                     className="
-                      p-5
-                      sm:p-7
+                      w-full
+
+                      h-[240px]
+
+                      object-cover
+                      object-center
+
+                      group-hover:scale-105
+
+                      transition-all
+                      duration-700
                     "
-                  >
-
-                    <h3
-                      className="
-                        text-[22px]
-                        sm:text-[30px]
-
-                        font-black
-
-                        text-[#2f221d]
-                      "
-                    >
-
-                      {item.title}
-
-                    </h3>
-
-                    <p
-                      className="
-                        mt-3
-                        sm:mt-4
-
-                        text-[#746861]
-
-                        text-[14px]
-                        sm:text-base
-
-                        leading-relaxed
-                      "
-                    >
-
-                      {item.desc}
-
-                    </p>
-
-                    {/* BUTTON */}
-
-                    <a
-                      href={`https://wa.me/6287715443313?text=${message}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="
-                        mt-5
-                        sm:mt-7
-
-                        inline-flex
-                        items-center
-                        justify-center
-
-                        bg-[#3b2b26]
-                        hover:bg-black
-
-                        text-white
-
-                        px-5
-                        sm:px-6
-
-                        py-3
-
-                        rounded-full
-
-                        font-semibold
-
-                        text-[14px]
-                        sm:text-base
-
-                        transition-all
-                        duration-300
-                      "
-                    >
-
-                      Order Now
-
-                    </a>
-
-                  </div>
+                  />
 
                 </div>
 
-              </motion.div>
+                {/* CONTENT */}
+
+                <div className="p-6">
+
+                  <h3
+                    className="
+                      text-[#2f221d]
+
+                      font-bold
+
+                      text-[28px]
+                    "
+                  >
+
+                    {item.title}
+
+                  </h3>
+
+                  <p
+                    className="
+                      mt-3
+
+                      text-[#6a5c55]
+
+                      leading-relaxed
+
+                      text-[15px]
+                    "
+                  >
+
+                    Brownies premium dengan tekstur fudgy,
+                    rich chocolate, dan topping melimpah
+                    yang dibuat fresh setiap hari.
+
+                  </p>
+
+                  <Link
+                    to="/menu"
+                    className="
+                      inline-flex
+                      items-center
+
+                      mt-5
+
+                      text-[#b07b5d]
+
+                      font-semibold
+
+                      hover:opacity-70
+
+                      transition-all
+                    "
+                  >
+
+                    View Product →
+
+                  </Link>
+
+                </div>
+
+              </div>
 
             ))}
 
@@ -553,166 +733,8 @@ Terima kasih`);
 
       </section>
 
-      {/* ================================================= */}
-{/* MADE BY ORDER */}
-{/* ================================================= */}
-
-<section
-  className="
-    px-4
-    sm:px-6
-    lg:px-8
-
-    pb-16
-    sm:pb-24
-  "
->
-
-  <div
-    className="
-      max-w-[1500px]
-      mx-auto
-
-      relative
-      overflow-hidden
-
-      rounded-[28px]
-      sm:rounded-[40px]
-    "
-  >
-
-    {/* BACKGROUND IMAGE */}
-
-    <div
-      className="
-        absolute
-        inset-0
-      "
-    >
-
-      <img
-        src="/src/assets/bannerdesktop7.webp"
-        alt="Freshly baked brownies"
-        className="
-          w-full
-          h-full
-          object-cover
-        "
-      />
-
-      {/* OVERLAY */}
-
-      <div
-        className="
-          absolute
-          inset-0
-
-          bg-[linear-gradient(to_right,rgba(33,20,15,0.92)_0%,rgba(33,20,15,0.82)_35%,rgba(33,20,15,0.30)_70%,rgba(33,20,15,0.10)_100%)]
-        "
-      />
-
-    </div>
-
-    {/* CONTENT */}
-
-    <div
-      className="
-        relative
-        z-10
-
-        px-6
-        sm:px-10
-        lg:px-16
-
-        py-12
-        sm:py-16
-        lg:py-24
-
-        max-w-[760px]
-      "
-    >
-
-      {/* SMALL TITLE */}
-
-      <p
-        className="
-          uppercase
-
-          tracking-[4px]
-
-          text-[#d7a47c]
-
-          text-[11px]
-          sm:text-sm
-
-          font-semibold
-        "
-      >
-
-        Made By Order
-
-      </p>
-
-      {/* BIG TITLE */}
-
-      <h2
-        className="
-          mt-4
-
-          text-white
-
-          font-black
-
-          leading-[0.95]
-
-          text-[46px]
-          sm:text-[72px]
-          lg:text-[110px]
-
-          tracking-[-2px]
-        "
-      >
-
-        Freshly Baked
-        <br />
-        Everyday
-
-      </h2>
-
-      {/* DESCRIPTION */}
-
-      <p
-        className="
-          mt-6
-          sm:mt-8
-
-          text-white/90
-
-          leading-relaxed
-
-          text-[15px]
-          sm:text-[18px]
-          lg:text-[22px]
-
-          max-w-[700px]
-        "
-      >
-
-        Setiap brownies dibuat setelah pesanan masuk,
-        menggunakan premium ingredients pilihan
-        untuk menjaga rasa,
-        aroma,
-        dan tekstur tetap fresh saat sampai ke tanganmu.
-
-      </p>
-
-    </div>
-
-  </div>
-
-</section>
-
     </main>
 
   );
+
 }
