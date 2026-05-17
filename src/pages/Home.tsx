@@ -16,7 +16,7 @@ import bannerMobile2 from "../assets/bannerdesktop2.webp";
 import bannerMobile3 from "../assets/bannerdesktop3.webp";
 
 /* CONTENT IMAGE */
-import freshImage from "../assets/fresh.webp";
+import freshImage from "../assets/fresh.jpg";
 
 /* ====================================================== */
 /* DATA */
