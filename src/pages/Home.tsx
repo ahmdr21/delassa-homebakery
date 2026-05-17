@@ -1,29 +1,19 @@
-import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Pagination } from "swiper/modules";
+
+import "swiper/css";
+import "swiper/css/pagination";
 
 import brownie1 from "../assets/browniesalmond1.webp";
 import brownie2 from "../assets/browniescoockies1.webp";
 import brownie3 from "../assets/mixtopping3.webp";
 
-const products = [
-  {
-    title: "Brownies Almond",
-    price: "Start From RpxxK",
-    image: brownie1,
-  },
-
-  {
-    title: "Brownies Cookies",
-    price: "Start From RpxxK",
-    image: brownie2,
-  },
-
-  {
-    title: "Mix Topping",
-    price: "Start From RpxxK",
-    image: brownie3,
-  },
-];
+/* BANNER */
+import banner1 from "../assets/bannerdesktop1.webp";
+import banner2 from "../assets/bannerdesktop6.webp";
+import banner3 from "../assets/bannerdesktop3.webp";
 
 export default function Home() {
 
@@ -32,294 +22,695 @@ export default function Home() {
 Saya ingin melakukan pemesanan brownies.
 
 Nama:
-Tanggal Pickup Pemesanan:
-Varian Menu:
-Jumlah Order:
-Request Tambahan:
+Tanggal Pickup:
+Varian:
+Jumlah:
+Catatan:
 
 Terima kasih`);
 
+  /* ================================================= */
+  /* BANNERS */
+  /* ================================================= */
+
+  const banners = [
+    banner1,
+    banner2,
+    banner3,
+  ];
+
+  /* ================================================= */
+  /* PRODUCTS */
+  /* ================================================= */
+
+  const products = [
+    {
+      title: "Brownies Almond",
+      image: brownie1,
+      desc: "Brownies fudgy premium dengan topping almond melimpah dan rich chocolate yang lumer di setiap gigitan.",
+    },
+
+    {
+      title: "Brownies Cookies",
+      image: brownie2,
+      desc: "Perpaduan brownies cokelat premium dengan cookies lembut dan choco chips melimpah.",
+    },
+
+    {
+      title: "Mix Topping",
+      image: brownie3,
+      desc: "Brownies dengan berbagai topping favorit dalam satu box untuk setiap sweet moments.",
+    },
+  ];
+
   return (
 
-    <main className="bg-[#faf7f2] overflow-hidden">
+    <main className="bg-[#faf7f2] overflow-x-hidden">
 
+      {/* ================================================= */}
       {/* HERO */}
+      {/* ================================================= */}
 
-      <section className="max-w-6xl mx-auto px-5 sm:px-8 pt-8 sm:pt-16">
+      <section
+        id="home"
+        className="
+          px-3
+          sm:px-5
+          lg:px-8
 
-        <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+          pt-3
+          sm:pt-5
+        "
+      >
 
-          {/* IMAGE */}
+        <div
+          className="
+            max-w-[1500px]
+            mx-auto
 
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-            className="relative order-1 lg:order-2"
+            overflow-hidden
+
+            rounded-[22px]
+            sm:rounded-[34px]
+
+            shadow-[0_12px_40px_rgba(0,0,0,0.06)]
+          "
+        >
+
+          <Swiper
+            modules={[Autoplay, Pagination]}
+            slidesPerView={1}
+            loop={true}
+            speed={900}
+            autoplay={{
+              delay: 4000,
+              disableOnInteraction: false,
+            }}
+            pagination={{
+              clickable: true,
+            }}
+            className="rounded-[22px] sm:rounded-[34px]"
           >
 
-            <div className="absolute inset-0 bg-[#f0cdb3] opacity-30 blur-[90px] rounded-full"></div>
+            {banners.map((banner, index) => (
 
-            <div className="relative overflow-hidden rounded-[32px]">
+              <SwiperSlide key={index}>
 
-              <img
-                src={brownie1}
-                alt="Brownies"
-                className="w-full h-[320px] sm:h-[520px] object-cover"
-              />
+                <div
+                  className="
+                    relative
+                    w-full
 
-            </div>
+                    bg-[#f3ebe3]
 
-          </motion.div>
+                    h-[210px]
+                    sm:h-[380px]
+                    md:h-[500px]
+                    lg:h-[680px]
+                  "
+                >
 
-          {/* CONTENT */}
+                  <img
+                    src={banner}
+                    alt={`Banner ${index + 1}`}
+                    className="
+                      w-full
+                      h-full
 
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-            className="order-2 lg:order-1 text-center lg:text-left"
-          >
+                      object-cover
 
-            {/* BADGE */}
+                      object-[18%]
+                      sm:object-center
+                    "
+                  />
 
-            <div className="inline-flex items-center gap-2 bg-[#f3e3d6] px-5 py-3 rounded-full">
+                </div>
 
-              <span className="w-2 h-2 rounded-full bg-[#c38358]"></span>
+              </SwiperSlide>
 
-              <p className="text-[12px] tracking-[2px] uppercase font-semibold text-[#9b6a50]">
+            ))}
 
-                Fresh Baked Everyday
-
-              </p>
-
-            </div>
-
-            {/* TITLE */}
-
-            <h1 className="mt-7 text-[44px] sm:text-[76px] leading-[0.9] tracking-[-3px] font-black text-[#2f221d]">
-
-              Rich Chocolate
-
-              <span className="block text-[#c38358]">
-
-                Brownies
-
-              </span>
-
-            </h1>
-
-            {/* DESC */}
-
-            <p className="mt-6 text-[#6f615a] text-[15px] sm:text-lg leading-relaxed max-w-lg mx-auto lg:mx-0">
-
-              Handmade brownies premium dengan rich chocolate,
-              topping melimpah,
-              dan packaging aesthetic untuk hampers,
-              hadiah spesial,
-              atau sweet moments favoritmu
-
-            </p>
-
-            {/* BUTTON */}
-
-            <div className="flex flex-col sm:flex-row gap-4 mt-8 justify-center lg:justify-start">
-
-              <a
-                href={`https://wa.me/6287715443313?text=${message}`}
-                target="_blank"
-                rel="noreferrer"
-                className="bg-[#3b2b26] hover:bg-black text-white px-8 py-4 rounded-full font-semibold transition-all duration-300 shadow-xl inline-flex items-center justify-center"
-              >
-
-                Order Sekarang
-
-              </a>
-
-              <Link
-                to="/menu"
-                className="border border-[#ead8c7] hover:bg-white text-[#3b2b26] px-8 py-4 rounded-full font-semibold transition-all duration-300 inline-flex items-center justify-center"
-              >
-
-                View Menu
-
-              </Link>
-
-            </div>
-
-            {/* BENEFITS */}
-
-            <div className="flex flex-wrap justify-center lg:justify-start gap-5 mt-8 text-sm text-[#7a6a62]">
-
-              <div>✔ Premium ingredients</div>
-
-              <div>✔ Made by order</div>
-
-              <div>✔ Fresh from oven</div>
-
-            </div>
-
-          </motion.div>
+          </Swiper>
 
         </div>
 
       </section>
 
-      {/* PRODUCTS */}
+      {/* ================================================= */}
+      {/* ABOUT */}
+      {/* ================================================= */}
 
-      <section className="max-w-6xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
+      <section
+        id="about"
+        className="
+          py-14
+          sm:py-20
+          lg:py-28
 
-        {/* TITLE */}
+          px-5
+          sm:px-6
+          lg:px-8
+        "
+      >
 
-        <div className="text-center">
+        <div
+          className="
+            max-w-[1000px]
+            mx-auto
 
-          <p className="uppercase tracking-[4px] text-[#c38358] text-sm font-semibold">
+            text-center
+          "
+        >
 
-            Signature Menu
+          {/* SMALL TITLE */}
+
+          <p
+            className="
+              uppercase
+
+              tracking-[3px]
+
+              text-[#c38358]
+
+              text-[10px]
+              sm:text-sm
+
+              font-semibold
+            "
+          >
+
+            About Delassa
 
           </p>
 
-          <h2 className="mt-4 text-[36px] sm:text-[52px] leading-[1] font-black text-[#2f221d]">
+          {/* BIG TITLE */}
 
-            Crafted For
-            Sweet Moments
+          <h2
+            className="
+              mt-4
+
+              text-[30px]
+              sm:text-[48px]
+              lg:text-[72px]
+
+              leading-[1.05]
+
+              tracking-[-1px]
+              sm:tracking-[-2px]
+
+              font-black
+
+              text-[#2f221d]
+            "
+          >
+
+            Homemade Brownies
+            <br />
+            With Premium Taste
 
           </h2>
 
-        </div>
+          {/* DESC */}
 
-        {/* GRID */}
+          <p
+            className="
+              mt-5
+              sm:mt-8
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
+              text-[#746861]
 
-          {products.map((item, index) => (
+              text-[14px]
+              sm:text-[17px]
 
-            <motion.div
-              key={index}
-              whileHover={{ y: -5 }}
-              className="group"
-            >
+              leading-relaxed
 
-              <div className="overflow-hidden rounded-[28px]">
+              max-w-[820px]
+              mx-auto
+            "
+          >
 
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  className="w-full h-[300px] object-cover group-hover:scale-105 transition duration-700"
-                />
+            Delassa Home Bakery menghadirkan brownies premium
+            dengan tekstur fudgy,
+            rich chocolate,
+            dan topping melimpah yang dibuat fresh setiap hari.
+
+            Setiap produk dibuat menggunakan bahan berkualitas
+            dengan tampilan aesthetic yang cocok untuk hampers,
+            hadiah spesial,
+            maupun teman menikmati sweet moments favoritmu.
+
+          </p>
+
+          {/* FEATURES */}
+
+          <div
+            className="
+              flex
+              flex-wrap
+
+              items-center
+              justify-center
+
+              gap-x-6
+              gap-y-3
+
+              mt-10
+              sm:mt-12
+            "
+          >
+
+            {[
+              "Premium ingredients",
+              "Made by order",
+              "Fresh from oven",
+            ].map((item, index) => (
+
+              <div
+                key={index}
+                className="
+                  flex
+                  items-center
+                  gap-2
+
+                  text-[#746861]
+
+                  text-[13px]
+                  sm:text-[15px]
+
+                  font-medium
+                "
+              >
+
+                <span className="text-[#8b6b52]">
+
+                  ✓
+
+                </span>
+
+                <span>
+
+                  {item}
+
+                </span>
 
               </div>
 
-              <div className="mt-5 text-center">
+            ))}
 
-                <h3 className="text-[24px] font-black text-[#2f221d]">
-
-                  {item.title}
-
-                </h3>
-
-                <p className="mt-2 text-[#c38358] font-semibold">
-
-                  {item.price}
-
-                </p>
-
-                <a
-                  href={`https://wa.me/6287715443313?text=${message}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-5 inline-flex text-[#3b2b26] font-semibold hover:text-[#c38358] transition-all duration-300"
-                >
-
-                  Order Now →
-
-                </a>
-
-              </div>
-
-            </motion.div>
-
-          ))}
+          </div>
 
         </div>
 
       </section>
 
-      {/* MADE BY ORDER */}
+      {/* ================================================= */}
+      {/* PRODUCTS */}
+      {/* ================================================= */}
 
-      <section className="bg-[#3b2b26] py-16 sm:py-24">
+      <section
+        id="products"
+        className="
+          pb-16
+          sm:pb-24
 
-        <div className="max-w-6xl mx-auto px-5 sm:px-8 grid lg:grid-cols-2 gap-10 items-center">
+          px-4
+          sm:px-6
+          lg:px-8
+        "
+      >
 
-          {/* IMAGE */}
+        <div className="max-w-[1500px] mx-auto">
 
-          <div className="overflow-hidden rounded-[32px] order-1">
+          {/* TITLE */}
 
-            <img
-              src={brownie2}
-              alt="Fresh Brownies"
-              className="w-full h-[320px] sm:h-[520px] object-cover"
-            />
+          <div className="text-center">
 
-          </div>
+            <p
+              className="
+                uppercase
 
-          {/* CONTENT */}
+                tracking-[3px]
 
-          <div className="text-white order-2">
+                text-[#c38358]
 
-            <p className="uppercase tracking-[4px] text-[#f3c6a3] text-sm font-semibold">
+                text-[10px]
+                sm:text-sm
 
-              Made By Order
+                font-semibold
+              "
+            >
+
+              Signature Menu
 
             </p>
 
-            <h2 className="mt-5 text-[40px] sm:text-[62px] leading-[0.95] font-black">
+            <h2
+              className="
+                mt-4
 
-              Freshly Baked
-              Everyday
+                text-[30px]
+                sm:text-[52px]
+                lg:text-[72px]
+
+                leading-[1.05]
+
+                tracking-[-1px]
+                sm:tracking-[-2px]
+
+                font-black
+
+                text-[#2f221d]
+              "
+            >
+
+              Crafted For
+              <br />
+              Sweet Moments
 
             </h2>
 
-            <p className="mt-6 text-white/75 text-[15px] sm:text-lg leading-relaxed max-w-xl">
+          </div>
 
-              Setiap brownies dibuat setelah pesanan masuk,
-              menggunakan premium ingredients pilihan
-              untuk menjaga rasa,
-              aroma,
-              dan tekstur tetap fresh saat sampai ke tanganmu.
+          {/* GRID */}
 
-            </p>
+          <div
+            className="
+              grid
+              grid-cols-1
+              md:grid-cols-2
+              xl:grid-cols-3
 
-            {/* POINTS */}
+              gap-5
+              sm:gap-8
 
-            <div className="flex flex-wrap gap-4 mt-8 text-sm text-white/80">
+              mt-10
+              sm:mt-16
+            "
+          >
 
-              <div>✔ Handmade daily</div>
+            {products.map((item, index) => (
 
-              <div>✔ Premium chocolate</div>
+              <motion.div
+                key={index}
+                whileHover={{ y: -6 }}
+                transition={{ duration: 0.3 }}
+                className="group"
+              >
 
-              <div>✔ Fresh from oven</div>
+                <div
+                  className="
+                    bg-white
 
-            </div>
+                    rounded-[24px]
+                    sm:rounded-[30px]
 
-            {/* BUTTON */}
+                    overflow-hidden
 
-            <a
-              href={`https://wa.me/6287715443313?text=${message}`}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex mt-10 bg-[#f3c6a3] hover:bg-white text-[#3b2b26] px-8 py-4 rounded-full font-semibold transition-all duration-300"
-            >
+                    shadow-[0_10px_30px_rgba(0,0,0,0.05)]
 
-              Order Sekarang
+                    h-full
+                  "
+                >
 
-            </a>
+                  {/* IMAGE */}
+
+                  <div className="overflow-hidden">
+
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className="
+                        w-full
+
+                        h-[220px]
+                        sm:h-[320px]
+
+                        object-cover
+                        object-center
+
+                        transition
+                        duration-500
+
+                        group-hover:scale-105
+                      "
+                    />
+
+                  </div>
+
+                  {/* CONTENT */}
+
+                  <div
+                    className="
+                      p-5
+                      sm:p-7
+                    "
+                  >
+
+                    <h3
+                      className="
+                        text-[22px]
+                        sm:text-[30px]
+
+                        font-black
+
+                        text-[#2f221d]
+                      "
+                    >
+
+                      {item.title}
+
+                    </h3>
+
+                    <p
+                      className="
+                        mt-3
+                        sm:mt-4
+
+                        text-[#746861]
+
+                        text-[14px]
+                        sm:text-base
+
+                        leading-relaxed
+                      "
+                    >
+
+                      {item.desc}
+
+                    </p>
+
+                    {/* BUTTON */}
+
+                    <a
+                      href={`https://wa.me/6287715443313?text=${message}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="
+                        mt-5
+                        sm:mt-7
+
+                        inline-flex
+                        items-center
+                        justify-center
+
+                        bg-[#3b2b26]
+                        hover:bg-black
+
+                        text-white
+
+                        px-5
+                        sm:px-6
+
+                        py-3
+
+                        rounded-full
+
+                        font-semibold
+
+                        text-[14px]
+                        sm:text-base
+
+                        transition-all
+                        duration-300
+                      "
+                    >
+
+                      Order Now
+
+                    </a>
+
+                  </div>
+
+                </div>
+
+              </motion.div>
+
+            ))}
 
           </div>
 
         </div>
 
       </section>
+
+      {/* ================================================= */}
+{/* MADE BY ORDER */}
+{/* ================================================= */}
+
+<section
+  className="
+    px-4
+    sm:px-6
+    lg:px-8
+
+    pb-16
+    sm:pb-24
+  "
+>
+
+  <div
+    className="
+      max-w-[1500px]
+      mx-auto
+
+      relative
+      overflow-hidden
+
+      rounded-[28px]
+      sm:rounded-[40px]
+    "
+  >
+
+    {/* BACKGROUND IMAGE */}
+
+    <div
+      className="
+        absolute
+        inset-0
+      "
+    >
+
+      <img
+        src="/src/assets/bannerdesktop7.webp"
+        alt="Freshly baked brownies"
+        className="
+          w-full
+          h-full
+          object-cover
+        "
+      />
+
+      {/* OVERLAY */}
+
+      <div
+        className="
+          absolute
+          inset-0
+
+          bg-[linear-gradient(to_right,rgba(33,20,15,0.92)_0%,rgba(33,20,15,0.82)_35%,rgba(33,20,15,0.30)_70%,rgba(33,20,15,0.10)_100%)]
+        "
+      />
+
+    </div>
+
+    {/* CONTENT */}
+
+    <div
+      className="
+        relative
+        z-10
+
+        px-6
+        sm:px-10
+        lg:px-16
+
+        py-12
+        sm:py-16
+        lg:py-24
+
+        max-w-[760px]
+      "
+    >
+
+      {/* SMALL TITLE */}
+
+      <p
+        className="
+          uppercase
+
+          tracking-[4px]
+
+          text-[#d7a47c]
+
+          text-[11px]
+          sm:text-sm
+
+          font-semibold
+        "
+      >
+
+        Made By Order
+
+      </p>
+
+      {/* BIG TITLE */}
+
+      <h2
+        className="
+          mt-4
+
+          text-white
+
+          font-black
+
+          leading-[0.95]
+
+          text-[46px]
+          sm:text-[72px]
+          lg:text-[110px]
+
+          tracking-[-2px]
+        "
+      >
+
+        Freshly Baked
+        <br />
+        Everyday
+
+      </h2>
+
+      {/* DESCRIPTION */}
+
+      <p
+        className="
+          mt-6
+          sm:mt-8
+
+          text-white/90
+
+          leading-relaxed
+
+          text-[15px]
+          sm:text-[18px]
+          lg:text-[22px]
+
+          max-w-[700px]
+        "
+      >
+
+        Setiap brownies dibuat setelah pesanan masuk,
+        menggunakan premium ingredients pilihan
+        untuk menjaga rasa,
+        aroma,
+        dan tekstur tetap fresh saat sampai ke tanganmu.
+
+      </p>
+
+    </div>
+
+  </div>
+
+</section>
 
     </main>
 

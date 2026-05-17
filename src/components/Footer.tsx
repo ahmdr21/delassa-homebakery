@@ -1,49 +1,138 @@
 import {
-  FaWhatsapp,
   FaInstagram,
+  FaWhatsapp,
   FaEnvelope,
   FaLocationDot,
 } from "react-icons/fa6";
 
 import { SiThreads } from "react-icons/si";
 
-import logo from "../assets/delassa.png";
+import { Link } from "react-router-dom";
+
+import logo from "../assets/delassa.webp";
 
 export default function Footer() {
 
+  const message = encodeURIComponent(`Halo Delassa
+
+Saya ingin melakukan pemesanan brownies.
+
+Nama:
+Tanggal Pickup Pemesanan:
+Varian Menu:
+Jumlah Order:
+Request Tambahan:
+
+Terima kasih`);
+
   return (
 
-    <footer className="bg-[#faf7f2] border-t border-[#ead8c7] mt-20">
+    <footer
+      className="
+        bg-[#f7f3ef]
+        border-t
+        border-[#e8d7c8]
 
+        mt-20
+        overflow-hidden
+      "
+    >
+
+      {/* ================================================= */}
       {/* TOP */}
+      {/* ================================================= */}
 
-      <div className="max-w-6xl mx-auto px-5 sm:px-8 py-10">
+      <div
+        className="
+          max-w-[1500px]
+          mx-auto
 
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-10">
+          px-6
+          sm:px-8
+          lg:px-12
 
+          py-12
+          sm:py-14
+        "
+      >
+
+        <div
+          className="
+            grid
+            lg:grid-cols-[1.1fr_0.9fr]
+
+            gap-12
+            lg:gap-20
+
+            items-start
+          "
+        >
+
+          {/* ================================================= */}
           {/* LEFT */}
+          {/* ================================================= */}
 
           <div>
 
             {/* LOGO */}
 
-            <div className="flex items-center gap-3">
+            <Link
+              to="/"
+              className="
+                inline-flex
+                items-center
+                gap-4
+              "
+            >
 
               <img
                 src={logo}
                 alt="Delassa Logo"
-                className="w-12 h-12 object-contain"
+                loading="lazy"
+                decoding="async"
+                className="
+                  w-14
+                  h-14
+
+                  object-contain
+                "
               />
 
               <div>
 
-                <h2 className="text-[32px] leading-none font-black italic tracking-tight text-[#2f221d]">
+                <h2
+                  className="
+                    text-[34px]
+                    sm:text-[42px]
+
+                    leading-none
+
+                    font-black
+                    italic
+
+                    tracking-tight
+
+                    text-[#2f221d]
+                  "
+                >
 
                   Delassa
 
                 </h2>
 
-                <p className="text-[8px] tracking-[4px] uppercase text-[#b07b5d] mt-1">
+                <p
+                  className="
+                    text-[8px]
+                    sm:text-[9px]
+
+                    uppercase
+                    tracking-[5px]
+
+                    text-[#b07b5d]
+
+                    mt-1
+                  "
+                >
 
                   Homebakery
 
@@ -51,36 +140,82 @@ export default function Footer() {
 
               </div>
 
-            </div>
+            </Link>
 
-            {/* TAGLINE */}
+            {/* DESCRIPTION */}
 
-            <p className="mt-4 text-[#7a6a62] text-[14px] leading-relaxed max-w-sm">
+            <p
+              className="
+                mt-6
 
-              Crafted with love to make every sweet moment feel more special
+                text-[#6f615a]
+
+                text-[17px]
+                sm:text-[18px]
+
+                leading-relaxed
+
+                max-w-[520px]
+              "
+            >
+
+              Crafted with love to make every sweet
+              moment feel more special
 
             </p>
 
           </div>
 
+          {/* ================================================= */}
           {/* RIGHT */}
+          {/* ================================================= */}
 
-          <div className="flex flex-col sm:flex-row gap-8 sm:gap-14">
+          <div
+            className="
+              grid
+              md:grid-cols-2
 
+              gap-10
+              lg:gap-16
+
+              lg:justify-self-end
+            "
+          >
+
+            {/* ================================================= */}
             {/* SOCIAL */}
+            {/* ================================================= */}
 
-            <div className="space-y-4">
+            <div className="space-y-6">
+
+              {/* INSTAGRAM */}
 
               <a
                 href="https://instagram.com/delassa.homebakery"
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center gap-3 text-[#3b2b26] hover:text-[#c38358] transition-all duration-300"
+                className="
+                  flex
+                  items-center
+                  gap-4
+
+                  text-[#2f221d]
+
+                  hover:text-[#b07b5d]
+
+                  transition-all
+                  duration-300
+                "
               >
 
-                <FaInstagram className="text-lg shrink-0" />
+                <FaInstagram className="text-[20px]" />
 
-                <span className="text-[15px] font-medium">
+                <span
+                  className="
+                    text-[17px]
+                    font-medium
+                  "
+                >
 
                   Instagram
 
@@ -88,16 +223,34 @@ export default function Footer() {
 
               </a>
 
+              {/* THREADS */}
+
               <a
                 href="https://threads.net/@delassa.homebakery"
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center gap-3 text-[#3b2b26] hover:text-[#c38358] transition-all duration-300"
+                className="
+                  flex
+                  items-center
+                  gap-4
+
+                  text-[#2f221d]
+
+                  hover:text-[#b07b5d]
+
+                  transition-all
+                  duration-300
+                "
               >
 
-                <SiThreads className="text-lg shrink-0" />
+                <SiThreads className="text-[18px]" />
 
-                <span className="text-[15px] font-medium">
+                <span
+                  className="
+                    text-[17px]
+                    font-medium
+                  "
+                >
 
                   Threads
 
@@ -107,20 +260,46 @@ export default function Footer() {
 
             </div>
 
+            {/* ================================================= */}
             {/* CONTACT */}
+            {/* ================================================= */}
 
-            <div className="space-y-4">
+            <div
+              className="
+                space-y-6
+
+                min-w-[320px]
+              "
+            >
+
+              {/* WHATSAPP */}
 
               <a
-                href="https://wa.me/6287715443313"
+                href={`https://wa.me/6287715443313?text=${message}`}
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center gap-3 text-[#3b2b26] hover:text-[#c38358] transition-all duration-300"
+                className="
+                  flex
+                  items-center
+                  gap-4
+
+                  text-[#2f221d]
+
+                  hover:text-[#b07b5d]
+
+                  transition-all
+                  duration-300
+                "
               >
 
-                <FaWhatsapp className="text-lg shrink-0" />
+                <FaWhatsapp className="text-[19px]" />
 
-                <span className="text-[15px] font-medium">
+                <span
+                  className="
+                    text-[17px]
+                    font-medium
+                  "
+                >
 
                   0877-1544-3313
 
@@ -128,14 +307,34 @@ export default function Footer() {
 
               </a>
 
+              {/* EMAIL */}
+
               <a
-                href="mailto:delassa.homebakery@gmail.com"
-                className="flex items-center gap-3 text-[#3b2b26] hover:text-[#c38358] transition-all duration-300"
+                href="mailto:info@delassahomebakery.id"
+                className="
+                  flex
+                  items-center
+                  gap-4
+
+                  text-[#2f221d]
+
+                  hover:text-[#b07b5d]
+
+                  transition-all
+                  duration-300
+                "
               >
 
-                <FaEnvelope className="text-lg shrink-0" />
+                <FaEnvelope className="text-[18px]" />
 
-                <span className="text-[15px] font-medium break-all">
+                <span
+                  className="
+                    text-[17px]
+                    font-medium
+
+                    break-normal
+                  "
+                >
 
                   info@delassahomebakery.id
 
@@ -143,11 +342,28 @@ export default function Footer() {
 
               </a>
 
-              <div className="flex items-start gap-3 text-[#3b2b26]">
+              {/* LOCATION */}
 
-                <FaLocationDot className="text-lg mt-[2px] shrink-0" />
+              <div
+                className="
+                  flex
+                  items-center
+                  gap-4
 
-                <span className="text-[15px] font-medium leading-relaxed">
+                  text-[#2f221d]
+                "
+              >
+
+                <FaLocationDot className="text-[18px]" />
+
+                <span
+                  className="
+                    text-[17px]
+                    font-medium
+
+                    whitespace-nowrap
+                  "
+                >
 
                   Bekasi Selatan, Jawa Barat
 
@@ -163,19 +379,56 @@ export default function Footer() {
 
       </div>
 
+      {/* ================================================= */}
       {/* BOTTOM */}
+      {/* ================================================= */}
 
-      <div className="bg-[#4a2f25] py-6 text-center px-5">
+      <div
+        className="
+          bg-[#5a3426]
 
-        <p className="text-white/80 text-[14px]">
+          py-6
 
-          Copyright © 2025 - 2026 | Delassa Homebakery
+          px-5
+          sm:px-8
+        "
+      >
 
-        </p>
+        <div
+          className="
+            max-w-[1500px]
+            mx-auto
+
+            flex
+            items-center
+            justify-center
+          "
+        >
+
+          <p
+            className="
+              text-white
+
+              text-[14px]
+              sm:text-[15px]
+
+              text-center
+
+              font-medium
+            "
+          >
+
+            Copyright © 2025 - 2026 |
+            Delassa Homebakery
+
+          </p>
+
+        </div>
 
       </div>
 
     </footer>
 
   );
+
 }
