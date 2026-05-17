@@ -5,8 +5,6 @@ import { Link } from "react-router-dom";
 /* ASSETS */
 /* ====================================================== */
 
-import logo from "../assets/delassa.webp";
-
 /* DESKTOP BANNER */
 import bannerDesktop1 from "../assets/bannerdesktop1.webp";
 import bannerDesktop2 from "../assets/bannerdesktop2.webp";
@@ -18,7 +16,7 @@ import bannerMobile2 from "../assets/bannerdesktop2.webp";
 import bannerMobile3 from "../assets/bannerdesktop3.webp";
 
 /* CONTENT IMAGE */
-import freshImage from "../assets/freshly-baked.webp";
+import freshImage from "../assets/fresh.webp";
 
 /* ====================================================== */
 /* DATA */
