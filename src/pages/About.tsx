@@ -247,7 +247,6 @@ Terima kasih`);
 
               <button
                 onClick={() => navigate("/menu")}
-                target="_blank"
                 
                 aria-label="Lihat halaman menu brownies Delassa"
                 className="
