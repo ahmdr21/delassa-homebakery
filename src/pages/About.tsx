@@ -1,12 +1,22 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { Heart, Gift, Leaf, ChefHat, ArrowRight } from "lucide-react";
+import {
+  Heart,
+  Gift,
+  Leaf,
+  ChefHat,
+  ArrowRight,
+} from "lucide-react";
 
 import heroImage from "../assets/mixtopping2.webp";
 import gallery1 from "../assets/browniesalmond1.webp";
 import gallery2 from "../assets/browniescoockies1.webp";
 import gallery3 from "../assets/mixtopping3.webp";
 import logoDelassa from "../assets/delassa.webp";
+
+/* ====================================================== */
+/* FEATURES */
+/* ====================================================== */
 
 const features = [
   {
@@ -15,18 +25,21 @@ const features = [
     description:
       "Kami hanya menggunakan bahan pilihan berkualitas untuk menghasilkan rasa brownies yang rich dan autentik.",
   },
+
   {
     icon: ChefHat,
     title: "Freshly Baked",
     description:
       "Dibuat fresh setiap hari dengan proses yang menjaga tekstur dan rasa tetap sempurna.",
   },
+
   {
     icon: Heart,
     title: "Handmade With Love",
     description:
       "Setiap brownies dibuat dengan sentuhan handmade dan perhatian di setiap detailnya.",
   },
+
   {
     icon: Gift,
     title: "Perfect For Every Moment",
@@ -38,18 +51,6 @@ const features = [
 export default function About() {
 
   const navigate = useNavigate();
-
-  const message = encodeURIComponent(`Halo Delassa
-
-Saya ingin melakukan pemesanan brownies.
-
-Nama:
-Tanggal Pickup Pemesanan:
-Varian Menu:
-Jumlah Order:
-Request Tambahan:
-
-Terima kasih`);
 
   return (
 
@@ -89,7 +90,9 @@ Terima kasih`);
             "
           >
 
+            {/* ====================================================== */}
             {/* LEFT CONTENT */}
+            {/* ====================================================== */}
 
             <motion.div
               initial={{ opacity: 0, y: 18 }}
@@ -132,7 +135,7 @@ Terima kasih`);
                   "
                 >
 
-                  About Us
+                  About Delassa
 
                 </p>
 
@@ -153,15 +156,16 @@ Terima kasih`);
                   tracking-[-2px]
                   sm:tracking-[-4px]
 
-                  text-[52px]
+                  text-[44px]
                   sm:text-[72px]
                   lg:text-[96px]
-                  xl:text-[110px]
+                  xl:text-[108px]
                 "
               >
 
                 More Than
                 <br />
+
                 Dessert
 
                 <span
@@ -212,13 +216,14 @@ Terima kasih`);
                     text-[#5e524c]
 
                     text-[16px]
-                    sm:text-[19px]
+                    sm:text-[18px]
 
                     leading-8
                   "
                 >
 
-                  Delassa menghadirkan brownies premium dengan rich chocolate,
+                  Delassa menghadirkan brownies premium
+                  dengan rich chocolate,
                   tekstur fudgy yang lembut,
                   dan topping melimpah yang dibuat fresh setiap hari.
 
@@ -229,7 +234,7 @@ Terima kasih`);
                     text-[#5e524c]
 
                     text-[16px]
-                    sm:text-[19px]
+                    sm:text-[18px]
 
                     leading-8
                   "
@@ -247,8 +252,8 @@ Terima kasih`);
               {/* CTA */}
 
               <button
+                type="button"
                 onClick={() => navigate("/menu")}
-                
                 aria-label="Lihat halaman menu brownies Delassa"
                 className="
                   inline-flex
@@ -279,6 +284,8 @@ Terima kasih`);
 
                   transition-all
                   duration-300
+
+                  hover:-translate-y-[2px]
                 "
               >
 
@@ -310,7 +317,9 @@ Terima kasih`);
 
             </motion.div>
 
+            {/* ====================================================== */}
             {/* RIGHT IMAGE */}
+            {/* ====================================================== */}
 
             <motion.div
               initial={{ opacity: 0, scale: 0.96 }}
@@ -319,6 +328,8 @@ Terima kasih`);
               transition={{ duration: 0.6 }}
               className="relative"
             >
+
+              {/* GLOW */}
 
               <div
                 className="
@@ -332,6 +343,8 @@ Terima kasih`);
                   blur-[120px]
                 "
               />
+
+              {/* IMAGE */}
 
               <div
                 className="
@@ -445,7 +458,10 @@ Terima kasih`);
                   initial={{ opacity: 0, y: 18 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.45, delay: index * 0.08 }}
+                  transition={{
+                    duration: 0.45,
+                    delay: index * 0.08,
+                  }}
                   className="text-center"
                 >
 
@@ -482,7 +498,7 @@ Terima kasih`);
 
                       font-bold
 
-                      text-[28px]
+                      text-[26px]
 
                       leading-tight
                     "
@@ -686,9 +702,9 @@ Terima kasih`);
 
                     leading-[1]
 
-                    text-[40px]
-                    sm:text-[58px]
-                    lg:text-[76px]
+                    text-[38px]
+                    sm:text-[56px]
+                    lg:text-[74px]
                   "
                 >
 
@@ -734,7 +750,8 @@ Terima kasih`);
                     "
                   >
 
-                    Kami ingin menghadirkan brownies premium dengan bahan terbaik,
+                    Kami ingin menghadirkan brownies premium
+                    dengan bahan terbaik,
                     proses yang terjaga,
                     dan sentuhan handmade di setiap detailnya.
 
@@ -881,10 +898,12 @@ Terima kasih`);
                   icon: Heart,
                   title: "Made with Love",
                 },
+
                 {
                   icon: Leaf,
                   title: "Quality You Can Taste",
                 },
+
                 {
                   icon: Gift,
                   title: "Moments Worth Sharing",
