@@ -6,14 +6,14 @@ import { Link } from "react-router-dom";
 /* ====================================================== */
 
 /* DESKTOP BANNER */
-import bannerDesktop1 from "../assets/bannerdesktop10.webp";
-import bannerDesktop2 from "../assets/bannerdesktop11.webp";
-import bannerDesktop3 from "../assets/bannerdesktop12.webp";
+import bannerDesktop1 from "../assets/bannerdesktop13.webp";
+import bannerDesktop2 from "../assets/bannerdesktop14.webp";
+import bannerDesktop3 from "../assets/bannerdesktop15.webp";
 
 /* MOBILE BANNER */
-import bannerMobile1 from "../assets/bannerdesktop10.webp";
-import bannerMobile2 from "../assets/bannerdesktop11.webp";
-import bannerMobile3 from "../assets/bannerdesktop12.webp";
+import bannerMobile1 from "../assets/bannerdesktop13.webp";
+import bannerMobile2 from "../assets/bannerdesktop14.webp";
+import bannerMobile3 from "../assets/bannerdesktop15.webp";
 
 /* FRESH SECTION */
 import freshImage from "../assets/fresh.webp";
@@ -133,9 +133,7 @@ export default function Home() {
     loading="eager"
     className="
       w-full
-      h-auto
-
-      object-contain
+      
       object-center
 
       transition-all
