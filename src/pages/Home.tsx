@@ -6,17 +6,17 @@ import { Link } from "react-router-dom";
 /* ====================================================== */
 
 /* DESKTOP BANNER */
-import bannerDesktop1 from "../assets/bannerdesktop1.webp";
-import bannerDesktop2 from "../assets/bannerdesktop2.webp";
-import bannerDesktop3 from "../assets/bannerdesktop3.webp";
+import bannerDesktop1 from "../assets/bannerdesktop10.webp";
+import bannerDesktop2 from "../assets/bannerdesktop11.webp";
+import bannerDesktop3 from "../assets/bannerdesktop12.webp";
 
 /* MOBILE BANNER */
-import bannerMobile1 from "../assets/bannerdesktop1.webp";
-import bannerMobile2 from "../assets/bannerdesktop2.webp";
-import bannerMobile3 from "../assets/bannerdesktop3.webp";
+import bannerMobile1 from "../assets/bannerdesktop10.webp";
+import bannerMobile2 from "../assets/bannerdesktop11.webp";
+import bannerMobile3 from "../assets/bannerdesktop12.webp";
 
 /* FRESH SECTION */
-import freshImage from "../assets/fresh.jpg";
+import freshImage from "../assets/fresh.webp";
 
 /* PRODUCT IMAGE */
 import almondImg from "../assets/browniesalmond1.webp";
@@ -37,6 +37,21 @@ const mobileBanners = [
   bannerMobile1,
   bannerMobile2,
   bannerMobile3,
+];
+
+const products = [
+  {
+    image: almondImg,
+    title: "Brownies Almond",
+  },
+  {
+    image: cookiesImg,
+    title: "Brownies Cookies",
+  },
+  {
+    image: mixImg,
+    title: "Brownies Mix Topping",
+  },
 ];
 
 export default function Home() {
@@ -75,15 +90,12 @@ export default function Home() {
           px-3
           sm:px-5
           lg:px-8
-
           pt-3
           sm:pt-5
         "
       >
 
         <div className="max-w-[1500px] mx-auto">
-
-          {/* SLIDER */}
 
           <div
             className="
@@ -94,55 +106,79 @@ export default function Home() {
               sm:rounded-[34px]
 
               bg-[#efe7df]
-
-              shadow-[0_10px_30px_rgba(0,0,0,0.05)]
             "
           >
 
-            {/* DESKTOP */}
+            {/* DESKTOP IMAGE */}
 
-            <img
-              src={desktopBanners[currentSlide]}
-              alt="Delassa Banner"
-              loading="eager"
-              fetchPriority="high"
-              decoding="async"
-              className="
-                hidden
-                md:block
-
-                w-full
-
-                aspect-[16/7]
-
-                object-cover
-                object-center
-              "
-            />
-
-            {/* MOBILE */}
-
-<img
-  src={mobileBanners[currentSlide]}
-  alt="Delassa Banner Mobile"
-  loading="eager"
-  fetchPriority="high"
-  decoding="async"
+<div
   className="
-    block
-    md:hidden
+    hidden
+    md:flex
+
+    items-center
+    justify-center
 
     w-full
 
-    h-auto
-
-    object-contain
-
     bg-[#efe7df]
-
-    select-none
   "
-/>
+>
+
+  <img
+    src={desktopBanners[currentSlide]}
+    alt="Delassa Banner"
+    fetchPriority="high"
+    decoding="async"
+    loading="eager"
+    className="
+      w-full
+      h-auto
+
+      object-contain
+      object-center
+
+      transition-all
+      duration-500
+    "
+  />
+
+</div>
+
+            {/* MOBILE IMAGE */}
+
+            <div
+              className="
+                block
+                md:hidden
+
+                w-full
+
+                bg-[#efe7df]
+              "
+            >
+
+              <img
+                src={mobileBanners[currentSlide]}
+                alt="Delassa Banner Mobile"
+                fetchPriority="high"
+                decoding="async"
+                loading="eager"
+                className="
+                  w-full
+
+                  h-auto
+
+                  object-contain
+                  object-center
+
+                  transition-all
+                  duration-500
+                "
+              />
+
+            </div>
+
             {/* DOTS */}
 
             <div
@@ -150,8 +186,6 @@ export default function Home() {
                 absolute
 
                 bottom-3
-                sm:bottom-5
-
                 left-1/2
                 -translate-x-1/2
 
@@ -166,10 +200,11 @@ export default function Home() {
                 <button
                   key={index}
                   onClick={() => setCurrentSlide(index)}
+                  aria-label={`Slide ${index + 1}`}
                   className={`
-                    rounded-full
                     transition-all
                     duration-300
+                    rounded-full
 
                     ${
                       currentSlide === index
@@ -214,9 +249,7 @@ export default function Home() {
                 text-[#c58b67]
 
                 uppercase
-
                 tracking-[4px]
-                sm:tracking-[5px]
 
                 text-[11px]
                 sm:text-[13px]
@@ -237,7 +270,6 @@ export default function Home() {
                 text-[#2f221d]
 
                 font-black
-
                 leading-[1]
 
                 text-[34px]
@@ -270,8 +302,9 @@ export default function Home() {
             >
 
               Delassa Home Bakery menghadirkan brownies premium
-              dengan tekstur fudgy, rich chocolate, dan topping
-              melimpah yang dibuat fresh setiap hari.
+              dengan tekstur fudgy, rich chocolate,
+              dan topping melimpah yang dibuat fresh setiap hari.
+
               Setiap produk dibuat menggunakan bahan berkualitas
               untuk menciptakan rasa manis yang hangat,
               aesthetic, dan memorable di setiap gigitan.
@@ -346,7 +379,6 @@ export default function Home() {
           <div
             className="
               relative
-
               overflow-hidden
 
               rounded-[24px]
@@ -364,7 +396,7 @@ export default function Home() {
               className="
                 w-full
 
-                h-[480px]
+                h-[500px]
                 sm:h-[560px]
                 lg:h-[620px]
 
@@ -423,7 +455,6 @@ export default function Home() {
                     text-[#efbb90]
 
                     uppercase
-
                     tracking-[4px]
 
                     text-[11px]
@@ -444,7 +475,6 @@ export default function Home() {
                     text-white
 
                     font-black
-
                     leading-[0.92]
 
                     text-[46px]
@@ -493,7 +523,7 @@ export default function Home() {
       </section>
 
       {/* ====================================================== */}
-      {/* MENU */}
+      {/* PRODUCTS */}
       {/* ====================================================== */}
 
       <section
@@ -501,8 +531,8 @@ export default function Home() {
           pt-14
           sm:pt-24
 
-          pb-10
-          sm:pb-16
+          pb-14
+          sm:pb-20
 
           px-5
           sm:px-8
@@ -520,7 +550,6 @@ export default function Home() {
                 text-[#c58b67]
 
                 uppercase
-
                 tracking-[4px]
 
                 text-[11px]
@@ -541,7 +570,6 @@ export default function Home() {
                 text-[#2f221d]
 
                 font-black
-
                 leading-none
 
                 text-[36px]
@@ -556,7 +584,7 @@ export default function Home() {
 
           </div>
 
-          {/* PRODUCT GRID */}
+          {/* GRID */}
 
           <div
             className="
@@ -572,20 +600,7 @@ export default function Home() {
             "
           >
 
-            {[
-              {
-                image: almondImg,
-                title: "Brownies Almond",
-              },
-              {
-                image: cookiesImg,
-                title: "Brownies Cookies",
-              },
-              {
-                image: mixImg,
-                title: "Brownies Mix Topping",
-              },
-            ].map((item, index) => (
+            {products.map((item, index) => (
 
               <div
                 key={index}
@@ -599,12 +614,12 @@ export default function Home() {
 
                   overflow-hidden
 
-                  shadow-[0_10px_30px_rgba(0,0,0,0.05)]
-
-                  hover:-translate-y-2
+                  shadow-[0_8px_24px_rgba(0,0,0,0.04)]
 
                   transition-all
-                  duration-500
+                  duration-300
+
+                  hover:-translate-y-1
                 "
               >
 
@@ -626,10 +641,10 @@ export default function Home() {
                       object-cover
                       object-center
 
-                      group-hover:scale-105
+                      transition-transform
+                      duration-500
 
-                      transition-all
-                      duration-700
+                      group-hover:scale-105
                     "
                   />
 
@@ -637,12 +652,7 @@ export default function Home() {
 
                 {/* CONTENT */}
 
-                <div
-                  className="
-                    p-5
-                    sm:p-6
-                  "
-                >
+                <div className="p-5 sm:p-6">
 
                   <h3
                     className="
