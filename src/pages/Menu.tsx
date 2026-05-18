@@ -13,6 +13,8 @@ const products = [
   {
     title: "Brownies Classic",
 
+    price: "Rp55.000",
+
     description:
       "Rich chocolate brownies dengan tekstur moist dan rasa premium yang lembut di setiap gigitan.",
 
@@ -21,6 +23,8 @@ const products = [
 
   {
     title: "Brownies Almond",
+
+    price: "Rp65.000",
 
     description:
       "Perpaduan brownies premium dengan topping almond crunchy yang gurih dan elegan.",
@@ -31,6 +35,8 @@ const products = [
   {
     title: "Brownies Cookies",
 
+    price: "Rp68.000",
+
     description:
       "Kombinasi brownies moist dengan topping cookies favorit untuk sweet moments spesial.",
 
@@ -39,6 +45,8 @@ const products = [
 
   {
     title: "Brownies Mix Topping",
+
+    price: "Rp70.000",
 
     description:
       "Rich chocolate brownies dengan topping caramel biscuit, choco ball, sliced almond, chocolate cream biscuit, dan roasted peanut crumble.",
@@ -357,24 +365,45 @@ Terima kasih`);
 
                   {/* TITLE */}
 
-                  <h3
-                    className="
-                      text-[30px]
-                      sm:text-[36px]
+                  <div className="mt-2">
 
-                      leading-[1]
+  <h3
+    className="
+      text-[30px]
+      sm:text-[36px]
 
-                      tracking-[-1px]
+      leading-[1]
 
-                      font-black
+      tracking-[-1px]
 
-                      text-[#2f221d]
-                    "
-                  >
+      font-black
 
-                    {item.title}
+      text-[#2f221d]
+    "
+  >
 
-                  </h3>
+    {item.title}
+
+  </h3>
+
+  <p
+    className="
+      mt-3
+
+      text-[#c38358]
+
+      text-[22px]
+      sm:text-[26px]
+
+      font-bold
+    "
+  >
+
+    {item.price}
+
+  </p>
+
+</div>
 
                   {/* DESCRIPTION */}
 
