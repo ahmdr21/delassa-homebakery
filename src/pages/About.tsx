@@ -6,7 +6,7 @@ import heroImage from "../assets/mixtopping2.webp";
 import gallery1 from "../assets/browniesalmond1.webp";
 import gallery2 from "../assets/browniescoockies1.webp";
 import gallery3 from "../assets/mixtopping3.webp";
-import logoDelassa from "../assets/delassa.png";
+import logoDelassa from "../assets/delassa.webp";
 
 const features = [
   {
