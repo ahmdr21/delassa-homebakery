@@ -109,7 +109,7 @@ Terima kasih`);
           {/* HEADER */}
           {/* ====================================================== */}
 
-          <div className="text-center">
+          <header className="text-center">
 
             {/* BADGE */}
 
@@ -177,9 +177,10 @@ Terima kasih`);
                 tracking-[-2px]
                 sm:tracking-[-4px]
 
-                text-[46px]
-                sm:text-[72px]
-                lg:text-[96px]
+                text-[40px]
+                sm:text-[58px]
+                lg:text-[78px]
+                xl:text-[92px]
               "
             >
 
@@ -202,8 +203,8 @@ Terima kasih`);
 
                 text-[#6f615a]
 
-                text-[16px]
-                sm:text-[20px]
+                text-[15px]
+                sm:text-[19px]
 
                 leading-relaxed
 
@@ -246,7 +247,7 @@ Terima kasih`);
                   className="
                     text-[#7a6a62]
 
-                    text-[15px]
+                    text-[14px]
                     sm:text-[16px]
 
                     font-medium
@@ -261,16 +262,18 @@ Terima kasih`);
 
             </div>
 
-          </div>
+          </header>
 
           {/* ====================================================== */}
           {/* PRODUCT GRID */}
           {/* ====================================================== */}
 
-          <div
+          <section
+            aria-label="Product Menu"
             className="
               grid
-              md:grid-cols-2
+              grid-cols-1
+              sm:grid-cols-2
 
               gap-6
               sm:gap-8
@@ -282,12 +285,15 @@ Terima kasih`);
 
             {products.map((item, index) => (
 
-              <motion.div
+              <motion.article
                 key={index}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{
+                  duration: 0.4,
+                  delay: index * 0.05,
+                }}
                 className="
                   group
 
@@ -307,6 +313,9 @@ Terima kasih`);
 
                   transition-all
                   duration-500
+
+                  motion-reduce:transform-none
+                  motion-reduce:transition-none
                 "
               >
 
@@ -321,18 +330,20 @@ Terima kasih`);
                     alt={item.title}
                     loading="lazy"
                     decoding="async"
+                    sizes="(max-width: 640px) 100vw, 50vw"
                     className="
                       w-full
 
-                      h-[260px]
-                      sm:h-[340px]
+                      aspect-[4/3]
+                      sm:aspect-[16/10]
+                      lg:aspect-[16/9]
 
                       object-cover
                       object-center
 
                       group-hover:scale-105
 
-                      transition-all
+                      transition-transform
                       duration-700
                     "
                   />
@@ -367,43 +378,45 @@ Terima kasih`);
 
                   <div className="mt-2">
 
-  <h3
-    className="
-      text-[30px]
-      sm:text-[36px]
+                    <h2
+                      className="
+                        text-[28px]
+                        sm:text-[34px]
 
-      leading-[1]
+                        leading-[1]
 
-      tracking-[-1px]
+                        tracking-[-1px]
 
-      font-black
+                        font-black
 
-      text-[#2f221d]
-    "
-  >
+                        text-[#2f221d]
+                      "
+                    >
 
-    {item.title}
+                      {item.title}
 
-  </h3>
+                    </h2>
 
-  <p
-    className="
-      mt-3
+                    {/* PRICE */}
 
-      text-[#c38358]
+                    <p
+                      className="
+                        mt-3
 
-      text-[22px]
-      sm:text-[26px]
+                        text-[#c38358]
 
-      font-bold
-    "
-  >
+                        text-[21px]
+                        sm:text-[25px]
 
-    {item.price}
+                        font-bold
+                      "
+                    >
 
-  </p>
+                      {item.price}
 
-</div>
+                    </p>
+
+                  </div>
 
                   {/* DESCRIPTION */}
 
@@ -414,9 +427,9 @@ Terima kasih`);
                       text-[#7a6a62]
 
                       text-[15px]
-                      sm:text-[17px]
+                      sm:text-[16px]
 
-                      leading-relaxed
+                      leading-7
                     "
                   >
 
@@ -429,11 +442,15 @@ Terima kasih`);
                   <a
                     href={`https://wa.me/6287715443313?text=${message}`}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
+                    aria-label={`Order ${item.title} via WhatsApp`}
                     className="
                       inline-flex
                       items-center
                       justify-center
+
+                      w-full
+                      sm:w-auto
 
                       mt-7
 
@@ -443,7 +460,7 @@ Terima kasih`);
 
                       text-white
 
-                      px-7
+                      px-6
                       sm:px-8
 
                       py-3.5
@@ -470,11 +487,11 @@ Terima kasih`);
 
                 </div>
 
-              </motion.div>
+              </motion.article>
 
             ))}
 
-          </div>
+          </section>
 
         </div>
 

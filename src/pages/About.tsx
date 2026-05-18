@@ -1,8 +1,42 @@
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { Heart, Gift, Leaf, ChefHat, ArrowRight } from "lucide-react";
 
-import brownie2 from "../assets/mixtopping2.webp";
+import heroImage from "../assets/mixtopping2.webp";
+import gallery1 from "../assets/browniesalmond1.webp";
+import gallery2 from "../assets/browniescoockies1.webp";
+import gallery3 from "../assets/mixtopping3.webp";
+
+const features = [
+  {
+    icon: Leaf,
+    title: "Premium Ingredients",
+    description:
+      "Kami hanya menggunakan bahan pilihan berkualitas untuk menghasilkan rasa brownies yang rich dan autentik.",
+  },
+  {
+    icon: ChefHat,
+    title: "Freshly Baked",
+    description:
+      "Dibuat fresh setiap hari dengan proses yang menjaga tekstur dan rasa tetap sempurna.",
+  },
+  {
+    icon: Heart,
+    title: "Handmade With Love",
+    description:
+      "Setiap brownies dibuat dengan sentuhan handmade dan perhatian di setiap detailnya.",
+  },
+  {
+    icon: Gift,
+    title: "Perfect For Every Moment",
+    description:
+      "Cocok untuk coffee time, hadiah spesial, hampers, maupun self reward setelah hari yang panjang.",
+  },
+];
 
 export default function About() {
+
+  const navigate = useNavigate();
 
   const message = encodeURIComponent(`Halo Delassa
 
@@ -18,15 +52,10 @@ Terima kasih`);
 
   return (
 
-    <main
-      className="
-        bg-[#faf7f2]
-        overflow-hidden
-      "
-    >
+    <main className="bg-[#faf7f2] overflow-x-hidden">
 
       {/* ====================================================== */}
-      {/* HERO ABOUT */}
+      {/* HERO */}
       {/* ====================================================== */}
 
       <section
@@ -40,17 +69,473 @@ Terima kasih`);
           pt-6
           sm:pt-10
 
-          pb-20
-          sm:pb-28
+          pb-16
+          lg:pb-24
         "
       >
 
-        <div
-          className="
-            max-w-[1450px]
-            mx-auto
-          "
-        >
+        <div className="max-w-[1450px] mx-auto">
+
+          <div
+            className="
+              grid
+              lg:grid-cols-[0.9fr_1.1fr]
+
+              gap-12
+              lg:gap-20
+
+              items-center
+            "
+          >
+
+            {/* LEFT CONTENT */}
+
+            <motion.div
+              initial={{ opacity: 0, y: 18 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="relative z-10"
+            >
+
+              {/* BADGE */}
+
+              <div
+                className="
+                  inline-flex
+                  items-center
+                  gap-2
+
+                  bg-[#f4e8dd]
+
+                  px-5
+                  py-3
+
+                  rounded-full
+                "
+              >
+
+                <div className="w-2 h-2 rounded-full bg-[#c38358]" />
+
+                <p
+                  className="
+                    text-[11px]
+                    sm:text-[12px]
+
+                    uppercase
+                    tracking-[3px]
+
+                    font-semibold
+
+                    text-[#9d6d52]
+                  "
+                >
+
+                  About Us
+
+                </p>
+
+              </div>
+
+              {/* TITLE */}
+
+              <h1
+                className="
+                  mt-8
+
+                  text-[#2f221d]
+
+                  font-black
+
+                  leading-[0.9]
+
+                  tracking-[-2px]
+                  sm:tracking-[-4px]
+
+                  text-[52px]
+                  sm:text-[72px]
+                  lg:text-[96px]
+                  xl:text-[110px]
+                "
+              >
+
+                More Than
+                <br />
+                Dessert
+
+                <span
+                  className="
+                    block
+
+                    mt-2
+
+                    text-[#c38358]
+                  "
+                >
+
+                  It’s An Experience
+
+                </span>
+
+              </h1>
+
+              {/* DIVIDER */}
+
+              <div
+                className="
+                  flex
+                  items-center
+                  gap-4
+
+                  mt-8
+                "
+              >
+
+                <div className="w-20 h-[1px] bg-[#d9b299]" />
+
+                <Heart
+                  size={16}
+                  className="text-[#c38358] fill-[#c38358]"
+                />
+
+                <div className="w-20 h-[1px] bg-[#d9b299]" />
+
+              </div>
+
+              {/* DESCRIPTION */}
+
+              <div className="mt-8 space-y-6 max-w-[620px]">
+
+                <p
+                  className="
+                    text-[#5e524c]
+
+                    text-[16px]
+                    sm:text-[19px]
+
+                    leading-8
+                  "
+                >
+
+                  Delassa menghadirkan brownies premium dengan rich chocolate,
+                  tekstur fudgy yang lembut,
+                  dan topping melimpah yang dibuat fresh setiap hari.
+
+                </p>
+
+                <p
+                  className="
+                    text-[#5e524c]
+
+                    text-[16px]
+                    sm:text-[19px]
+
+                    leading-8
+                  "
+                >
+
+                  Kami percaya bahwa dessert bukan hanya tentang rasa,
+                  tetapi tentang menciptakan sweet moments yang hangat,
+                  spesial,
+                  dan memorable di setiap gigitan.
+
+                </p>
+
+              </div>
+
+              {/* CTA */}
+
+              <button
+                onClick={() => navigate("/menu")}
+                target="_blank"
+                
+                aria-label="Lihat halaman menu brownies Delassa"
+                className="
+                  inline-flex
+                  items-center
+                  gap-4
+
+                  mt-10
+
+                  bg-[#c57a3f]
+
+                  hover:bg-[#af6934]
+
+                  text-white
+
+                  px-7
+                  sm:px-8
+
+                  py-4
+
+                  rounded-full
+
+                  text-[14px]
+                  sm:text-[15px]
+
+                  font-semibold
+
+                  shadow-[0_12px_30px_rgba(0,0,0,0.12)]
+
+                  transition-all
+                  duration-300
+                "
+              >
+
+                LIHAT MENU
+
+                <div
+                  className="
+                    w-9
+                    h-9
+
+                    rounded-full
+
+                    bg-white
+
+                    flex
+                    items-center
+                    justify-center
+                  "
+                >
+
+                  <ArrowRight
+                    size={18}
+                    className="text-[#3b2b26]"
+                  />
+
+                </div>
+
+              </button>
+
+            </motion.div>
+
+            {/* RIGHT IMAGE */}
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="relative"
+            >
+
+              <div
+                className="
+                  absolute
+                  inset-0
+
+                  bg-[#f1cfb6]
+
+                  opacity-20
+
+                  blur-[120px]
+                "
+              />
+
+              <div
+                className="
+                  relative
+
+                  overflow-hidden
+
+                  rounded-[36px]
+                  lg:rounded-[46px]
+                "
+              >
+
+                <img
+                  src={heroImage}
+                  alt="Delassa Premium Brownies"
+                  fetchPriority="high"
+                  decoding="async"
+                  className="
+                    w-full
+
+                    aspect-[4/4.8]
+                    lg:aspect-[4/4.5]
+
+                    object-cover
+                    object-center
+                  "
+                />
+
+              </div>
+
+            </motion.div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      {/* ====================================================== */}
+      {/* FEATURES */}
+      {/* ====================================================== */}
+
+      <section
+        className="
+          px-4
+          sm:px-6
+          lg:px-8
+
+          pb-16
+          lg:pb-24
+        "
+      >
+
+        <div className="max-w-[1450px] mx-auto">
+
+          {/* TITLE */}
+
+          <div className="text-center">
+
+            <div className="flex items-center justify-center gap-4">
+
+              <div className="w-20 h-[1px] bg-[#d9b299]" />
+
+              <p
+                className="
+                  uppercase
+
+                  tracking-[4px]
+
+                  text-[11px]
+                  sm:text-[12px]
+
+                  font-semibold
+
+                  text-[#7b5d4a]
+                "
+              >
+
+                What Makes Delassa Special
+
+              </p>
+
+              <div className="w-20 h-[1px] bg-[#d9b299]" />
+
+            </div>
+
+          </div>
+
+          {/* GRID */}
+
+          <div
+            className="
+              grid
+              sm:grid-cols-2
+              lg:grid-cols-4
+
+              gap-8
+
+              mt-16
+            "
+          >
+
+            {features.map((item, index) => {
+
+              const Icon = item.icon;
+
+              return (
+
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 18 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.45, delay: index * 0.08 }}
+                  className="text-center"
+                >
+
+                  <div
+                    className="
+                      w-[120px]
+                      h-[120px]
+
+                      mx-auto
+
+                      rounded-full
+
+                      bg-[#f7ede5]
+
+                      flex
+                      items-center
+                      justify-center
+                    "
+                  >
+
+                    <Icon
+                      size={42}
+                      strokeWidth={1.5}
+                      className="text-[#c38358]"
+                    />
+
+                  </div>
+
+                  <h3
+                    className="
+                      mt-8
+
+                      text-[#2f221d]
+
+                      font-bold
+
+                      text-[28px]
+
+                      leading-tight
+                    "
+                  >
+
+                    {item.title}
+
+                  </h3>
+
+                  <p
+                    className="
+                      mt-4
+
+                      text-[#675b55]
+
+                      text-[15px]
+
+                      leading-7
+                    "
+                  >
+
+                    {item.description}
+
+                  </p>
+
+                </motion.div>
+
+              );
+
+            })}
+
+          </div>
+
+        </div>
+
+      </section>
+
+      {/* ====================================================== */}
+      {/* STORY SECTION */}
+      {/* ====================================================== */}
+
+      <section
+        className="
+          px-4
+          sm:px-6
+          lg:px-8
+
+          pb-16
+          lg:pb-24
+        "
+      >
+
+        <div className="max-w-[1450px] mx-auto">
 
           <div
             className="
@@ -64,322 +549,220 @@ Terima kasih`);
             "
           >
 
-            {/* ====================================================== */}
-            {/* IMAGE */}
-            {/* ====================================================== */}
+            {/* LEFT GALLERY */}
 
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
-              className="relative"
-            >
-
-              {/* GLOW */}
+            <div className="grid grid-cols-2 gap-4">
 
               <div
                 className="
-                  absolute
-                  inset-0
-
-                  bg-[#f3cfb7]
-
-                  opacity-20
-
-                  blur-[120px]
-
-                  rounded-full
-                "
-              />
-
-              {/* IMAGE */}
-
-              <div
-                className="
-                  relative
-
                   overflow-hidden
 
                   rounded-[28px]
-                  sm:rounded-[40px]
-
-                  shadow-[0_20px_50px_rgba(0,0,0,0.08)]
                 "
               >
 
                 <img
-                  src={brownie2}
-                  alt="Delassa Brownies"
-                  loading="eager"
-                  fetchPriority="high"
+                  src={gallery1}
+                  alt="Delassa brownies gallery"
+                  loading="lazy"
                   decoding="async"
                   className="
                     w-full
-
-                    h-[320px]
-                    sm:h-[520px]
-                    lg:h-[760px]
+                    h-full
 
                     object-cover
-                    object-center
                   "
                 />
 
               </div>
 
-            </motion.div>
+              <div className="grid gap-4">
 
-            {/* ====================================================== */}
-            {/* CONTENT */}
-            {/* ====================================================== */}
+                <div
+                  className="
+                    overflow-hidden
 
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
-              className="
-                text-center
-                lg:text-left
-              "
-            >
+                    rounded-[28px]
+                  "
+                >
 
-              {/* BADGE */}
+                  <img
+                    src={gallery2}
+                    alt="Chocolate brownies Delassa"
+                    loading="lazy"
+                    decoding="async"
+                    className="
+                      w-full
+
+                      aspect-[4/3]
+
+                      object-cover
+                    "
+                  />
+
+                </div>
+
+                <div
+                  className="
+                    overflow-hidden
+
+                    rounded-[28px]
+                  "
+                >
+
+                  <img
+                    src={gallery3}
+                    alt="Premium brownies packaging"
+                    loading="lazy"
+                    decoding="async"
+                    className="
+                      w-full
+
+                      aspect-[4/3]
+
+                      object-cover
+                    "
+                  />
+
+                </div>
+
+              </div>
+
+            </div>
+
+            {/* RIGHT CONTENT */}
+
+            <div className="relative">
 
               <div
                 className="
-                  inline-flex
-                  items-center
-                  gap-3
+                  absolute
+                  right-0
+                  top-0
 
-                  bg-[#f3e5d8]
+                  opacity-10
 
-                  px-5
-                  sm:px-6
-
-                  py-3
-
-                  rounded-full
+                  hidden
+                  lg:block
                 "
               >
 
-                <span
-                  className="
-                    w-2
-                    h-2
-
-                    rounded-full
-
-                    bg-[#c38358]
-                  "
+                <Leaf
+                  size={180}
+                  strokeWidth={1}
+                  className="text-[#d8b39a]"
                 />
+
+              </div>
+
+              <div className="relative z-10">
 
                 <p
                   className="
+                    uppercase
+
+                    tracking-[4px]
+
                     text-[11px]
                     sm:text-[12px]
 
-                    tracking-[3px]
-
-                    uppercase
-
                     font-semibold
 
-                    text-[#9b6a50]
+                    text-[#9d6d52]
                   "
                 >
 
-                  About Delassa
+                  Our Story
 
                 </p>
 
-              </div>
-
-              {/* TITLE */}
-
-              <h1
-                className="
-                  mt-7
-
-                  text-[#2f221d]
-
-                  font-black
-
-                  leading-[0.92]
-
-                  tracking-[-2px]
-                  sm:tracking-[-4px]
-
-                  text-[44px]
-                  sm:text-[72px]
-                  lg:text-[96px]
-                "
-              >
-
-                More Than
-                <br />
-
-                Dessert
-
-                <span
+                <h2
                   className="
-                    block
+                    mt-6
 
-                    text-[#c38358]
+                    text-[#2f221d]
 
-                    mt-2
+                    font-black
+
+                    leading-[1]
+
+                    text-[40px]
+                    sm:text-[58px]
+                    lg:text-[76px]
                   "
                 >
 
-                  It’s An Experience
+                  Berawal dari cinta
+                  terhadap hal-hal kecil
+                  yang membuat
+                  hari terasa
 
-                </span>
+                  <span className="text-[#c38358]">
 
-              </h1>
+                    lebih manis.
 
-              {/* DESCRIPTION */}
+                  </span>
 
-              <div
-                className="
-                  mt-8
+                </h2>
 
-                  space-y-5
+                <div className="mt-8 space-y-6 max-w-[620px]">
 
-                  max-w-[680px]
-
-                  mx-auto
-                  lg:mx-0
-                "
-              >
-
-                <p
-                  className="
-                    text-[#6f615a]
-
-                    text-[16px]
-                    sm:text-[20px]
-
-                    leading-relaxed
-                  "
-                >
-
-                  Delassa hadir untuk menghadirkan brownies
-                  premium dengan rich chocolate,
-                  tekstur moist,
-                  dan sentuhan handmade
-                  yang dibuat fresh setiap hari.
-
-                </p>
-
-                <p
-                  className="
-                    text-[#6f615a]
-
-                    text-[16px]
-                    sm:text-[20px]
-
-                    leading-relaxed
-                  "
-                >
-
-                  Bukan hanya dessert,
-                  tapi bagian dari hadiah spesial,
-                  hampers aesthetic,
-                  dan sweet moments favoritmu.
-
-                </p>
-
-              </div>
-
-              {/* FEATURES */}
-
-              <div
-                className="
-                  flex
-                  flex-wrap
-
-                  justify-center
-                  lg:justify-start
-
-                  gap-x-7
-                  gap-y-3
-
-                  mt-10
-                "
-              >
-
-                {[
-                  "✓ Premium ingredients",
-                  "✓ Made by order",
-                  "✓ Handmade daily",
-                ].map((item, index) => (
-
-                  <div
-                    key={index}
+                  <p
                     className="
-                      text-[#7a6a62]
+                      text-[#5f534d]
 
-                      text-[15px]
-                      sm:text-[16px]
+                      text-[16px]
+                      sm:text-[18px]
 
-                      font-medium
+                      leading-8
                     "
                   >
 
-                    {item}
+                    Delassa lahir dari kecintaan pada brownies,
+                    dessert sederhana yang selalu berhasil menghadirkan rasa hangat dan kebahagiaan.
 
-                  </div>
+                  </p>
 
-                ))}
+                  <p
+                    className="
+                      text-[#5f534d]
+
+                      text-[16px]
+                      sm:text-[18px]
+
+                      leading-8
+                    "
+                  >
+
+                    Kami ingin menghadirkan brownies premium dengan bahan terbaik,
+                    proses yang terjaga,
+                    dan sentuhan handmade di setiap detailnya.
+
+                  </p>
+
+                  <p
+                    className="
+                      text-[#c38358]
+
+                      text-[17px]
+                      sm:text-[20px]
+
+                      leading-8
+
+                      font-semibold
+                    "
+                  >
+
+                    Delassa bukan hanya brownies,
+                    tapi bagian dari momen-momen berharga dalam hidupmu.
+
+                  </p>
+
+                </div>
 
               </div>
 
-              {/* CTA */}
-
-              <a
-                href={`https://wa.me/6287715443313?text=${message}`}
-                target="_blank"
-                rel="noreferrer"
-                className="
-                  inline-flex
-                  items-center
-                  justify-center
-
-                  mt-10
-
-                  bg-[#3b2b26]
-
-                  hover:bg-[#241815]
-
-                  text-white
-
-                  px-8
-                  sm:px-10
-
-                  py-4
-
-                  rounded-full
-
-                  text-[15px]
-                  sm:text-[16px]
-
-                  font-semibold
-
-                  shadow-[0_10px_30px_rgba(0,0,0,0.12)]
-
-                  hover:-translate-y-[2px]
-
-                  transition-all
-                  duration-300
-                "
-              >
-
-                Order Sekarang
-
-              </a>
-
-            </motion.div>
+            </div>
 
           </div>
 
@@ -388,7 +771,7 @@ Terima kasih`);
       </section>
 
       {/* ====================================================== */}
-      {/* EXTRA SECTION */}
+      {/* CLOSING */}
       {/* ====================================================== */}
 
       <section
@@ -398,155 +781,157 @@ Terima kasih`);
           lg:px-8
 
           pb-20
-          sm:pb-28
         "
       >
 
-        <div
-          className="
-            max-w-[1450px]
-            mx-auto
-          "
-        >
+        <div className="max-w-[1450px] mx-auto">
 
           <div
             className="
-              bg-[#3a241c]
+              bg-[#f6eee7]
 
-              rounded-[30px]
-              sm:rounded-[40px]
+              rounded-[34px]
 
-              overflow-hidden
+              px-8
+              sm:px-12
+              lg:px-16
 
-              relative
+              py-10
+              sm:py-12
+
+              flex
+              flex-col
+              lg:flex-row
+
+              gap-10
+
+              items-center
+              justify-between
             "
           >
 
-            {/* BG EFFECT */}
+            {/* LEFT */}
 
             <div
               className="
-                absolute
-                inset-0
-
-                opacity-10
-
-                bg-[radial-gradient(circle_at_top_right,#ffffff,transparent_40%)]
-              "
-            />
-
-            <div
-              className="
-                relative
-
-                grid
-                lg:grid-cols-2
+                flex
+                flex-col
+                sm:flex-row
 
                 items-center
+                gap-6
               "
             >
 
-              {/* LEFT */}
-
-              <div
+              <img
+                src="/delassa.png"
+                alt="Delassa Home Bakery"
+                loading="lazy"
                 className="
-                  p-8
-                  sm:p-12
-                  lg:p-16
+                  w-[90px]
+                  sm:w-[110px]
+
+                  h-auto
+
+                  object-contain
                 "
-              >
+              />
 
-                <p
+              <div className="text-center sm:text-left">
+
+                <h3
                   className="
-                    text-[#efbb90]
+                    text-[#2f221d]
 
-                    uppercase
+                    font-bold
 
-                    tracking-[4px]
+                    leading-snug
 
-                    text-[12px]
-
-                    font-semibold
+                    text-[22px]
+                    sm:text-[28px]
                   "
                 >
 
-                  Freshly Baked Everyday
+                  More than dessert,
+                  <br />
+                  Delassa hadir untuk menciptakan
+                  pengalaman manis yang ingin selalu diingat.
 
-                </p>
-
-                <h2
-                  className="
-                    mt-5
-
-                    text-white
-
-                    font-black
-
-                    leading-[0.95]
-
-                    text-[40px]
-                    sm:text-[62px]
-                    lg:text-[78px]
-                  "
-                >
-
-                  Brownies
-                  Crafted
-                  With Love
-
-                </h2>
-
-                <p
-                  className="
-                    mt-6
-
-                    text-white/80
-
-                    text-[16px]
-                    sm:text-[18px]
-
-                    leading-relaxed
-
-                    max-w-[580px]
-                  "
-                >
-
-                  Setiap brownies dibuat setelah pesanan masuk,
-                  menggunakan premium ingredients pilihan
-                  untuk menjaga rasa,
-                  aroma,
-                  dan tekstur tetap fresh
-                  sampai ke tanganmu.
-
-                </p>
+                </h3>
 
               </div>
 
-              {/* RIGHT */}
+            </div>
 
-              <div
-                className="
-                  h-[320px]
-                  sm:h-[420px]
-                  lg:h-full
-                "
-              >
+            {/* RIGHT */}
 
-                <img
-                  src={brownie2}
-                  alt="Delassa Premium Brownies"
-                  loading="lazy"
-                  decoding="async"
-                  className="
-                    w-full
-                    h-full
+            <div
+              className="
+                flex
+                flex-wrap
 
-                    object-cover
-                    object-center
-                  "
-                />
+                justify-center
 
-              </div>
+                gap-10
+              "
+            >
+
+              {[
+                {
+                  icon: Heart,
+                  title: "Made with Love",
+                },
+                {
+                  icon: Leaf,
+                  title: "Quality You Can Taste",
+                },
+                {
+                  icon: Gift,
+                  title: "Moments Worth Sharing",
+                },
+              ].map((item, index) => {
+
+                const Icon = item.icon;
+
+                return (
+
+                  <div
+                    key={index}
+                    className="
+                      flex
+                      items-center
+                      gap-4
+                    "
+                  >
+
+                    <Icon
+                      size={24}
+                      strokeWidth={1.8}
+                      className="text-[#c38358]"
+                    />
+
+                    <p
+                      className="
+                        text-[#5e524c]
+
+                        text-[14px]
+                        sm:text-[15px]
+
+                        font-medium
+
+                        leading-6
+                      "
+                    >
+
+                      {item.title}
+
+                    </p>
+
+                  </div>
+
+                );
+
+              })}
 
             </div>
 
