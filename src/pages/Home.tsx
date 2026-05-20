@@ -111,37 +111,37 @@ export default function Home() {
 
             {/* DESKTOP IMAGE */}
 
-<div
-  className="
-    hidden
-    md:flex
+            <div
+              className="
+                hidden
+                md:flex
 
-    items-center
-    justify-center
+                items-center
+                justify-center
 
-    w-full
+                w-full
 
-    bg-[#efe7df]
-  "
->
+                bg-[#efe7df]
+              "
+            >
 
-  <img
-    src={desktopBanners[currentSlide]}
-    alt="Delassa Banner"
-    fetchPriority="high"
-    decoding="async"
-    loading="eager"
-    className="
-      w-full
-      
-      object-center
+              <img
+                src={desktopBanners[currentSlide]}
+                alt="Brownies Premium Delassa Home Bakery Bekasi"
+                fetchPriority="high"
+                decoding="async"
+                loading="eager"
+                className="
+                  w-full
 
-      transition-all
-      duration-500
-    "
-  />
+                  object-center
 
-</div>
+                  transition-all
+                  duration-500
+                "
+              />
+
+            </div>
 
             {/* MOBILE IMAGE */}
 
@@ -158,7 +158,7 @@ export default function Home() {
 
               <img
                 src={mobileBanners[currentSlide]}
-                alt="Delassa Banner Mobile"
+                alt="Brownies Homemade Delassa Bekasi"
                 fetchPriority="high"
                 decoding="async"
                 loading="eager"
@@ -256,11 +256,11 @@ export default function Home() {
               "
             >
 
-              About Delassa
+              Brownies Premium Bekasi
 
             </p>
 
-            <h2
+            <h1
               className="
                 mt-4
                 sm:mt-5
@@ -280,7 +280,7 @@ export default function Home() {
               <br />
               With Premium Taste
 
-            </h2>
+            </h1>
 
             <p
               className="
@@ -300,8 +300,9 @@ export default function Home() {
             >
 
               Delassa Home Bakery menghadirkan brownies premium
-              dengan tekstur fudgy, rich chocolate,
-              dan topping melimpah yang dibuat fresh setiap hari.
+              homemade di Bekasi dengan tekstur fudgy,
+              rich chocolate, dan topping melimpah
+              yang dibuat fresh setiap hari.
 
               Setiap produk dibuat menggunakan bahan berkualitas
               untuk menciptakan rasa manis yang hangat,
@@ -388,7 +389,7 @@ export default function Home() {
 
             <img
               src={freshImage}
-              alt="Freshly Baked Brownies"
+              alt="Freshly baked brownies premium Delassa Home Bakery Bekasi"
               loading="lazy"
               decoding="async"
               className="
@@ -600,7 +601,7 @@ export default function Home() {
 
             {products.map((item, index) => (
 
-              <div
+              <article
                 key={index}
                 className="
                   group
@@ -627,7 +628,7 @@ export default function Home() {
 
                   <img
                     src={item.image}
-                    alt={item.title}
+                    alt={`${item.title} Delassa Home Bakery Bekasi`}
                     loading="lazy"
                     decoding="async"
                     className="
@@ -690,6 +691,7 @@ export default function Home() {
 
                   <Link
                     to="/menu"
+                    aria-label={`View ${item.title} brownies`}
                     className="
                       inline-flex
                       items-center
@@ -714,7 +716,7 @@ export default function Home() {
 
                 </div>
 
-              </div>
+              </article>
 
             ))}
 
