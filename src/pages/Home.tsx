@@ -717,15 +717,20 @@ export default function Home() {
                   alt={selectedProduct.title}
 
                   className="
-                    w-full
+  w-full
 
-                    h-[320px]
-                    sm:h-[420px]
-                    lg:h-full
+  h-[220px]
+  sm:h-[320px]
+  lg:h-[620px]
 
-                    object-cover
-                    object-center
-                  "
+  object-contain
+  object-center
+
+  bg-[#f5ede5]
+
+  p-4
+  sm:p-6
+"
                 />
 
               </div>
