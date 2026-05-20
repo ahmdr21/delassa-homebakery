@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 
 /* ====================================================== */
 /* ASSETS */
@@ -23,6 +22,16 @@ import almondImg from "../assets/browniesalmond1.webp";
 import cookiesImg from "../assets/browniescoockies1.webp";
 import mixImg from "../assets/mixtopping3.webp";
 
+/* POPUP IMAGE */
+import almond1 from "../assets/browniesalmond1.png";
+import almond2 from "../assets/browniesalmond2.png";
+
+import cookies1 from "../assets/browniescoockies1.png";
+import cookies2 from "../assets/browniescoockies1.webp";
+
+import mix1 from "../assets/mixtopping1.png";
+import mix2 from "../assets/mixtopping2.png";
+
 /* ====================================================== */
 /* DATA */
 /* ====================================================== */
@@ -41,22 +50,61 @@ const mobileBanners = [
 
 const products = [
   {
-    image: almondImg,
     title: "Brownies Almond",
+
+    image: almondImg,
+
+    description:
+      "Brownies premium dengan topping almond melimpah dan rich chocolate premium.",
+
+    images: [
+      almond1,
+      almond2,
+    ],
   },
+
   {
-    image: cookiesImg,
     title: "Brownies Cookies",
+
+    image: cookiesImg,
+
+    description:
+      "Perpaduan brownies fudgy dengan cookies lembut yang lumer di setiap gigitan.",
+
+    images: [
+      cookies1,
+      cookies2,
+    ],
   },
+
   {
-    image: mixImg,
     title: "Brownies Mix Topping",
+
+    image: mixImg,
+
+    description:
+      "Brownies dengan berbagai topping favorit untuk sweet moments terbaik.",
+
+    images: [
+      mix1,
+      mix2,
+    ],
   },
 ];
 
 export default function Home() {
 
+  /* ====================================================== */
+  /* STATE */
+  /* ====================================================== */
+
   const [currentSlide, setCurrentSlide] = useState(0);
+
+  const [open, setOpen] = useState(false);
+
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+
+  const [activeImage, setActiveImage] = useState(0);
 
   /* ====================================================== */
   /* AUTO SLIDE */
@@ -84,16 +132,7 @@ export default function Home() {
       {/* HERO BANNER */}
       {/* ====================================================== */}
 
-      <section
-        className="
-          w-full
-          px-3
-          sm:px-5
-          lg:px-8
-          pt-3
-          sm:pt-5
-        "
-      >
+      <section className="w-full px-3 sm:px-5 lg:px-8 pt-3 sm:pt-5">
 
         <div className="max-w-[1500px] mx-auto">
 
@@ -109,31 +148,22 @@ export default function Home() {
             "
           >
 
-            {/* DESKTOP IMAGE */}
+            {/* DESKTOP */}
 
-            <div
-              className="
-                hidden
-                md:flex
-
-                items-center
-                justify-center
-
-                w-full
-
-                bg-[#efe7df]
-              "
-            >
+            <div className="hidden md:block">
 
               <img
                 src={desktopBanners[currentSlide]}
                 alt="Brownies Premium Delassa Home Bakery Bekasi"
+
                 fetchPriority="high"
-                decoding="async"
                 loading="eager"
+
                 className="
                   w-full
+                  h-auto
 
+                  object-cover
                   object-center
 
                   transition-all
@@ -143,31 +173,22 @@ export default function Home() {
 
             </div>
 
-            {/* MOBILE IMAGE */}
+            {/* MOBILE */}
 
-            <div
-              className="
-                block
-                md:hidden
-
-                w-full
-
-                bg-[#efe7df]
-              "
-            >
+            <div className="block md:hidden">
 
               <img
                 src={mobileBanners[currentSlide]}
                 alt="Brownies Homemade Delassa Bekasi"
+
                 fetchPriority="high"
-                decoding="async"
                 loading="eager"
+
                 className="
                   w-full
-
                   h-auto
 
-                  object-contain
+                  object-cover
                   object-center
 
                   transition-all
@@ -198,7 +219,9 @@ export default function Home() {
                 <button
                   key={index}
                   onClick={() => setCurrentSlide(index)}
+
                   aria-label={`Slide ${index + 1}`}
+
                   className={`
                     transition-all
                     duration-300
@@ -226,152 +249,82 @@ export default function Home() {
       {/* ABOUT */}
       {/* ====================================================== */}
 
-      <section
-        className="
-          pt-14
-          sm:pt-24
+      <section className="pt-14 sm:pt-24 px-5 sm:px-8">
 
-          px-5
-          sm:px-8
-        "
-      >
+        <div className="max-w-[1200px] mx-auto text-center">
 
-        <div className="max-w-[1200px] mx-auto">
-
-          {/* TITLE */}
-
-          <div className="text-center">
-
-            <p
-              className="
-                text-[#c58b67]
-
-                uppercase
-                tracking-[4px]
-
-                text-[11px]
-                sm:text-[13px]
-
-                font-semibold
-              "
-            >
-
-              Brownies Premium Bekasi
-
-            </p>
-
-            <h1
-              className="
-                mt-4
-                sm:mt-5
-
-                text-[#2f221d]
-
-                font-black
-                leading-[1]
-
-                text-[34px]
-                sm:text-[60px]
-                lg:text-[82px]
-              "
-            >
-
-              Homemade Brownies
-              <br />
-              With Premium Taste
-
-            </h1>
-
-            <p
-              className="
-                mt-6
-                sm:mt-8
-
-                max-w-[920px]
-                mx-auto
-
-                text-[#5f534d]
-
-                leading-relaxed
-
-                text-[15px]
-                sm:text-[20px]
-              "
-            >
-
-              Delassa Home Bakery menghadirkan brownies premium
-              homemade di Bekasi dengan tekstur fudgy,
-              rich chocolate, dan topping melimpah
-              yang dibuat fresh setiap hari.
-
-              Setiap produk dibuat menggunakan bahan berkualitas
-              untuk menciptakan rasa manis yang hangat,
-              aesthetic, dan memorable di setiap gigitan.
-
-            </p>
-
-          </div>
-
-          {/* FEATURES */}
-
-          <div
+          <p
             className="
-              flex
-              flex-wrap
+              text-[#c58b67]
 
-              justify-center
+              uppercase
+              tracking-[4px]
 
-              gap-x-5
-              gap-y-3
+              text-[11px]
+              sm:text-[13px]
 
-              mt-8
-              sm:mt-12
+              font-semibold
             "
           >
 
-            {[
-              "✓ Premium Ingredients",
-              "✓ Made by order",
-              "✓ Fresh from oven",
-            ].map((item, index) => (
+            Brownies Premium Bekasi
 
-              <div
-                key={index}
-                className="
-                  text-[#6c5a51]
+          </p>
 
-                  text-[13px]
-                  sm:text-[17px]
+          <h1
+            className="
+              mt-4
+              sm:mt-5
 
-                  font-medium
-                "
-              >
+              text-[#2f221d]
 
-                {item}
+              font-black
+              leading-[1]
 
-              </div>
+              text-[34px]
+              sm:text-[60px]
+              lg:text-[82px]
+            "
+          >
 
-            ))}
+            Homemade Brownies
+            <br />
+            With Premium Taste
 
-          </div>
+          </h1>
+
+          <p
+            className="
+              mt-6
+              sm:mt-8
+
+              max-w-[920px]
+              mx-auto
+
+              text-[#5f534d]
+
+              leading-relaxed
+
+              text-[15px]
+              sm:text-[20px]
+            "
+          >
+
+            Delassa Home Bakery menghadirkan brownies premium homemade
+            di Bekasi dengan tekstur fudgy, rich chocolate,
+            dan topping melimpah yang dibuat fresh setiap hari.
+
+          </p>
 
         </div>
 
       </section>
 
       {/* ====================================================== */}
-      {/* FRESHLY BAKED */}
+      {/* FRESH SECTION */}
       {/* ====================================================== */}
 
-      <section
-        className="
-          pt-14
-          sm:pt-24
-
-          px-3
-          sm:px-8
-        "
-      >
+      <section className="pt-14 sm:pt-24 px-3 sm:px-8">
 
         <div className="max-w-[1500px] mx-auto">
 
@@ -385,13 +338,12 @@ export default function Home() {
             "
           >
 
-            {/* IMAGE */}
-
             <img
               src={freshImage}
-              alt="Freshly baked brownies premium Delassa Home Bakery Bekasi"
+              alt="Freshly baked brownies premium"
+
               loading="lazy"
-              decoding="async"
+
               className="
                 w-full
 
@@ -404,26 +356,17 @@ export default function Home() {
               "
             />
 
-            {/* OVERLAY */}
-
             <div
               className="
                 absolute
                 inset-0
 
-                bg-gradient-to-t
-                from-[#2f221df4]
-                via-[#2f221dc7]
-                to-[#2f221d34]
-
-                sm:bg-gradient-to-r
-                sm:from-[#2f221de8]
-                sm:via-[#2f221d99]
-                sm:to-transparent
+                bg-gradient-to-r
+                from-[#2f221de8]
+                via-[#2f221d88]
+                to-transparent
               "
             />
-
-            {/* CONTENT */}
 
             <div
               className="
@@ -431,23 +374,11 @@ export default function Home() {
                 inset-0
 
                 flex
-                items-end
-                sm:items-center
+                items-center
               "
             >
 
-              <div
-                className="
-                  px-5
-                  sm:px-12
-                  lg:px-16
-
-                  pb-8
-                  sm:pb-0
-
-                  max-w-[760px]
-                "
-              >
+              <div className="px-5 sm:px-12 lg:px-16 max-w-[760px]">
 
                 <p
                   className="
@@ -487,29 +418,6 @@ export default function Home() {
                   Everyday
 
                 </h2>
-
-                <p
-                  className="
-                    mt-4
-                    sm:mt-6
-
-                    text-white/90
-
-                    leading-relaxed
-
-                    text-[15px]
-                    sm:text-[21px]
-
-                    max-w-[620px]
-                  "
-                >
-
-                  Setiap brownies dibuat setelah pesanan masuk,
-                  menggunakan premium ingredients pilihan
-                  untuk menjaga rasa, aroma, dan tekstur
-                  tetap fresh saat sampai ke tanganmu.
-
-                </p>
 
               </div>
 
@@ -603,6 +511,7 @@ export default function Home() {
 
               <article
                 key={index}
+
                 className="
                   group
 
@@ -622,15 +531,14 @@ export default function Home() {
                 "
               >
 
-                {/* IMAGE */}
-
                 <div className="overflow-hidden">
 
                   <img
                     src={item.image}
-                    alt={`${item.title} Delassa Home Bakery Bekasi`}
+                    alt={item.title}
+
                     loading="lazy"
-                    decoding="async"
+
                     className="
                       w-full
 
@@ -648,8 +556,6 @@ export default function Home() {
                   />
 
                 </div>
-
-                {/* CONTENT */}
 
                 <div className="p-5 sm:p-6">
 
@@ -683,15 +589,21 @@ export default function Home() {
                     "
                   >
 
-                    Brownies premium dengan tekstur fudgy,
-                    rich chocolate, dan topping melimpah
-                    yang dibuat fresh setiap hari.
+                    {item.description}
 
                   </p>
 
-                  <Link
-                    to="/menu"
-                    aria-label={`View ${item.title} brownies`}
+                  <button
+                    onClick={() => {
+
+                      setSelectedProduct(item);
+
+                      setActiveImage(0);
+
+                      setOpen(true);
+
+                    }}
+
                     className="
                       inline-flex
                       items-center
@@ -712,7 +624,7 @@ export default function Home() {
 
                     View Product →
 
-                  </Link>
+                  </button>
 
                 </div>
 
@@ -725,6 +637,251 @@ export default function Home() {
         </div>
 
       </section>
+
+      {/* ====================================================== */}
+      {/* PRODUCT MODAL */}
+      {/* ====================================================== */}
+
+      {open && selectedProduct && (
+
+        <div
+          className="
+            fixed
+            inset-0
+            z-[999]
+
+            bg-black/60
+            backdrop-blur-sm
+
+            flex
+            items-center
+            justify-center
+
+            p-4
+          "
+        >
+
+          <div
+            className="
+              relative
+
+              bg-[#fffaf5]
+
+              w-full
+              max-w-[950px]
+
+              rounded-[32px]
+
+              overflow-hidden
+
+              shadow-2xl
+            "
+          >
+
+            <button
+              onClick={() => setOpen(false)}
+
+              className="
+                absolute
+                top-4
+                right-4
+
+                z-20
+
+                w-10
+                h-10
+
+                rounded-full
+
+                bg-black/70
+                text-white
+
+                text-xl
+
+                flex
+                items-center
+                justify-center
+              "
+            >
+
+              ×
+
+            </button>
+
+            <div className="grid lg:grid-cols-2">
+
+              <div className="bg-[#f5ede5]">
+
+                <img
+                  src={selectedProduct.images[activeImage]}
+                  alt={selectedProduct.title}
+
+                  className="
+                    w-full
+
+                    h-[320px]
+                    sm:h-[420px]
+                    lg:h-full
+
+                    object-cover
+                    object-center
+                  "
+                />
+
+              </div>
+
+              <div
+                className="
+                  p-6
+                  sm:p-10
+
+                  flex
+                  flex-col
+                  justify-center
+                "
+              >
+
+                <p
+                  className="
+                    text-[#b07b5d]
+
+                    uppercase
+                    tracking-[4px]
+
+                    text-[11px]
+
+                    font-semibold
+                  "
+                >
+
+                  Delassa Home Bakery
+
+                </p>
+
+                <h3
+                  className="
+                    mt-4
+
+                    text-[#2f221d]
+
+                    font-black
+                    leading-none
+
+                    text-[38px]
+                    sm:text-[52px]
+                  "
+                >
+
+                  {selectedProduct.title}
+
+                </h3>
+
+                <p
+                  className="
+                    mt-5
+
+                    text-[#6d5b52]
+
+                    leading-relaxed
+
+                    text-[15px]
+                    sm:text-[17px]
+                  "
+                >
+
+                  {selectedProduct.description}
+
+                </p>
+
+                <div className="flex gap-3 mt-7">
+
+                  {selectedProduct.images.map(
+                    (img: string, index: number) => (
+
+                      <button
+                        key={index}
+
+                        onClick={() => setActiveImage(index)}
+
+                        className={`
+                          overflow-hidden
+                          rounded-2xl
+                          border-2
+
+                          ${
+                            activeImage === index
+                              ? "border-[#b07b5d]"
+                              : "border-[#ead8c7]"
+                          }
+                        `}
+                      >
+
+                        <img
+                          src={img}
+                          alt={`Preview ${index}`}
+
+                          className="
+                            w-20
+                            h-20
+
+                            object-cover
+                          "
+                        />
+
+                      </button>
+
+                    )
+                  )}
+
+                </div>
+
+                {/* BUTTON */}
+
+                <a
+                  href={`https://wa.me/6287715443313?text=Halo%20Delassa%20Saya%20ingin%20melakukan%20pemesanan%20brownies.%0A%0ANama:%20%0ATanggal%20Pickup%20Pemesanan:%20%0AVarian%20Menu:%20${selectedProduct.title}%0AJumlah%20Order:%20%0ARequest%20Tambahan:%20%0A%0ATerima%20kasih`}
+
+                  target="_blank"
+                  rel="noreferrer"
+
+                  className="
+                    mt-8
+
+                    inline-flex
+                    items-center
+                    justify-center
+
+                    h-[58px]
+                    w-full
+
+                    rounded-full
+
+                    bg-[#4a2f25]
+                    text-white
+
+                    font-semibold
+                    text-[15px]
+
+                    hover:opacity-90
+                    hover:scale-[1.01]
+
+                    transition-all
+                    duration-300
+                  "
+                >
+
+                  Order Sekarang
+
+                </a>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      )}
 
     </main>
 
