@@ -644,249 +644,286 @@ export default function Home() {
 
       {open && selectedProduct && (
 
+  <div
+    className="
+      fixed
+      inset-0
+
+      z-[9999]
+
+      bg-black/60
+      backdrop-blur-sm
+
+      overflow-y-auto
+
+      px-3
+      sm:px-5
+
+      py-20
+      sm:py-24
+
+      flex
+      items-center
+      justify-center
+    "
+  >
+
+    <div
+      className="
+        relative
+
+        bg-[#fffaf5]
+
+        w-full
+        max-w-[1000px]
+
+        rounded-[26px]
+        sm:rounded-[32px]
+
+        overflow-hidden
+
+        shadow-2xl
+      "
+    >
+
+      {/* CLOSE BUTTON */}
+
+      <button
+        onClick={() => setOpen(false)}
+
+        className="
+          absolute
+          top-3
+          right-3
+
+          sm:top-4
+          sm:right-4
+
+          z-20
+
+          w-9
+          h-9
+
+          sm:w-10
+          sm:h-10
+
+          rounded-full
+
+          bg-black/70
+          text-white
+
+          text-lg
+          sm:text-xl
+
+          flex
+          items-center
+          justify-center
+        "
+      >
+
+        ×
+
+      </button>
+
+      <div className="grid lg:grid-cols-2">
+
+        {/* IMAGE */}
+
         <div
           className="
-            fixed
-            inset-0
-            z-[999]
-
-            bg-black/60
-            backdrop-blur-sm
+            bg-[#f5ede5]
 
             flex
             items-center
             justify-center
-
-            p-4
           "
         >
 
-          <div
+          <img
+            src={selectedProduct.images[activeImage]}
+            alt={selectedProduct.title}
+
             className="
-              relative
-
-              bg-[#fffaf5]
-
               w-full
-              max-w-[950px]
 
-              rounded-[32px]
+              h-[260px]
+              sm:h-[420px]
+              lg:h-[680px]
 
-              overflow-hidden
-
-              shadow-2xl
+              object-cover
+              object-center
             "
-          >
-
-            <button
-              onClick={() => setOpen(false)}
-
-              className="
-                absolute
-                top-4
-                right-4
-
-                z-20
-
-                w-10
-                h-10
-
-                rounded-full
-
-                bg-black/70
-                text-white
-
-                text-xl
-
-                flex
-                items-center
-                justify-center
-              "
-            >
-
-              ×
-
-            </button>
-
-            <div className="grid lg:grid-cols-2">
-
-              <div className="bg-[#f5ede5]">
-
-                <img
-                  src={selectedProduct.images[activeImage]}
-                  alt={selectedProduct.title}
-
-                  className="
-  w-full
-
-  h-[220px]
-  sm:h-[320px]
-  lg:h-[620px]
-
-  object-contain
-  object-center
-
-  bg-[#f5ede5]
-
-  p-4
-  sm:p-6
-"
-                />
-
-              </div>
-
-              <div
-                className="
-                  p-6
-                  sm:p-10
-
-                  flex
-                  flex-col
-                  justify-center
-                "
-              >
-
-                <p
-                  className="
-                    text-[#b07b5d]
-
-                    uppercase
-                    tracking-[4px]
-
-                    text-[11px]
-
-                    font-semibold
-                  "
-                >
-
-                  Delassa Home Bakery
-
-                </p>
-
-                <h3
-                  className="
-                    mt-4
-
-                    text-[#2f221d]
-
-                    font-black
-                    leading-none
-
-                    text-[38px]
-                    sm:text-[52px]
-                  "
-                >
-
-                  {selectedProduct.title}
-
-                </h3>
-
-                <p
-                  className="
-                    mt-5
-
-                    text-[#6d5b52]
-
-                    leading-relaxed
-
-                    text-[15px]
-                    sm:text-[17px]
-                  "
-                >
-
-                  {selectedProduct.description}
-
-                </p>
-
-                <div className="flex gap-3 mt-7">
-
-                  {selectedProduct.images.map(
-                    (img: string, index: number) => (
-
-                      <button
-                        key={index}
-
-                        onClick={() => setActiveImage(index)}
-
-                        className={`
-                          overflow-hidden
-                          rounded-2xl
-                          border-2
-
-                          ${
-                            activeImage === index
-                              ? "border-[#b07b5d]"
-                              : "border-[#ead8c7]"
-                          }
-                        `}
-                      >
-
-                        <img
-                          src={img}
-                          alt={`Preview ${index}`}
-
-                          className="
-                            w-20
-                            h-20
-
-                            object-cover
-                          "
-                        />
-
-                      </button>
-
-                    )
-                  )}
-
-                </div>
-
-                {/* BUTTON */}
-
-                <a
-                  href={`https://wa.me/6287715443313?text=Halo%20Delassa%20Saya%20ingin%20melakukan%20pemesanan%20brownies.%0A%0ANama:%20%0ATanggal%20Pickup%20Pemesanan:%20%0AVarian%20Menu:%20${selectedProduct.title}%0AJumlah%20Order:%20%0ARequest%20Tambahan:%20%0A%0ATerima%20kasih`}
-
-                  target="_blank"
-                  rel="noreferrer"
-
-                  className="
-                    mt-8
-
-                    inline-flex
-                    items-center
-                    justify-center
-
-                    h-[58px]
-                    w-full
-
-                    rounded-full
-
-                    bg-[#4a2f25]
-                    text-white
-
-                    font-semibold
-                    text-[15px]
-
-                    hover:opacity-90
-                    hover:scale-[1.01]
-
-                    transition-all
-                    duration-300
-                  "
-                >
-
-                  Order Sekarang
-
-                </a>
-
-              </div>
-
-            </div>
-
-          </div>
+          />
 
         </div>
 
-      )}
+        {/* CONTENT */}
+
+        <div
+          className="
+            p-6
+            sm:p-8
+            lg:p-10
+
+            flex
+            flex-col
+            justify-center
+          "
+        >
+
+          <p
+            className="
+              text-[#b07b5d]
+
+              uppercase
+              tracking-[4px]
+
+              text-[10px]
+              sm:text-[11px]
+
+              font-semibold
+            "
+          >
+
+            Delassa Home Bakery
+
+          </p>
+
+          <h3
+            className="
+              mt-4
+
+              text-[#2f221d]
+
+              font-black
+              leading-[0.95]
+
+              text-[42px]
+              sm:text-[58px]
+            "
+          >
+
+            {selectedProduct.title}
+
+          </h3>
+
+          <p
+            className="
+              mt-5
+
+              text-[#6d5b52]
+
+              leading-relaxed
+
+              text-[15px]
+              sm:text-[17px]
+            "
+          >
+
+            {selectedProduct.description}
+
+          </p>
+
+          {/* THUMBNAIL */}
+
+          <div className="flex gap-3 mt-7">
+
+            {selectedProduct.images.map(
+              (img: string, index: number) => (
+
+                <button
+                  key={index}
+
+                  onClick={() => setActiveImage(index)}
+
+                  className={`
+                    overflow-hidden
+                    rounded-2xl
+                    border-2
+
+                    transition-all
+                    duration-300
+
+                    ${
+                      activeImage === index
+                        ? "border-[#b07b5d]"
+                        : "border-[#ead8c7]"
+                    }
+                  `}
+                >
+
+                  <img
+                    src={img}
+                    alt={`Preview ${index}`}
+
+                    className="
+                      w-[72px]
+                      h-[72px]
+
+                      sm:w-20
+                      sm:h-20
+
+                      object-cover
+                    "
+                  />
+
+                </button>
+
+              )
+            )}
+
+          </div>
+
+          {/* BUTTON */}
+
+          <a
+            href={`https://wa.me/6287715443313?text=Halo%20Delassa%20Saya%20ingin%20melakukan%20pemesanan%20brownies.%0A%0ANama:%20%0ATanggal%20Pickup%20Pemesanan:%20%0AVarian%20Menu:%20${selectedProduct.title}%0AJumlah%20Order:%20%0ARequest%20Tambahan:%20%0A%0ATerima%20kasih`}
+
+            target="_blank"
+            rel="noreferrer"
+
+            className="
+              mt-8
+
+              inline-flex
+              items-center
+              justify-center
+
+              h-[56px]
+              sm:h-[60px]
+
+              w-full
+
+              rounded-full
+
+              bg-[#4a2f25]
+              text-white
+
+              font-semibold
+              text-[15px]
+              sm:text-[16px]
+
+              hover:opacity-90
+              hover:scale-[1.01]
+
+              transition-all
+              duration-300
+            "
+          >
+
+            Order Sekarang
+
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+)}
 
     </main>
 
