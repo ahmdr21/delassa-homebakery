@@ -357,16 +357,16 @@ export default function Home() {
             />
 
             <div
-              className="
-                absolute
-                inset-0
+  className="
+    absolute
+    inset-0
 
-                bg-gradient-to-r
-                from-[#2f221de8]
-                via-[#2f221d88]
-                to-transparent
-              "
-            />
+    bg-gradient-to-r
+    from-[#2f221dd9]
+    via-[#2f221d55]
+    to-[#2f221d10]
+  "
+/>
 
             <div
               className="
@@ -416,6 +416,35 @@ export default function Home() {
                   Freshly Baked
                   <br />
                   Everyday
+
+<p
+  className="
+  mt-6
+
+  max-w-[560px]
+
+  text-white/85
+
+  leading-relaxed
+
+  font-light
+
+  tracking-[0.2px]
+
+  text-[15px]
+  sm:text-[17px]
+  lg:text-[18px]
+"
+>
+
+Freshly baked by order,
+karena kualitas brownies terbaik
+datang dari proses yang fresh.
+Dipanggang khusus agar rasa lebih rich,
+tekstur lebih lembut,
+dan lebih nikmat saat diterima.
+
+</p>
 
                 </h2>
 
