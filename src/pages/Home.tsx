@@ -26,8 +26,8 @@ import mixImg from "../assets/mixtopping3.webp";
 import almond1 from "../assets/browniesalmond1.png";
 import almond2 from "../assets/browniesalmond2.png";
 
-import cookies1 from "../assets/browniescoockies1.png";
-import cookies2 from "../assets/browniescoockies1.webp";
+import cookies1 from "../assets/browniescoockies1.webp";
+import cookies2 from "../assets/browniescoockies2.webp";
 
 import mix1 from "../assets/mixtopping1.png";
 import mix2 from "../assets/mixtopping2.png";

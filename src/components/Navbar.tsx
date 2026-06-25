@@ -71,7 +71,7 @@ Terima kasih`);
           left-0
           w-full
 
-          z-[9999]
+          z-[40]
 
           px-3
           sm:px-5
