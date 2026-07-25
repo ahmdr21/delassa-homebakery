@@ -9,6 +9,7 @@ import {
 } from "react-icons/fa";
 
 import { SiThreads } from "react-icons/si";
+import CartIcon from "./CartIcon";
 
 import logo from "../assets/delassa.webp";
 
@@ -198,131 +199,50 @@ Terima kasih`);
             </Link>
 
             {/* ================================================= */}
-            {/* DESKTOP MENU */}
-            {/* ================================================= */}
-
-            <div
-              className="
-                hidden
-                lg:flex
-
-                items-center
-
-                gap-8
-              "
-            >
-
-              {menus.map((menu, index) => (
-
-                <Link
-                  key={index}
-                  to={menu.path}
-                  className={`
-                    relative
-
-                    text-[15px]
-
-                    font-semibold
-
-                    transition-all
-                    duration-300
-
-                    ${
-                      location.pathname === menu.path
-                        ? "text-[#c38358]"
-                        : "text-[#3b2b26] hover:text-[#c38358]"
-                    }
-                  `}
-                >
-
-                  {menu.name}
-
-                  {location.pathname === menu.path && (
-
-                    <span
-                      className="
-                        absolute
-                        left-0
-                        -bottom-2
-
-                        w-full
-                        h-[2px]
-
-                        rounded-full
-
-                        bg-[#c38358]
-                      "
-                    ></span>
-
-                  )}
-
-                </Link>
-
-              ))}
-
-            </div>
-
-            {/* ================================================= */}
             {/* RIGHT */}
             {/* ================================================= */}
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-6 ml-auto">
+
+              <div className="hidden lg:flex items-center gap-3">
+                {menus.map((menu, index) => (
+                  <Link
+                    key={index}
+                    to={menu.path}
+                    className={`
+                      relative
+                      px-4
+                      py-2
+                      rounded-full
+                      text-[15px]
+                      font-semibold
+                      transition-all
+                      duration-300
+                      ${
+                        location.pathname === menu.path
+                          ? "bg-[#c38358] text-white shadow-sm"
+                          : "bg-white/90 text-[#3b2b26] hover:bg-white hover:text-[#c38358]"
+                      }
+                    `}
+                  >
+                    {menu.name}
+                  </Link>
+                ))}
+              </div>
+
+              <CartIcon />
 
               {/* MOBILE BUTTON */}
-
               <button
                 onClick={() => setOpen(true)}
                 className="
                   lg:hidden
-
                   text-[30px]
-
                   text-[#3b2b26]
                 "
               >
-
                 <HiOutlineMenuAlt3 />
-
               </button>
-
-              {/* ORDER BUTTON */}
-
-              <a
-                href={`https://wa.me/6287715443313?text=${message}`}
-                target="_blank"
-                rel="noreferrer"
-                className="
-                  bg-[#3b2b26]
-                  hover:bg-[#2a1d19]
-
-                  text-white
-
-                  px-6
-                  sm:px-7
-                  lg:px-9
-
-                  h-[46px]
-
-                  flex
-                  items-center
-                  justify-center
-
-                  rounded-full
-
-                  text-[14px]
-
-                  font-semibold
-
-                  transition-all
-                  duration-300
-
-                  shadow-[0_8px_20px_rgba(59,43,38,0.18)]
-                "
-              >
-
-                Order
-
-              </a>
 
             </div>
 

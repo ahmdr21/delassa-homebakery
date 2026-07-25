@@ -10,9 +10,6 @@ import {
 
 import heroImage from "../assets/mixtopping2.webp";
 import gallery1 from "../assets/browniesalmond1.webp";
-import gallery2 from "../assets/browniescoockies1.webp";
-import gallery3 from "../assets/mixtopping3.webp";
-import logoDelassa from "../assets/delassa.webp";
 
 /* ====================================================== */
 /* FEATURES */
@@ -71,8 +68,8 @@ export default function About() {
           pt-6
           sm:pt-10
 
-          pb-16
-          lg:pb-24
+          pb-10
+          lg:pb-14
         "
       >
 
@@ -81,10 +78,10 @@ export default function About() {
           <div
             className="
               grid
-              lg:grid-cols-[0.9fr_1.1fr]
+              lg:grid-cols-2
 
-              gap-12
-              lg:gap-20
+              gap-8
+              lg:gap-16
 
               items-center
             "
@@ -149,17 +146,16 @@ export default function About() {
 
                   text-[#2f221d]
 
-                  font-black
+                  font-extrabold
 
-                  leading-[0.9]
+                  leading-[1.1]
 
-                  tracking-[-2px]
-                  sm:tracking-[-4px]
+                  tracking-tight
 
-                  text-[44px]
-                  sm:text-[72px]
-                  lg:text-[96px]
-                  xl:text-[108px]
+                  text-[36px]
+                  sm:text-[54px]
+                  lg:text-[60px]
+                  xl:text-[68px]
                 "
               >
 
@@ -326,52 +322,42 @@ export default function About() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="relative"
+              className="relative max-w-[500px] mx-auto lg:ml-auto w-full"
             >
 
-              {/* GLOW */}
-
-              <div
-                className="
-                  absolute
-                  inset-0
-
-                  bg-[#f1cfb6]
-
-                  opacity-20
-
-                  blur-[120px]
-                "
-              />
-
-              {/* IMAGE */}
+              {/* IMAGE FRAME */}
 
               <div
                 className="
                   relative
 
-                  overflow-hidden
+                  p-3
+                  bg-white
 
-                  rounded-[36px]
-                  lg:rounded-[46px]
+                  border border-[#ead8c7]
+
+                  shadow-[0_16px_40px_rgba(195,131,88,0.1)]
+
+                  rounded-[28px]
                 "
               >
 
-                <img
-                  src={heroImage}
-                  alt="Delassa Premium Brownies"
-                  fetchPriority="high"
-                  decoding="async"
-                  className="
-                    w-full
+                <div className="overflow-hidden rounded-[20px]">
+                  <img
+                    src={heroImage}
+                    alt="Delassa Premium Brownies"
+                    fetchPriority="high"
+                    decoding="async"
+                    className="
+                      w-full
 
-                    aspect-[4/4.8]
-                    lg:aspect-[4/4.5]
+                      aspect-[4/5]
 
-                    object-cover
-                    object-center
-                  "
-                />
+                      object-cover
+                      object-center
+                    "
+                  />
+                </div>
 
               </div>
 
@@ -393,8 +379,8 @@ export default function About() {
           sm:px-6
           lg:px-8
 
-          pb-16
-          lg:pb-24
+          pb-12
+          lg:pb-16
         "
       >
 
@@ -455,35 +441,72 @@ export default function About() {
 
                 <motion.div
                   key={index}
-                  initial={{ opacity: 0, y: 18 }}
+                  initial={{ opacity: 0, y: 24 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{
-                    duration: 0.45,
-                    delay: index * 0.08,
+                    duration: 0.5,
+                    delay: index * 0.1,
                   }}
-                  className="text-center"
+                  className="
+                    group
+                    relative
+                    text-center
+                    bg-white/70
+                    backdrop-blur-sm
+                    border border-[#e8d5c4]
+                    rounded-[28px]
+                    px-8
+                    py-10
+                    shadow-[0_4px_24px_rgba(195,131,88,0.08)]
+                    hover:shadow-[0_12px_40px_rgba(195,131,88,0.18)]
+                    hover:-translate-y-2
+                    transition-all
+                    duration-400
+                    overflow-hidden
+                  "
                 >
+
+                  {/* subtle top accent */}
+                  <div
+                    className="
+                      absolute
+                      top-0 left-0 right-0
+                      h-[3px]
+                      bg-gradient-to-r from-[#e8c9af] via-[#c38358] to-[#e8c9af]
+                      opacity-0
+                      group-hover:opacity-100
+                      transition-opacity duration-400
+                      rounded-t-[28px]
+                    "
+                  />
 
                   <div
                     className="
-                      w-[120px]
-                      h-[120px]
+                      w-[100px]
+                      h-[100px]
 
                       mx-auto
 
-                      rounded-full
+                      rounded-[24px]
 
-                      bg-[#f7ede5]
+                      bg-gradient-to-br from-[#fdf5ef] to-[#f4e4d4]
+
+                      border border-[#e8cdb7]
 
                       flex
                       items-center
                       justify-center
+
+                      shadow-[0_4px_16px_rgba(195,131,88,0.12)]
+
+                      group-hover:scale-105
+                      transition-transform duration-400
                     "
                   >
 
                     <Icon
-                      size={42}
+                      size={40}
                       strokeWidth={1.5}
                       className="text-[#c38358]"
                     />
@@ -492,13 +515,13 @@ export default function About() {
 
                   <h3
                     className="
-                      mt-8
+                      mt-7
 
                       text-[#2f221d]
 
                       font-bold
 
-                      text-[26px]
+                      text-[22px]
 
                       leading-tight
                     "
@@ -508,13 +531,17 @@ export default function About() {
 
                   </h3>
 
+                  <div className="flex justify-center mt-4">
+                    <div className="w-10 h-[2px] bg-gradient-to-r from-transparent via-[#c38358] to-transparent rounded-full" />
+                  </div>
+
                   <p
                     className="
                       mt-4
 
-                      text-[#675b55]
+                      text-[#7a6a62]
 
-                      text-[15px]
+                      text-[14px]
 
                       leading-7
                     "
@@ -546,8 +573,8 @@ export default function About() {
           sm:px-6
           lg:px-8
 
-          pb-16
-          lg:pb-24
+          pb-12
+          lg:pb-16
         "
       >
 
@@ -556,95 +583,59 @@ export default function About() {
           <div
             className="
               grid
-              lg:grid-cols-[0.95fr_1.05fr]
+              lg:grid-cols-2
 
-              gap-10
+              gap-8
               lg:gap-16
 
               items-center
             "
           >
 
-            {/* LEFT GALLERY */}
+            {/* LEFT GALLERY (Option A: Single Elegant Image) */}
 
-            <div className="grid grid-cols-2 gap-4">
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="max-w-[540px] mx-auto lg:mr-auto w-full"
+            >
 
               <div
                 className="
-                  overflow-hidden
+                  p-3
+                  bg-white
 
-                  rounded-[28px]
+                  border border-[#ead8c7]
+
+                  shadow-[0_16px_40px_rgba(195,131,88,0.08)]
+
+                  rounded-[32px]
                 "
               >
 
-                <img
-                  src={gallery1}
-                  alt="Delassa brownies gallery"
-                  loading="lazy"
-                  decoding="async"
-                  className="
-                    w-full
-                    h-full
-
-                    object-cover
-                  "
-                />
-
-              </div>
-
-              <div className="grid gap-4">
-
-                <div
-                  className="
-                    overflow-hidden
-
-                    rounded-[28px]
-                  "
-                >
-
+                <div className="overflow-hidden rounded-[22px]">
                   <img
-                    src={gallery2}
-                    alt="Chocolate brownies Delassa"
+                    src={gallery1}
+                    alt="Delassa premium brownies"
                     loading="lazy"
                     decoding="async"
                     className="
                       w-full
-
                       aspect-[4/3]
-
                       object-cover
+                      hover:scale-105
+                      transition-transform
+                      duration-700
+                      ease-out
                     "
                   />
-
-                </div>
-
-                <div
-                  className="
-                    overflow-hidden
-
-                    rounded-[28px]
-                  "
-                >
-
-                  <img
-                    src={gallery3}
-                    alt="Premium brownies packaging"
-                    loading="lazy"
-                    decoding="async"
-                    className="
-                      w-full
-
-                      aspect-[4/3]
-
-                      object-cover
-                    "
-                  />
-
                 </div>
 
               </div>
 
-            </div>
+            </motion.div>
 
             {/* RIGHT CONTENT */}
 
@@ -803,158 +794,41 @@ export default function About() {
 
         <div className="max-w-[1450px] mx-auto">
 
-          <div
-            className="
-              bg-[#f6eee7]
-
-              rounded-[34px]
-
-              px-8
-              sm:px-12
-              lg:px-16
-
-              py-10
-              sm:py-12
-
-              flex
-              flex-col
-              lg:flex-row
-
-              gap-10
-
-              items-center
-              justify-between
-            "
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-center"
           >
 
-            {/* LEFT */}
+            <h3 className="text-[#3d2215] font-bold text-[20px] sm:text-[26px] leading-snug">
+              More than dessert,
+            </h3>
+            <p className="mt-2 text-[#8b6f5a] text-[14px] sm:text-[16px] leading-relaxed max-w-[500px] mx-auto">
+              Delassa hadir untuk menciptakan pengalaman manis yang ingin selalu diingat.
+            </p>
 
-            <div
-              className="
-                flex
-                flex-col
-                sm:flex-row
-
-                items-center
-                gap-6
-              "
-            >
-
-              <img
-                src={logoDelassa}
-                alt="Delassa Home Bakery"
-                loading="lazy"
-                className="
-                  w-[90px]
-                  sm:w-[110px]
-
-                  h-auto
-
-                  object-contain
-                "
-              />
-
-              <div className="text-center sm:text-left">
-
-                <h3
-                  className="
-                    text-[#2f221d]
-
-                    font-bold
-
-                    leading-snug
-
-                    text-[22px]
-                    sm:text-[28px]
-                  "
-                >
-
-                  More than dessert,
-                  <br />
-                  Delassa hadir untuk menciptakan
-                  pengalaman manis yang ingin selalu diingat.
-
-                </h3>
-
-              </div>
-
-            </div>
-
-            {/* RIGHT */}
-
-            <div
-              className="
-                flex
-                flex-wrap
-
-                justify-center
-
-                gap-10
-              "
-            >
-
+            <div className="flex flex-wrap justify-center gap-4 sm:gap-6 mt-8">
               {[
-                {
-                  icon: Heart,
-                  title: "Made with Love",
-                },
-
-                {
-                  icon: Leaf,
-                  title: "Quality You Can Taste",
-                },
-
-                {
-                  icon: Gift,
-                  title: "Moments Worth Sharing",
-                },
+                { icon: Heart, title: "Made with Love" },
+                { icon: Leaf, title: "Quality You Can Taste" },
+                { icon: Gift, title: "Moments Worth Sharing" },
               ].map((item, index) => {
-
                 const Icon = item.icon;
-
                 return (
-
                   <div
                     key={index}
-                    className="
-                      flex
-                      items-center
-                      gap-4
-                    "
+                    className="flex items-center gap-2.5 px-5 py-3 rounded-full bg-[#faf5f0] border border-[#ead8c7]/60"
                   >
-
-                    <Icon
-                      size={24}
-                      strokeWidth={1.8}
-                      className="text-[#c38358]"
-                    />
-
-                    <p
-                      className="
-                        text-[#5e524c]
-
-                        text-[14px]
-                        sm:text-[15px]
-
-                        font-medium
-
-                        leading-6
-                      "
-                    >
-
-                      {item.title}
-
-                    </p>
-
+                    <Icon size={18} strokeWidth={1.8} className="text-[#c38358]" />
+                    <span className="text-[#5c4438] text-[13px] sm:text-[14px] font-medium">{item.title}</span>
                   </div>
-
                 );
-
               })}
-
             </div>
 
-          </div>
+          </motion.div>
 
         </div>
 

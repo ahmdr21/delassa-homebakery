@@ -71,3 +71,60 @@ export default defineConfig([
   },
 ])
 ```
+
+## Maintenance mode
+
+To put the site into maintenance mode, set the Vite env variable `VITE_MAINTENANCE` to `true` when serving or building. When enabled, the app will render a maintenance page instead of the normal routes.
+
+Example (development):
+
+```powershell
+# Windows PowerShell
+$env:VITE_MAINTENANCE='true'; npm run dev
+```
+
+Example (build):
+
+```powershell
+# Set the flag and build
+$env:VITE_MAINTENANCE='true'; npm run build
+```
+
+Set the value back to `false` (or unset) to restore normal site behavior.
+
+## Review moderation
+
+Review dari pelanggan tidak langsung tampil di website. Form review menyimpan data ke tabel `product_reviews` dengan `is_approved = false`, sedangkan halaman publik hanya membaca review yang sudah `is_approved = true`.
+
+Panel moderasi tersedia di:
+
+```text
+/admin/reviews
+```
+
+Di panel ini admin bisa:
+
+- melihat review pending dan review yang sudah tampil;
+- mengedit nama, username, produk, sumber, rating, dan isi ulasan;
+- memilih `Tampilkan` atau `Sembunyikan` untuk mengatur apakah review muncul di website.
+
+Kolom tabel Supabase yang dipakai:
+
+```sql
+product_title text
+reviewer_name text
+reviewer_username text
+review text
+rating int
+source text
+is_approved boolean default false
+created_at timestamptz default now()
+```
+
+Jika ingin memberi PIN sederhana untuk halaman admin, isi env berikut:
+
+```env
+VITE_REVIEW_ADMIN_PIN=pin-admin-anda
+```
+
+Catatan: PIN Vite tetap ikut masuk ke bundle frontend, jadi ini hanya pembatas ringan. Untuk produksi, gunakan Supabase Auth + RLS agar hanya akun admin yang boleh membaca semua review dan melakukan update.
