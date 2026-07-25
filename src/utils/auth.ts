@@ -1,6 +1,7 @@
 import { supabase } from "./supabase";
 
 export async function login(email: string, password: string) {
+  if (!supabase) throw new Error("Supabase is not configured.");
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
@@ -12,12 +13,14 @@ export async function login(email: string, password: string) {
 }
 
 export async function logout() {
+  if (!supabase) return;
   const { error } = await supabase.auth.signOut();
 
   if (error) throw error;
 }
 
 export async function getCurrentUser() {
+  if (!supabase) return null;
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -26,6 +29,7 @@ export async function getCurrentUser() {
 }
 
 export async function getCurrentSession() {
+  if (!supabase) return null;
   const {
     data: { session },
   } = await supabase.auth.getSession();
@@ -34,7 +38,10 @@ export async function getCurrentSession() {
 }
 
 export function onAuthStateChange(
-  callback: Parameters<typeof supabase.auth.onAuthStateChange>[0]
+  callback: any
 ) {
+  if (!supabase) {
+    return { data: { subscription: { unsubscribe: () => {} } } };
+  }
   return supabase.auth.onAuthStateChange(callback);
 }

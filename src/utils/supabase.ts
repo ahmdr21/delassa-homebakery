@@ -1,9 +1,11 @@
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL!;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY!;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = (supabaseUrl && supabaseAnonKey)
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null;
 
 /* =====================================================
    REVIEW TYPE
@@ -29,6 +31,10 @@ export type ReviewSource = Review["source"];
 ===================================================== */
 
 export async function getAllReviews(): Promise<Review[]> {
+  if (!supabase) {
+    console.warn("Supabase is not configured. Reviews will not be loaded.");
+    return [];
+  }
   const { data, error } = await supabase
     .from("product_reviews")
     .select("*")
@@ -50,6 +56,9 @@ export async function getAllReviews(): Promise<Review[]> {
 export async function getProductReviews(
   productTitle: string
 ): Promise<Review[]> {
+  if (!supabase) {
+    return [];
+  }
   const cleanTitle = productTitle.trim();
   const { data, error } = await supabase
     .from("product_reviews")
@@ -80,6 +89,10 @@ export interface NewReview {
 }
 
 export async function addProductReview(review: NewReview): Promise<boolean> {
+  if (!supabase) {
+    console.warn("Supabase is not configured. Cannot add review.");
+    return false;
+  }
   const { error } = await supabase
     .from("product_reviews")
     .insert({
@@ -118,6 +131,9 @@ export type ProductReviewUpdate = Partial<
 >;
 
 export async function getAllReviewsForAdmin(): Promise<Review[]> {
+  if (!supabase) {
+    return [];
+  }
   const { data, error } = await supabase
     .from("product_reviews")
     .select("*")
@@ -135,6 +151,9 @@ export async function updateProductReview(
   id: string,
   updates: ProductReviewUpdate
 ): Promise<Review> {
+  if (!supabase) {
+    throw new Error("Supabase is not configured.");
+  }
   const { data, error } = await supabase
     .from("product_reviews")
     .update(updates)
@@ -151,6 +170,9 @@ export async function updateProductReview(
 }
 
 export async function deleteProductReview(id: string): Promise<void> {
+  if (!supabase) {
+    return;
+  }
   const { error } = await supabase
     .from("product_reviews")
     .delete()
