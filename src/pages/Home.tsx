@@ -120,7 +120,7 @@ const trustSignals = [
   },
   {
     icon: Wallet,
-    title: "QRIS & Transfer",
+    title: "Transfer",
     description: "Pembayaran fleksibel setelah admin konfirmasi.",
   },
   {
