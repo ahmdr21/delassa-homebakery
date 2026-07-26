@@ -925,8 +925,8 @@ export default function Home() {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="relative bg-[#fffaf5] w-full max-w-[1000px] rounded-t-[28px] lg:rounded-[32px] overflow-hidden shadow-2xl"
-            style={{ maxHeight: '92dvh' }}
+            className="relative bg-[#fffaf5] w-full max-w-[1000px] rounded-t-[28px] lg:rounded-[32px] overflow-hidden shadow-2xl h-dvh lg:h-auto"
+            style={{ maxHeight: '100dvh' }}
           >
             <button
               onClick={() => setOpen(false)}
@@ -937,7 +937,7 @@ export default function Home() {
             {(() => {
               const productImages = Array.from(new Set([selectedProduct.image, ...selectedProduct.images].filter(Boolean)));
               return (
-                <div className="flex flex-col lg:grid lg:grid-cols-2 overflow-y-auto lg:overflow-hidden" style={{ maxHeight: '92dvh' }}>
+                <div className="flex flex-col lg:grid lg:grid-cols-2 overflow-y-auto lg:overflow-hidden h-dvh lg:h-auto" style={{ maxHeight: '100dvh' }}>
                   {/* Left Column: Product Main Image & Shopee-style Thumbnails below it */}
                   <div className="bg-[#f5ede5] p-5 sm:p-8 flex flex-col justify-between lg:h-full lg:overflow-hidden">
                     <div className="flex-grow flex items-center justify-center">
