@@ -470,10 +470,10 @@ export default function Menu() {
 
   return (
     <main className="bg-[#faf7f2]">
-      {/* TOOLBAR STICKY */}
-      <div className="sticky top-[102px] sm:top-[116px] z-[35] bg-gradient-to-b from-[#faf7f2] via-[#faf7f2]/98 to-[#faf7f2]/95 px-3 sm:px-6 lg:px-8 py-3 sm:py-4 shadow-sm border-b border-[#ead8c7]/30">
-        <div className="max-w-[1280px] mx-auto flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex justify-center gap-2 sm:gap-2.5 overflow-x-auto py-1.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:order-1 lg:pb-0">
+      {/* TOOLBAR STICKY (Mobile only) */}
+      <div className="lg:hidden sticky top-[102px] sm:top-[116px] z-[35] bg-gradient-to-b from-[#faf7f2] via-[#faf7f2]/98 to-[#faf7f2]/95 px-3 sm:px-6 py-3 sm:py-4 shadow-sm border-b border-[#ead8c7]/30">
+        <div className="max-w-[1280px] mx-auto flex flex-col gap-3">
+          <div className="flex justify-start gap-2 sm:gap-2.5 overflow-x-auto py-1.5 px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <button
               onClick={() => setSelectedCategory("all")}
               className={`flex-none whitespace-nowrap px-5 sm:px-6 py-2 rounded-full text-[12px] sm:text-[13px] font-bold transition-all duration-300 cursor-pointer ${selectedCategory === "all"
@@ -497,7 +497,7 @@ export default function Menu() {
             ))}
           </div>
 
-          <label className="w-full lg:order-2 lg:w-[260px] flex items-center gap-2 rounded-full border border-[#ead8c7] bg-white px-3 py-2 shadow-sm transition focus-within:border-[#c38358]">
+          <label className="w-full flex items-center gap-2 rounded-full border border-[#ead8c7] bg-white px-3 py-2 shadow-sm transition focus-within:border-[#c38358]">
             <span className="sr-only">Cari menu</span>
             <svg className="w-4 h-4 text-[#9b6a50] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -538,7 +538,59 @@ export default function Menu() {
             </div>
           </header>
 
-          <section aria-label="Product Menu" className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-6 mt-8 sm:mt-16">
+          <div className="mt-8 sm:mt-16 lg:grid lg:grid-cols-[260px_1fr] lg:gap-10">
+            {/* Sidebar (Desktop only) */}
+            <aside className="hidden lg:block sticky top-[150px] self-start space-y-8 bg-white border border-[#ead8c7] p-6 rounded-[28px] shadow-sm">
+              {/* Search Input */}
+              <div className="space-y-3">
+                <h3 className="text-[#2f221d] text-[13px] font-black uppercase tracking-wider">Cari Menu</h3>
+                <label className="flex items-center gap-2 rounded-full border border-[#ead8c7] bg-white px-4 py-2.5 shadow-sm transition focus-within:border-[#c38358] focus-within:ring-1 focus-within:ring-[#c38358]/20">
+                  <svg className="w-4 h-4 text-[#9b6a50] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                  <input
+                    value={searchQuery}
+                    onChange={(event) => setSearchQuery(event.target.value)}
+                    placeholder="Cari menu favoritmu..."
+                    className="w-full bg-transparent text-[13px] text-[#3b2b26] outline-none"
+                  />
+                </label>
+              </div>
+
+              {/* Categories List */}
+              <div className="space-y-4">
+                <h3 className="text-[#2f221d] text-[13px] font-black uppercase tracking-wider">Kategori</h3>
+                <div className="flex flex-col gap-2">
+                  <button
+                    onClick={() => setSelectedCategory("all")}
+                    className={`w-full text-left px-5 py-3 rounded-full text-[13px] font-bold transition-all duration-300 cursor-pointer ${
+                      selectedCategory === "all"
+                        ? "bg-[#c38358] text-white shadow-md shadow-[#c38358]/15"
+                        : "bg-[#faf7f2] border border-[#ead8c7] text-[#6d5b52] hover:bg-[#fff5ef] hover:border-[#c38358]/40"
+                    }`}
+                  >
+                    Semua Menu
+                  </button>
+                  {productCategories.map((category) => (
+                    <button
+                      key={category.id}
+                      onClick={() => setSelectedCategory(category.id)}
+                      className={`w-full text-left px-5 py-3 rounded-full text-[13px] font-bold transition-all duration-300 cursor-pointer ${
+                        selectedCategory === category.id
+                          ? "bg-[#c38358] text-white shadow-md shadow-[#c38358]/15"
+                          : "bg-[#faf7f2] border border-[#ead8c7] text-[#6d5b52] hover:bg-[#fff5ef] hover:border-[#c38358]/40"
+                      }`}
+                    >
+                      {category.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </aside>
+
+            {/* Product Column */}
+            <div className="flex-grow">
+              <section aria-label="Product Menu" className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-6">
             {displayProducts.map((item: Product, index: number) => (
               <motion.article
                 key={index}
@@ -646,7 +698,7 @@ export default function Menu() {
               </motion.article>
             ))}
             {displayProducts.length === 0 && (
-              <div className="col-span-2 xl:col-span-4 rounded-[24px] border border-dashed border-[#e2cbb8] bg-white px-5 py-12 text-center">
+              <div className="col-span-2 xl:col-span-3 rounded-[24px] border border-dashed border-[#e2cbb8] bg-white px-5 py-12 text-center">
                 <p className="text-[18px] font-black text-[#2f221d]">Menu tidak ditemukan</p>
                 <p className="mt-2 text-[13px] sm:text-[14px] text-[#7a6a62]">
                   Coba pakai kata kunci lain atau pilih kategori berbeda.
@@ -655,7 +707,9 @@ export default function Menu() {
             )}
           </section>
         </div>
-      </section>
+      </div>
+    </div>
+  </section>
 
       {open && selectedProduct && (
         <div
