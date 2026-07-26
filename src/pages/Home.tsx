@@ -920,13 +920,13 @@ export default function Home() {
 
       {open && selectedProduct && (
         <div
-          className="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-sm flex items-center justify-center px-3 sm:px-5 py-4 sm:py-6"
+          className="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-sm flex items-end lg:items-center justify-center lg:px-5 lg:py-6"
           onClick={() => setOpen(false)}
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="relative bg-[#fffaf5] w-full max-w-[1000px] rounded-[26px] sm:rounded-[32px] overflow-hidden shadow-2xl"
-            style={{ maxHeight: 'calc(100vh - 32px)' }}
+            className="relative bg-[#fffaf5] w-full max-w-[1000px] rounded-t-[28px] lg:rounded-[32px] overflow-hidden shadow-2xl"
+            style={{ maxHeight: '92dvh' }}
           >
             <button
               onClick={() => setOpen(false)}
@@ -937,9 +937,9 @@ export default function Home() {
             {(() => {
               const productImages = Array.from(new Set([selectedProduct.image, ...selectedProduct.images].filter(Boolean)));
               return (
-                <div className="grid lg:grid-cols-2" style={{ height: 'calc(100vh - 32px)', maxHeight: 'calc(100vh - 32px)' }}>
+                <div className="flex flex-col lg:grid lg:grid-cols-2 overflow-y-auto lg:overflow-hidden" style={{ maxHeight: '92dvh' }}>
                   {/* Left Column: Product Main Image & Shopee-style Thumbnails below it */}
-                  <div className="bg-[#f5ede5] p-5 sm:p-8 flex flex-col justify-between h-full overflow-hidden">
+                  <div className="bg-[#f5ede5] p-5 sm:p-8 flex flex-col justify-between lg:h-full lg:overflow-hidden">
                     <div className="flex-grow flex items-center justify-center">
                       <img
                         src={productImages[activeImage] || selectedProduct.image}
@@ -966,8 +966,8 @@ export default function Home() {
                   </div>
 
                   {/* Right Column: Product Info, Reviews & Action Buttons */}
-                  <div className="p-6 sm:p-8 lg:p-10 flex flex-col justify-between h-full overflow-hidden">
-                    <div className="overflow-y-auto pr-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                  <div className="p-5 sm:p-8 lg:p-10 flex flex-col justify-between">
+                    <div>
                       <p className="text-[#b07b5d] uppercase tracking-[4px] text-[10px] sm:text-[11px] font-semibold">
                         Delassa Home Bakery
                       </p>
