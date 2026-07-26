@@ -538,9 +538,9 @@ export default function Menu() {
             </div>
           </header>
 
-          <div className="flex flex-row lg:block mt-8 sm:mt-16 min-h-[60vh] gap-3 sm:gap-6">
+          <div className="flex flex-row items-start lg:block mt-8 sm:mt-16 gap-3 sm:gap-6">
             {/* Mobile Category Sidebar (Left side, sticky vertical scroll, hidden on desktop) */}
-            <aside className="lg:hidden w-[95px] sm:w-[130px] shrink-0 sticky top-[102px] sm:top-[116px] self-start h-[calc(100vh-140px)] overflow-y-auto border-r border-[#ead8c7]/40 pr-2 py-2 flex flex-col gap-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <aside className="lg:hidden w-[80px] sm:w-[110px] shrink-0 sticky top-[72px] self-start h-[calc(100dvh-80px)] overflow-y-auto pr-2 py-2 flex flex-col gap-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               <button
                 onClick={() => setSelectedCategory("all")}
                 className={`w-full text-center py-3.5 px-1.5 rounded-2xl text-[11px] sm:text-[13px] font-black transition-all duration-300 leading-tight border cursor-pointer ${
@@ -583,7 +583,7 @@ export default function Menu() {
                 </label>
               </div>
 
-              <section aria-label="Product Menu" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
+              <section aria-label="Product Menu" className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-4 lg:gap-6">
             {displayProducts.map((item: Product, index: number) => (
               <motion.article
                 key={index}
