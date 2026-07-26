@@ -4,6 +4,8 @@ import { useCart } from "../context/CartContext";
 import { getAllReviews, getProductReviews, addProductReview } from "../utils/supabase";
 import type { Review } from "../utils/supabase";
 
+import { isBundlePromoActive, calculateBundlePrice } from "../data/promos";
+
 
 import classicImg from "../assets/browniesclassic3.webp";
 import almondImg from "../assets/browniesalmond1.webp";
@@ -234,6 +236,24 @@ const productCategories: Category[] = [
       },
     ],
   },
+
+  {
+    id: "bundles",
+    name: "Bundle Hemat",
+    description: "Paket bundling spesial brownies pilihan dan minuman segar dengan harga promo lebih hemat.",
+    products: [
+      {
+        title: "Bundle Hemat: Brownies + Minuman",
+        price: isBundlePromoActive() ? "Rp65.000 - Rp82.000" : "Rp70.000 - Rp87.000",
+        badge: isBundlePromoActive() ? "Promo Bundle" : "Hemat",
+        description: "Bebas pilih brownies (Classic/Almond/Cookies/Mix Topping) dan minuman favoritmu. Harga promo lebih hemat!",
+        image: mixImg,
+        images: [mixImg, aren],
+        rating: 5.0,
+        soldCount: "50+",
+      },
+    ],
+  },
 ];
 
 export default function Menu() {
@@ -253,7 +273,20 @@ export default function Menu() {
   const [showWriteForm, setShowWriteForm] = useState(false);
   const [showAllReviews, setShowAllReviews] = useState(false);
   const [submittingReview, setSubmittingReview] = useState(false);
+
+  const [selectedBrownies, setSelectedBrownies] = useState("Brownies Mix Topping");
+  const [selectedDrink, setSelectedDrink] = useState("Kopi Susu Gula Aren");
+
   const { cart, setCartOpen, addToCart, updateQty } = useCart();
+
+  useEffect(() => {
+    if (selectedProduct) {
+      if (selectedProduct.title.includes("Bundle")) {
+        setSelectedBrownies("Brownies Mix Topping");
+        setSelectedDrink("Kopi Susu Gula Aren");
+      }
+    }
+  }, [selectedProduct]);
 
   useEffect(() => {
     let isCurrent = true;
@@ -404,9 +437,16 @@ export default function Menu() {
     );
   };
 
-  const handleAddToCart = (product: Product, quantity: number = 1, openDrawer: boolean = false) => {
-    const parsedPrice = Number(String(product.price).replace(/[^\d]/g, ""));
-    addToCart({ title: product.title, price: parsedPrice, qty: quantity });
+  const handleAddToCart = (product: Product, quantity: number = 1, openDrawer: boolean = false, customPrice?: number) => {
+    const parsedPrice = customPrice !== undefined
+      ? customPrice
+      : Number(String(product.price).replace(/[^\d]/g, ""));
+
+    const title = product.title.includes("Bundle")
+      ? `${product.title} (${selectedBrownies.replace("Brownies ", "")} + ${selectedDrink})`
+      : product.title;
+
+    addToCart({ title, price: parsedPrice, qty: quantity });
 
     if (openDrawer) {
       setCartOpen(true);
@@ -582,7 +622,18 @@ export default function Menu() {
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleAddToCart(item);
+                          if (item.title.includes("Bundle")) {
+                            setShowWriteForm(false);
+                            setShowAllReviews(false);
+                            setReviews([]);
+                            setLoadingReviews(true);
+                            setSelectedProduct(item);
+                            setActiveImage(0);
+                            setQty(1);
+                            setOpen(true);
+                          } else {
+                            handleAddToCart(item);
+                          }
                         }}
                         className="inline-flex items-center justify-center w-full bg-[#c38358] hover:bg-[#a96d45] text-white px-2 sm:px-5 py-2 sm:py-3 rounded-full text-[10px] sm:text-[13px] font-semibold shadow-[0_6px_18px_rgba(0,0,0,0.12)] sm:shadow-[0_8px_24px_rgba(0,0,0,0.12)] hover:-translate-y-[2px] transition-all duration-300"
                       >
@@ -672,12 +723,96 @@ export default function Menu() {
                         </span>
                       </div>
 
-                      <p className="mt-4 text-[#c38358] text-[22px] sm:text-[28px] font-black">
-                        {selectedProduct.price}
-                      </p>
-                      <p className="mt-4 text-[#6d5b52] leading-relaxed text-[14px] sm:text-[15px]">
-                        {selectedProduct.description}
-                      </p>
+                      {selectedProduct.title.includes("Bundle") ? (() => {
+                        const { price, originalPrice, isPromo } = calculateBundlePrice(selectedBrownies, selectedDrink);
+                        return (
+                          <div className="mt-4 flex flex-col gap-1">
+                            <div className="flex items-baseline gap-3">
+                              <span className="text-[#c38358] text-[22px] sm:text-[28px] font-black">
+                                Rp{price.toLocaleString("id-ID")}
+                              </span>
+                              <span className="text-gray-400 text-sm sm:text-base line-through">
+                                Rp{originalPrice.toLocaleString("id-ID")}
+                              </span>
+                            </div>
+                            {isPromo && (
+                              <div className="inline-flex items-center gap-1.5 self-start bg-[#fff5ef] text-[#c38358] px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold border border-[#ead8c7]/50 shadow-sm">
+                                <span>🔥 PROMO BUNDLE</span>
+                                <span>(Hemat Rp5.000)</span>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })() : (
+                        <p className="mt-4 text-[#c38358] text-[22px] sm:text-[28px] font-black">
+                          {selectedProduct.price}
+                        </p>
+                      )}
+
+                      {!selectedProduct.title.includes("Bundle") ? (
+                        <p className="mt-4 text-[#6d5b52] leading-relaxed text-[14px] sm:text-[15px]">
+                          {selectedProduct.description}
+                        </p>
+                      ) : (
+                        <div className="mt-6 space-y-5 bg-[#fffaf5] p-4 sm:p-5 rounded-2xl border border-[#ead8c7]/65 shadow-sm">
+                          {/* Brownies Selection */}
+                          <div>
+                            <span className="block text-[#2f221d] text-[13px] sm:text-[14px] font-bold mb-2.5">
+                              1. Pilih Varian Brownies
+                            </span>
+                            <div className="grid grid-cols-2 gap-2">
+                              {[
+                                { name: "Brownies Classic", label: "Classic" },
+                                { name: "Brownies Almond", label: "Almond" },
+                                { name: "Brownies Cookies", label: "Cookie" },
+                                { name: "Brownies Mix Topping", label: "Mix Topping" }
+                              ].map((opt) => (
+                                <button
+                                  key={opt.name}
+                                  type="button"
+                                  onClick={() => setSelectedBrownies(opt.name)}
+                                  className={`px-3 py-2.5 rounded-xl border text-[11px] sm:text-[12px] font-bold transition-all duration-300 cursor-pointer ${
+                                    selectedBrownies === opt.name
+                                      ? "bg-[#c38358] border-[#c38358] text-white shadow-sm"
+                                      : "bg-white border-[#ead8c7] text-[#6d5b52] hover:bg-[#fffbf7]"
+                                  }`}
+                                >
+                                  {opt.label}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Drink Selection */}
+                          <div>
+                            <span className="block text-[#2f221d] text-[13px] sm:text-[14px] font-bold mb-2.5">
+                              2. Pilih Minuman (Bebas Pilih)
+                            </span>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                              {[
+                                { name: "Kopi Susu Gula Aren", label: "Kopi Susu Aren" },
+                                { name: "Mocha Bliss", label: "Mocha (+Rp1k)" },
+                                { name: "Roasted Milk Tea", label: "Roasted Milk Tea (+Rp1k)" },
+                                { name: "Butterscotch Bliss", label: "Butterscotch (+Rp2k)" },
+                                { name: "Choco Bliss", label: "Coklat (+Rp2k)" }
+                              ].map((opt) => (
+                                <button
+                                  key={opt.name}
+                                  type="button"
+                                  onClick={() => setSelectedDrink(opt.name)}
+                                  className={`px-2.5 py-2.5 rounded-xl border text-[10px] sm:text-[11px] font-bold transition-all duration-300 cursor-pointer ${
+                                    selectedDrink === opt.name
+                                      ? "bg-[#c38358] border-[#c38358] text-white shadow-sm"
+                                      : "bg-white border-[#ead8c7] text-[#6d5b52] hover:bg-[#fffbf7]"
+                                  }`}
+                                >
+                                  {opt.label}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
 
                     {/* Dynamic Reviews Section */}
@@ -849,26 +984,33 @@ export default function Menu() {
                     </div>
 
                     {/* Modal Actions */}
-                    <div className="grid grid-cols-2 gap-3 mt-6">
-                      <button
-                        onClick={() => {
-                          handleAddToCart(selectedProduct, qty, false);
-                          setOpen(false);
-                        }}
-                        className="inline-flex items-center justify-center bg-white border border-[#c38358] text-[#c38358] hover:bg-[#fff5ef] px-4 py-2.5 rounded-full text-[12px] sm:text-[13px] font-bold shadow-sm transition-all duration-300 cursor-pointer"
-                      >
-                        + Keranjang
-                      </button>
-                      <button
-                        onClick={() => {
-                          handleAddToCart(selectedProduct, qty, true);
-                          setOpen(false);
-                        }}
-                        className="inline-flex items-center justify-center bg-[#c38358] hover:bg-[#a96d45] text-white px-4 py-2.5 rounded-full text-[12px] sm:text-[13px] font-bold shadow-[0_6px_18px_rgba(195,131,88,0.25)] hover:-translate-y-[1px] transition-all duration-300 cursor-pointer"
-                      >
-                        Beli Langsung
-                      </button>
-                    </div>
+                    {(() => {
+                      const customPrice = selectedProduct.title.includes("Bundle")
+                        ? calculateBundlePrice(selectedBrownies, selectedDrink).price
+                        : undefined;
+                      return (
+                        <div className="grid grid-cols-2 gap-3 mt-6">
+                          <button
+                            onClick={() => {
+                              handleAddToCart(selectedProduct, qty, false, customPrice);
+                              setOpen(false);
+                            }}
+                            className="inline-flex items-center justify-center bg-white border border-[#c38358] text-[#c38358] hover:bg-[#fff5ef] px-4 py-2.5 rounded-full text-[12px] sm:text-[13px] font-bold shadow-sm transition-all duration-300 cursor-pointer"
+                          >
+                            + Keranjang
+                          </button>
+                          <button
+                            onClick={() => {
+                              handleAddToCart(selectedProduct, qty, true, customPrice);
+                              setOpen(false);
+                            }}
+                            className="inline-flex items-center justify-center bg-[#c38358] hover:bg-[#a96d45] text-white px-4 py-2.5 rounded-full text-[12px] sm:text-[13px] font-bold shadow-[0_6px_18px_rgba(195,131,88,0.25)] hover:-translate-y-[1px] transition-all duration-300 cursor-pointer"
+                          >
+                            Beli Langsung
+                          </button>
+                        </div>
+                      );
+                    })()}
                   </div>
                 </div>
               );
