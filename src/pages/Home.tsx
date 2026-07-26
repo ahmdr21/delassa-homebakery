@@ -973,7 +973,7 @@ export default function Home() {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="relative bg-[#fffaf5] w-full max-w-[1000px] rounded-t-[28px] lg:rounded-[32px] overflow-hidden shadow-2xl h-dvh lg:h-auto lg:max-h-[88vh]"
+            className="relative bg-[#fffaf5] w-full max-w-[1000px] rounded-t-[28px] lg:rounded-[32px] overflow-hidden shadow-2xl h-dvh lg:h-[85vh]"
             style={{ maxHeight: '100dvh' }}
           >
             <button
@@ -1014,7 +1014,7 @@ export default function Home() {
                   </div>
 
                   {/* Right Column: Product Info, Reviews & Action Buttons */}
-                  <div className="p-5 sm:p-8 lg:p-10 flex flex-col justify-between lg:overflow-y-auto [scrollbar-width:thin] [scrollbar-color:#ead8c7_transparent]">
+                  <div className="p-5 sm:p-8 lg:p-10 flex flex-col justify-between lg:h-full lg:overflow-y-auto [scrollbar-width:thin] [scrollbar-color:#ead8c7_transparent]">
                     <div>
                       <p className="text-[#b07b5d] uppercase tracking-[4px] text-[10px] sm:text-[11px] font-semibold">
                         Delassa Home Bakery

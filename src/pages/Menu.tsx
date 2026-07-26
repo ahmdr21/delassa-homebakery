@@ -473,7 +473,7 @@ export default function Menu() {
       {/* TOOLBAR STICKY */}
       <div className="sticky top-[102px] sm:top-[116px] z-[35] bg-gradient-to-b from-[#faf7f2] via-[#faf7f2]/98 to-[#faf7f2]/95 px-3 sm:px-6 lg:px-8 py-3 sm:py-4 shadow-sm border-b border-[#ead8c7]/30">
         <div className="max-w-[1280px] mx-auto flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex justify-center gap-2 sm:gap-2.5 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:order-1 lg:pb-0">
+          <div className="flex justify-center gap-2 sm:gap-2.5 overflow-x-auto py-1.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:order-1 lg:pb-0">
             <button
               onClick={() => setSelectedCategory("all")}
               className={`flex-none whitespace-nowrap px-5 sm:px-6 py-2 rounded-full text-[12px] sm:text-[13px] font-bold transition-all duration-300 cursor-pointer ${selectedCategory === "all"
@@ -664,7 +664,7 @@ export default function Menu() {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="relative bg-[#fffaf5] w-full max-w-[1000px] rounded-t-[28px] lg:rounded-[32px] overflow-hidden shadow-2xl h-dvh lg:h-auto lg:max-h-[88vh]"
+            className="relative bg-[#fffaf5] w-full max-w-[1000px] rounded-t-[28px] lg:rounded-[32px] overflow-hidden shadow-2xl h-dvh lg:h-[85vh]"
             style={{ maxHeight: '100dvh' }}
           >
             <button
@@ -705,7 +705,7 @@ export default function Menu() {
                   </div>
 
                   {/* Right Column: Product Info, Reviews & Action Buttons */}
-                  <div className="p-5 sm:p-8 lg:p-10 flex flex-col justify-between lg:overflow-y-auto [scrollbar-width:thin] [scrollbar-color:#ead8c7_transparent]">
+                  <div className="p-5 sm:p-8 lg:p-10 flex flex-col justify-between lg:h-full lg:overflow-y-auto [scrollbar-width:thin] [scrollbar-color:#ead8c7_transparent]">
                     <div>
                       <p className="text-[#b07b5d] uppercase tracking-[4px] text-[10px] sm:text-[11px] font-semibold">
                         Delassa Home Bakery
