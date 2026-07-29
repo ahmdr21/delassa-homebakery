@@ -7,6 +7,7 @@ import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
 import CartDrawer from "./components/CartDrawer";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { ToastProvider } from "./components/Toast";
 
 import { CartProvider, useCart } from "./context/CartContext";
 
@@ -117,6 +118,7 @@ export default function App() {
       <CartProvider>
         <ScrollToTop />
         <AppContent />
+        <ToastProvider />
       </CartProvider>
     </BrowserRouter>
   );

@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { showToast } from "../components/Toast";
 import { logout, getCurrentUser } from "../utils/auth";
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -155,7 +156,7 @@ export default function AdminReviews() {
     if (!selectedReview.id) return;
 
     if (!selectedReview.reviewer_name.trim() || !selectedReview.review.trim()) {
-      alert("Nama dan isi ulasan wajib diisi.");
+      showToast("Nama dan isi ulasan wajib diisi.", "error");
       return;
     }
 
@@ -214,7 +215,7 @@ const handleDeleteReview = async () => {
     setSelectedReview(updatedReviews[0] ?? emptyReview);
   } catch (err) {
     console.error(err);
-    alert("Gagal menghapus review.");
+    showToast("Gagal menghapus review.", "error");
   }
 };
 

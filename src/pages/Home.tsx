@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
+import { showToast } from "../components/Toast";
 import { motion } from "framer-motion";
 import { useCart } from "../context/CartContext";
 import {
@@ -318,7 +319,7 @@ export default function Home() {
     e.preventDefault();
     if (!selectedProduct) return;
     if (!reviewName.trim() || !reviewText.trim()) {
-      alert("Nama dan ulasan wajib diisi! ✨");
+      showToast("Nama dan ulasan wajib diisi! ✨", "error");
       return;
     }
     setSubmittingReview(true);
@@ -338,10 +339,10 @@ export default function Home() {
       setReviewRating(5);
       setReviewText("");
       setShowWriteForm(false);
-      alert("Terima kasih! Ulasan kamu sudah dikirim dan akan muncul setelah disetujui admin 🤎");
+      showToast("Terima kasih! Ulasan kamu sudah dikirim dan akan muncul setelah disetujui admin 🤎", "success");
     } catch (err) {
       console.error(err);
-      alert("Gagal mengirim ulasan. Coba lagi ya.");
+      showToast("Gagal mengirim ulasan. Coba lagi ya.", "error");
     } finally {
       setSubmittingReview(false);
     }

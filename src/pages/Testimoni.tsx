@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { showToast } from "../components/Toast";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import { getAllReviews, addProductReview } from "../utils/supabase";
@@ -63,7 +64,7 @@ export default function Testimoni() {
 
   const handleSubmitReview = async () => {
     if (!name.trim() || !reviewText.trim()) {
-      alert("Nama dan review wajib diisi! ✨");
+      showToast("Nama dan review wajib diisi! ✨", "error");
       return;
     }
 
@@ -85,10 +86,10 @@ export default function Testimoni() {
       setReviewText("");
       setRating(5);
       setSelectedProduct("Umum / Bakery");
-      alert("Terima kasih! Ulasan kamu sudah dikirim dan akan muncul setelah disetujui admin 🤎");
+      showToast("Terima kasih! Ulasan kamu sudah dikirim dan akan muncul setelah disetujui admin 🤎", "success");
     } catch (err) {
       console.error(err);
-      alert("Gagal mengirim ulasan.");
+      showToast("Gagal mengirim ulasan.", "error");
     } finally {
       setSubmitting(false);
     }
