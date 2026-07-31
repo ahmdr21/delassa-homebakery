@@ -5,6 +5,7 @@ import { getAllReviews, getProductReviews, addProductReview, getCategories, getP
 import type { Review, DBCategory, DBProduct, DBBundlePromo, DBPromoWithProducts } from "../utils/supabase";
 
 import { isBundlePromoActive, calculateBundlePrice } from "../data/promos";
+import { formatCurrency } from "../utils/format";
 
 
 import classicImg from "../assets/browniesclassic3.webp";
@@ -1010,9 +1011,9 @@ export default function Menu() {
                             );
                             if (!bundlePromo) return null;
 
-                            // Companion products = produk yg dipilih tanpa harga promo (minuman)
+                            // Companion products = semua produk dalam promo selain produk utama (brownies)
                             const companionIds = (bundlePromo.product_ids ?? []).filter(
-                              (pid) => bundlePromo.product_prices?.[pid] == null
+                              (pid) => pid !== selectedProduct.productId
                             );
                             const companionProducts = dbProducts.filter((p) => companionIds.includes(p.id));
                             if (companionProducts.length === 0) return null;
@@ -1027,42 +1028,58 @@ export default function Menu() {
                                   </span>
                                 </div>
                                 <p className="text-[11px] sm:text-[12px] text-[#7a6a62] mb-4">
-                                  Pilih 1 minuman berikut dan dapatkan harga spesial&nbsp;
-                                  <span className="font-black text-red-500">{selectedProduct.promoPrice}</span>
-                                  &nbsp;(normal: <span className="line-through">{selectedProduct.price}</span>)
+                                  Pilih 1 minuman berikut untuk mendapatkan harga bundle spesial!
                                 </p>
 
                                 {/* Drink options */}
                                 <p className="text-[11px] font-bold text-[#9b6a50] uppercase tracking-wider mb-2">Pilih Minumanmu:</p>
-                                <div className="grid grid-cols-2 gap-2">
-                                  {companionProducts.map((drink) => (
-                                    <button
-                                      key={drink.id}
-                                      type="button"
-                                      onClick={() => setPromoBundleDrink(drink.title)}
-                                      className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-left transition-all duration-200 cursor-pointer ${
-                                        promoBundleDrink === drink.title
-                                          ? "bg-[#c38358] border-[#c38358] text-white shadow-md"
-                                          : "bg-white border-[#ead8c7] text-[#6d5b52] hover:border-[#c38358] hover:bg-[#fffbf7]"
-                                      }`}
-                                    >
-                                      <span className="text-base shrink-0">☕</span>
-                                      <span className="text-[11px] sm:text-[12px] font-bold leading-tight">{drink.title}</span>
-                                    </button>
-                                  ))}
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                  {companionProducts.map((drink) => {
+                                    const drinkPrice = bundlePromo.product_prices?.[drink.id];
+                                    const displayPrice = drinkPrice != null ? formatCurrency(drinkPrice) : selectedProduct.promoPrice;
+                                    return (
+                                      <button
+                                        key={drink.id}
+                                        type="button"
+                                        onClick={() => setPromoBundleDrink(drink.title)}
+                                        className={`flex items-center justify-between px-3 py-2.5 rounded-xl border text-left transition-all duration-200 cursor-pointer ${
+                                          promoBundleDrink === drink.title
+                                            ? "bg-[#c38358] border-[#c38358] text-white shadow-md"
+                                            : "bg-white border-[#ead8c7] text-[#6d5b52] hover:border-[#c38358] hover:bg-[#fffbf7]"
+                                        }`}
+                                      >
+                                        <div className="flex items-center gap-2 truncate">
+                                          <span className="text-base shrink-0">☕</span>
+                                          <span className="text-[11px] sm:text-[12px] font-bold leading-tight truncate">{drink.title}</span>
+                                        </div>
+                                        <span className={`text-[10px] font-black shrink-0 ${promoBundleDrink === drink.title ? "text-white" : "text-red-500"}`}>
+                                          {displayPrice}
+                                        </span>
+                                      </button>
+                                    );
+                                  })}
                                 </div>
 
                                 {/* Total price summary */}
-                                {promoBundleDrink && (
-                                  <div className="mt-4 flex items-center justify-between bg-white rounded-xl px-4 py-3 border border-[#ead8c7]">
-                                    <div className="text-[12px] text-[#6d5b52]">
-                                      <span className="font-bold text-[#2f221d]">{selectedProduct.title}</span>
-                                      <span className="mx-1">+</span>
-                                      <span className="font-bold text-[#c38358]">{promoBundleDrink}</span>
+                                {promoBundleDrink && (() => {
+                                  const selectedDrinkProduct = companionProducts.find(p => p.title === promoBundleDrink);
+                                  const customBundlePrice = selectedDrinkProduct && bundlePromo.product_prices?.[selectedDrinkProduct.id]
+                                    ? bundlePromo.product_prices[selectedDrinkProduct.id]
+                                    : null;
+                                  const displayPrice = customBundlePrice !== null && customBundlePrice !== undefined
+                                    ? formatCurrency(customBundlePrice)
+                                    : selectedProduct.promoPrice;
+                                  return (
+                                    <div className="mt-4 flex items-center justify-between bg-white rounded-xl px-4 py-3 border border-[#ead8c7]">
+                                      <div className="text-[12px] text-[#6d5b52]">
+                                        <span className="font-bold text-[#2f221d]">{selectedProduct.title}</span>
+                                        <span className="mx-1">+</span>
+                                        <span className="font-bold text-[#c38358]">{promoBundleDrink}</span>
+                                      </div>
+                                      <span className="text-[15px] font-black text-red-500 shrink-0">{displayPrice}</span>
                                     </div>
-                                    <span className="text-[15px] font-black text-red-500 shrink-0">{selectedProduct.promoPrice}</span>
-                                  </div>
-                                )}
+                                  );
+                                })()}
 
                                 {!promoBundleDrink && (
                                   <p className="mt-3 text-[11px] text-[#c38358] font-semibold text-center">
@@ -1306,13 +1323,32 @@ export default function Menu() {
 
                     {/* Modal Actions */}
                     {(() => {
-                      // Untuk bundle → gunakan kalkulasi bundle price
-                      // Untuk produk biasa → gunakan harga promo jika ada
-                      const customPrice = selectedProduct.title.includes("Bundle")
-                        ? calculateBundlePrice(selectedBrownies, selectedDrink).price
-                        : selectedProduct.promoPrice
+                      // Untuk bundle legacy -> gunakan kalkulasi bundle price legacy
+                      // Untuk promo bundle baru -> hitung berdasarkan drink custom price jika ada
+                      let customPrice: number | undefined;
+                      if (selectedProduct.title.includes("Bundle")) {
+                        customPrice = calculateBundlePrice(selectedBrownies, selectedDrink).price;
+                      } else if (selectedProduct.promoType === "bundle" && promoBundleDrink) {
+                        const bundlePromo = activePromos.find((p) =>
+                          p.promo_type === "bundle" &&
+                          (p.product_ids ?? []).includes(selectedProduct.productId ?? "")
+                        );
+                        if (bundlePromo) {
+                          const selectedDrinkProduct = dbProducts.find(p => p.title === promoBundleDrink);
+                          const overridePrice = selectedDrinkProduct ? bundlePromo.product_prices?.[selectedDrinkProduct.id] : null;
+                          if (overridePrice != null) {
+                            customPrice = overridePrice;
+                          } else {
+                            customPrice = selectedProduct.promoPrice
+                              ? Number(String(selectedProduct.promoPrice).replace(/[^\d]/g, ""))
+                              : undefined;
+                          }
+                        }
+                      } else {
+                        customPrice = selectedProduct.promoPrice
                           ? Number(String(selectedProduct.promoPrice).replace(/[^\d]/g, ""))
                           : undefined;
+                      }
 
                       // Untuk promo bundle: wajib pilih minuman dulu
                       const needsDrinkSelection =
