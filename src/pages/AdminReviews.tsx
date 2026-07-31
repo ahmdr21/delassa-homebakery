@@ -2,10 +2,13 @@ import { useNavigate } from "react-router-dom";
 import { showToast } from "../components/Toast";
 import { logout, getCurrentUser } from "../utils/auth";
 import { useEffect, useMemo, useState } from "react";
+import AdminProductsTab from "../components/admin/AdminProductsTab";
+import AdminPromosTab from "../components/admin/AdminPromosTab";
 import {
   getAllReviewsForAdmin,
   updateProductReview,
   deleteProductReview,
+  getProducts,
 } from "../utils/supabase";
 import type {
   ProductReviewUpdate,
@@ -13,21 +16,7 @@ import type {
   ReviewSource,
 } from "../utils/supabase";
 
-const productsList = [
-  "Umum / Bakery",
-  "Brownies Classic",
-  "Brownies Almond",
-  "Brownies Cookies",
-  "Brownies Mix Topping",
-  "Bolu Pandan",
-  "Bolu Pandan Keju",
-  "Bolu Keju",
-  "Choco Bliss",
-  "Mocha Bliss",
-  "Butterscotch Bliss",
-  "Kopi Susu Gula Aren",
-  "Roasted Milk Tea",
-];
+
 
 const sources: ReviewSource[] = ["website", "instagram", "whatsapp", "direct"];
 type ReviewFilter = "all" | "pending" | "approved";
@@ -45,6 +34,22 @@ const emptyReview: Review = {
 };
 
 export default function AdminReviews() {
+  const [activeTab, setActiveTab] = useState<"reviews" | "products" | "promos">("reviews");
+  const [productsList, setProductsList] = useState<string[]>([
+    "Umum / Bakery",
+    "Brownies Classic",
+    "Brownies Almond",
+    "Brownies Cookies",
+    "Brownies Mix Topping",
+    "Bolu Pandan",
+    "Bolu Pandan Keju",
+    "Bolu Keju",
+    "Choco Bliss",
+    "Mocha Bliss",
+    "Butterscotch Bliss",
+    "Kopi Susu Gula Aren",
+    "Roasted Milk Tea",
+  ]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [selectedReview, setSelectedReview] = useState<Review>(emptyReview);
   const [filter, setFilter] = useState<ReviewFilter>("pending");
@@ -77,6 +82,13 @@ export default function AdminReviews() {
 
   useEffect(() => {
   let isCurrent = true;
+
+  getProducts(true).then((data) => {
+    if (isCurrent) {
+      const titles = data.map((p) => p.title);
+      setProductsList(["Umum / Bakery", ...titles.filter((t) => !t.includes("Bundle"))]);
+    }
+  }).catch(console.error);
 
   // Ambil email admin yang sedang login
   getCurrentUser().then((user) => {
@@ -269,13 +281,36 @@ const handleDeleteReview = async () => {
   </div>
 </div>
 
-        {error && (
-          <div className="mt-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
-            {error}
-          </div>
-        )}
+        {/* TABS HEADER */}
+        <div className="flex border-b border-[#ead8c7] mt-8 gap-2">
+          {[
+            { id: "reviews", label: "Moderasi Ulasan" },
+            { id: "products", label: "Kelola Produk" },
+            { id: "promos", label: "Kelola Promo Bundle" }
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as any)}
+              className={`px-5 py-3 text-sm font-bold border-b-2 transition-all cursor-pointer ${
+                activeTab === tab.id
+                  ? "border-[#c38358] text-[#c38358] bg-[#fffaf5] rounded-t-xl"
+                  : "border-transparent text-[#7a6a62] hover:text-[#c38358]"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
 
-        <div className="mt-6 grid gap-5 lg:grid-cols-[380px_1fr]">
+        {activeTab === "reviews" && (
+          <>
+            {error && (
+              <div className="mt-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+                {error}
+              </div>
+            )}
+
+            <div className="mt-6 grid gap-5 lg:grid-cols-[380px_1fr]">
           <aside className="rounded-2xl border border-[#ead8c7] bg-white p-4 shadow-sm">
             <div className="grid grid-cols-3 gap-2">
               {[
@@ -511,6 +546,11 @@ const handleDeleteReview = async () => {
             )}
           </section>
         </div>
+        </>
+      )}
+
+      {activeTab === "products" && <AdminProductsTab />}
+      {activeTab === "promos" && <AdminPromosTab />}
       </section>
     </main>
   );

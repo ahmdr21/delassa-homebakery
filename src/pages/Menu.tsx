@@ -1,8 +1,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { useCart } from "../context/CartContext";
-import { getAllReviews, getProductReviews, addProductReview } from "../utils/supabase";
-import type { Review } from "../utils/supabase";
+import { getAllReviews, getProductReviews, addProductReview, getCategories, getProducts, getBundlePromo, getActivePromos } from "../utils/supabase";
+import type { Review, DBCategory, DBProduct, DBBundlePromo, DBPromoWithProducts } from "../utils/supabase";
 
 import { isBundlePromoActive, calculateBundlePrice } from "../data/promos";
 
@@ -65,6 +65,13 @@ type Product = {
   images: string[];
   rating?: number;
   soldCount?: string;
+  // Promo fields
+  promoPrice?: string | null;   // Harga setelah diskon (string formatted)
+  promoBadge?: string | null;   // Badge promo (misal "Beli 1 Gratis 1")
+  promoType?: string | null;    // Jenis promo aktif
+  productId?: string | null;    // DB product id for promo matching
+  buyQuantity?: number | null;
+  freeQuantity?: number | null;
 };
 
 type Category = {
@@ -79,184 +86,251 @@ type ProductRatingSummary = {
   total: number;
 };
 
-const productCategories: Category[] = [
-  {
-    id: "brownies",
-    name: "Brownies",
-    description:
-      "Handmade brownies premium dengan rich chocolate, topping melimpah, dan sentuhan aesthetic untuk sweet moments favoritmu.",
-    products: [
-      {
-        title: "Brownies Classic",
-        price: "Rp55.000",
-        badge: null,
-        description:
-          "Rich chocolate brownies dengan tekstur moist dan rasa premium yang lembut di setiap gigitan.",
-        image: classicImg,
-        images: [classic1, classic2],
-        rating: 4.9,
-        soldCount: "150+",
-      },
-      {
-        title: "Brownies Almond",
-        price: "Rp65.000",
-        badge: null,
-        description:
-          "Perpaduan brownies premium dengan topping almond crunchy yang gurih dan elegan.",
-        image: almondImg,
-        images: [almond1, almond2],
-        rating: 4.8,
-        soldCount: "80+",
-      },
-      {
-        title: "Brownies Cookies",
-        price: "Rp68.000",
-        badge: "Best Seller",
-        description:
-          "Kombinasi brownies moist dengan topping cookies favorit untuk sweet moments spesial.",
-        image: cookiesImg,
-        images: [cookies1, cookies2],
-        rating: 4.9,
-        soldCount: "200+",
-      },
-      {
-        title: "Brownies Mix Topping",
-        price: "Rp70.000",
-        badge: null,
-        description:
-          "Rich chocolate brownies dengan topping caramel biscuit, choco ball, sliced almond, chocolate cream biscuit, dan roasted peanut crumble.",
-        image: mixImg,
-        images: [mix1, mix2],
-        rating: 4.8,
-        soldCount: "120+",
-      },
-    ],
-  },
-  {
-    id: "cakes",
-    name: "Cakes",
-    description:
-      "Dipanggang fresh setiap hari menggunakan bahan premium pilihan untuk menghadirkan kelembutan dan rasa yang tak terlupakan.",
-    products: [
-      {
-        title: "Bolu Pandan",
-        price: "Rp45.000",
-        badge: "New",
-        description:
-          "Bolu pandan tradisional dengan warna hijau alami, tekstur lembut, dan aroma pandan yang khas.",
-        image: pandan,
-        images: [pandan, pandan1, pandan2],
-        rating: 4.7,
-        soldCount: "90+",
-      },
-      {
-        title: "Bolu Pandan Keju",
-        price: "Rp50.000",
-        badge: "New",
-        description:
-          "Bolu dengan layer keju yang gurih, menciptakan kombinasi manis dan asin yang sempurna.",
-        image: panju,
-        images: [panju, panju1, panju2],
-        rating: 4.8,
-        soldCount: "110+",
-      },
-      {
-        title: "Bolu Keju",
-        price: "Rp48.000",
-        badge: "New",
-        description:
-          "Bolu coklat legit dengan rasa coklat yang kaya and tekstur yang moist di setiap gigitan.",
-        image: keju1,
-        images: [keju1, keju, keju2],
-        rating: 4.7,
-        soldCount: "75+",
-      },
-    ],
-  },
-  {
-    id: "drinks",
-    name: "Drinks",
-    description:
-      "Diracik dari bahan premium pilihan untuk menghadirkan kesegaran dan cita rasa yang menyempurnakan setiap momen.",
-    products: [
-      {
-        title: "Choco Bliss",
-        price: "Rp17.000",
-        badge: "New",
-        description:
-          "Perpaduan cokelat premium dan susu creamy yang menghadirkan rasa kaya, lembut, dan memanjakan di setiap tegukan.",
-        image: coklat,
-        images: [coklat, coklat2, coklat3],
-        rating: 4.9,
-        soldCount: "300+",
-      },
-      {
-        title: "Mocha Bliss",
-        price: "Rp16.000",
-        badge: "New",
-        description:
-          "Perpaduan espresso pilihan, cokelat premium, dan susu creamy yang menghadirkan rasa kaya, lembut, dan seimbang di setiap tegukan.",
-        image: mocha,
-        images: [mocha, mocha2, mocha3],
-        rating: 4.8,
-        soldCount: "180+",
-      },
-      {
-        title: "Butterscotch Bliss",
-        price: "Rp17.000",
-        badge: "New",
-        description:
-          "Perpaduan butterscotch premium dan susu creamy yang menghadirkan rasa manis yang lembut dengan sentuhan karamel di setiap tegukan.",
-        image: butter,
-        images: [butter, butter2, butter3],
-        rating: 4.8,
-        soldCount: "140+",
-      },
-      {
-        title: "Kopi Susu Gula Aren",
-        price: "Rp15.000",
-        badge: "New",
-        description:
-          "Espresso pilihan berpadu dengan susu creamy dan gula aren asli, menghadirkan rasa manis karamel yang lembut dan seimbang.",
-        image: aren,
-        images: [aren, aren2, aren3],
-        rating: 4.9,
-        soldCount: "250+",
-      },
-      {
-        title: "Roasted Milk Tea",
-        price: "Rp16.000",
-        badge: "New",
-        description:
-          "Perpaduan teh pilihan dan susu creamy dengan aroma roasted yang lembut, menghasilkan rasa yang kaya dan seimbang.",
-        image: teh,
-        images: [teh, teh2, teh3],
-        rating: 4.7,
-        soldCount: "160+",
-      },
-    ],
-  },
 
-  {
-    id: "bundles",
-    name: "Bundle Hemat",
-    description: "Paket bundling spesial brownies pilihan dan minuman segar dengan harga promo lebih hemat.",
-    products: [
-      {
-        title: "Bundle Hemat: Brownies + Minuman",
-        price: isBundlePromoActive() ? "Rp65.000 - Rp82.000" : "Rp70.000 - Rp87.000",
-        badge: isBundlePromoActive() ? "Promo Bundle" : "Hemat",
-        description: "Bebas pilih brownies (Classic/Almond/Cookies/Mix Topping) dan minuman favoritmu. Harga promo lebih hemat!",
-        image: mixImg,
-        images: [mixImg, aren],
-        rating: 5.0,
-        soldCount: "50+",
-      },
-    ],
-  },
-];
 
 export default function Menu() {
+  const [categories, setCategories] = useState<DBCategory[]>([]);
+  const [dbProducts, setDbProducts] = useState<DBProduct[]>([]);
+  const [dbBundlePromo, setDbBundlePromo] = useState<DBBundlePromo | null>(null);
+  const [activePromos, setActivePromos] = useState<DBPromoWithProducts[]>([]);
+
+  useEffect(() => {
+    Promise.all([getCategories(), getProducts(true), getBundlePromo(), getActivePromos()]).then(([cats, prods, promo, promos]) => {
+      setCategories(cats);
+      setDbProducts(prods);
+      setDbBundlePromo(promo);
+      setActivePromos(promos);
+    }).catch(console.error);
+  }, []);
+
+  const productCategories = useMemo<Category[]>(() => {
+    if (categories.length === 0 || dbProducts.length === 0) {
+      return [
+        {
+          id: "brownies",
+          name: "Brownies",
+          description: "Handmade brownies premium dengan rich chocolate, topping melimpah, dan sentuhan aesthetic untuk sweet moments favoritmu.",
+          products: [
+            {
+              title: "Brownies Classic",
+              price: "Rp55.000",
+              badge: null,
+              description: "Rich chocolate brownies dengan tekstur moist dan rasa premium yang lembut di setiap gigitan.",
+              image: classicImg,
+              images: [classic1, classic2],
+              rating: 4.9,
+              soldCount: "150+",
+            },
+            {
+              title: "Brownies Almond",
+              price: "Rp65.000",
+              badge: null,
+              description: "Perpaduan brownies premium dengan topping almond crunchy yang gurih dan elegan.",
+              image: almondImg,
+              images: [almond1, almond2],
+              rating: 4.8,
+              soldCount: "80+",
+            },
+            {
+              title: "Brownies Cookies",
+              price: "Rp68.000",
+              badge: "Best Seller",
+              description: "Kombinasi brownies moist dengan topping cookies favorit untuk sweet moments spesial.",
+              image: cookiesImg,
+              images: [cookies1, cookies2],
+              rating: 4.9,
+              soldCount: "200+",
+            },
+            {
+              title: "Brownies Mix Topping",
+              price: "Rp70.000",
+              badge: null,
+              description: "Rich chocolate brownies dengan topping caramel biscuit, choco ball, sliced almond, chocolate cream biscuit, dan roasted peanut crumble.",
+              image: mixImg,
+              images: [mix1, mix2],
+              rating: 4.8,
+              soldCount: "120+",
+            },
+          ],
+        },
+        {
+          id: "cakes",
+          name: "Cakes",
+          description: "Dipanggang fresh setiap hari menggunakan bahan premium pilihan untuk menghadirkan kelembutan dan rasa yang tak terlupakan.",
+          products: [
+            {
+              title: "Bolu Pandan",
+              price: "Rp45.000",
+              badge: "New",
+              description: "Bolu pandan tradisional dengan warna hijau alami, tekstur lembut, dan aroma pandan yang khas.",
+              image: pandan,
+              images: [pandan, pandan1, pandan2],
+              rating: 4.7,
+              soldCount: "90+",
+            },
+            {
+              title: "Bolu Pandan Keju",
+              price: "Rp50.000",
+              badge: "New",
+              description: "Bolu dengan layer keju yang gurih, menciptakan kombinasi manis dan asin yang sempurna.",
+              image: panju,
+              images: [panju, panju1, panju2],
+              rating: 4.8,
+              soldCount: "110+",
+            },
+            {
+              title: "Bolu Keju",
+              price: "Rp48.000",
+              badge: "New",
+              description: "Bolu coklat legit dengan rasa coklat yang kaya and tekstur yang moist di setiap gigitan.",
+              image: keju1,
+              images: [keju1, keju, keju2],
+              rating: 4.7,
+              soldCount: "75+",
+            },
+          ],
+        },
+        {
+          id: "drinks",
+          name: "Drinks",
+          description: "Diracik dari bahan premium pilihan untuk menghadirkan kesegaran dan cita rasa yang menyempurnakan setiap momen.",
+          products: [
+            {
+              title: "Choco Bliss",
+              price: "Rp17.000",
+              badge: "New",
+              description: "Perpaduan cokelat premium dan susu creamy yang menghadirkan rasa kaya, lembut, dan memanjakan di setiap tegukan.",
+              image: coklat,
+              images: [coklat, coklat2, coklat3],
+              rating: 4.9,
+              soldCount: "300+",
+            },
+            {
+              title: "Mocha Bliss",
+              price: "Rp16.000",
+              badge: "New",
+              description: "Perpaduan espresso pilihan, cokelat premium, dan susu creamy yang menghadirkan rasa kaya, lembut, dan seimbang di setiap tegukan.",
+              image: mocha,
+              images: [mocha, mocha2, mocha3],
+              rating: 4.8,
+              soldCount: "180+",
+            },
+            {
+              title: "Butterscotch Bliss",
+              price: "Rp17.000",
+              badge: "New",
+              description: "Perpaduan butterscotch premium dan susu creamy yang menghadirkan rasa manis yang lembut dengan sentuhan karamel di setiap tegukan.",
+              image: butter,
+              images: [butter, butter2, butter3],
+              rating: 4.8,
+              soldCount: "140+",
+            },
+            {
+              title: "Kopi Susu Gula Aren",
+              price: "Rp15.000",
+              badge: "New",
+              description: "Espresso pilihan berpadu dengan susu creamy and gula aren asli, menghadirkan rasa manis karamel yang lembut dan seimbang.",
+              image: aren,
+              images: [aren, aren2, aren3],
+              rating: 4.9,
+              soldCount: "250+",
+            },
+            {
+              title: "Roasted Milk Tea",
+              price: "Rp16.000",
+              badge: "New",
+              description: "Perpaduan teh pilihan dan susu creamy dengan aroma roasted yang lembut, menghasilkan rasa yang kaya dan seimbang.",
+              image: teh,
+              images: [teh, teh2, teh3],
+              rating: 4.7,
+              soldCount: "160+",
+            },
+          ],
+        },
+        {
+          id: "bundles",
+          name: "Bundle Hemat",
+          description: "Paket bundling spesial brownies pilihan dan minuman segar dengan harga promo lebih hemat.",
+          products: [
+            {
+              title: "Bundle Hemat: Brownies + Minuman",
+              price: isBundlePromoActive(dbBundlePromo) ? "Rp65.000 - Rp82.000" : "Rp70.000 - Rp87.000",
+              badge: isBundlePromoActive(dbBundlePromo) ? "Promo Bundle" : "Hemat",
+              description: "Bebas pilih brownies (Classic/Almond/Cookies/Mix Topping) dan minuman favoritmu. Harga promo lebih hemat!",
+              image: mixImg,
+              images: [mixImg, aren],
+              rating: 5.0,
+              soldCount: "50+",
+            },
+          ],
+        },
+      ];
+    }
+
+    return categories.map((cat) => {
+      const catProducts = dbProducts
+        .filter((p) => p.category_id === cat.id)
+        .map((p) => {
+          let priceStr = `Rp${p.price.toLocaleString("id-ID")}`;
+          let badgeStr = p.badge;
+
+          if (p.title.includes("Bundle")) {
+            const isPromo = isBundlePromoActive(dbBundlePromo);
+            priceStr = isPromo ? "Rp65.000 - Rp82.000" : "Rp70.000 - Rp87.000";
+            badgeStr = isPromo ? "Promo Bundle" : "Hemat";
+          }
+
+          // Cek apakah ada promo aktif yang berlaku untuk produk ini
+          const applicablePromo = activePromos.find((promo) =>
+            (promo.product_ids ?? []).includes(p.id)
+          );
+
+          let promoPrice: string | null = null;
+          let promoBadge: string | null = null;
+          let promoType: string | null = null;
+          let buyQuantity: number | null = null;
+          let freeQuantity: number | null = null;
+
+          if (applicablePromo) {
+            promoType = applicablePromo.promo_type;
+            promoBadge = applicablePromo.badge_label;
+            buyQuantity = applicablePromo.buy_quantity;
+            freeQuantity = applicablePromo.free_quantity;
+
+            // Gunakan harga promo per-produk langsung dari database
+            const perProductPrice = applicablePromo.product_prices?.[p.id];
+            if (perProductPrice != null) {
+              promoPrice = `Rp${perProductPrice.toLocaleString("id-ID")}`;
+            }
+          }
+
+          return {
+            title: p.title,
+            price: priceStr,
+            badge: badgeStr,
+            description: p.description || "",
+            image: p.image_url,
+            images: p.images && p.images.length > 0 ? p.images : [p.image_url],
+            rating: Number(p.rating),
+            soldCount: p.sold_count,
+            productId: p.id,
+            promoPrice,
+            promoBadge,
+            promoType,
+            buyQuantity,
+            freeQuantity,
+          };
+        });
+
+      return {
+        id: cat.id,
+        name: cat.name,
+        description: cat.description || "",
+        products: catProducts,
+      };
+    });
+  }, [categories, dbProducts, dbBundlePromo, activePromos]);
+
   const [open, setOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [activeImage, setActiveImage] = useState(0);
@@ -276,6 +350,7 @@ export default function Menu() {
 
   const [selectedBrownies, setSelectedBrownies] = useState("Brownies Mix Topping");
   const [selectedDrink, setSelectedDrink] = useState("Kopi Susu Gula Aren");
+  const [promoBundleDrink, setPromoBundleDrink] = useState(""); // Untuk promo bundle dinamis
 
   const { cart, setCartOpen, addToCart, updateQty } = useCart();
 
@@ -285,6 +360,8 @@ export default function Menu() {
         setSelectedBrownies("Brownies Mix Topping");
         setSelectedDrink("Kopi Susu Gula Aren");
       }
+      // Reset pilihan minuman promo bundle setiap ganti produk
+      setPromoBundleDrink("");
     }
   }, [selectedProduct]);
 
@@ -438,13 +515,23 @@ export default function Menu() {
   };
 
   const handleAddToCart = (product: Product, quantity: number = 1, openDrawer: boolean = false, customPrice?: number) => {
+    // Gunakan harga promo jika ada, lalu customPrice (bundle), lalu harga normal
     const parsedPrice = customPrice !== undefined
       ? customPrice
-      : Number(String(product.price).replace(/[^\d]/g, ""));
+      : product.promoPrice
+        ? Number(String(product.promoPrice).replace(/[^\d]/g, ""))
+        : Number(String(product.price).replace(/[^\d]/g, ""));
 
-    const title = product.title.includes("Bundle")
-      ? `${product.title} (${selectedBrownies.replace("Brownies ", "")} + ${selectedDrink})`
-      : product.title;
+    let title: string;
+    if (product.title.includes("Bundle")) {
+      // Produk Bundle legacy
+      title = `${product.title} (${selectedBrownies.replace("Brownies ", "")} + ${selectedDrink})`;
+    } else if (product.promoType === "bundle" && promoBundleDrink) {
+      // Promo Bundle dinamis — sertakan minuman yang dipilih
+      title = `${product.title} + ${promoBundleDrink}`;
+    } else {
+      title = product.title;
+    }
 
     addToCart({ title, price: parsedPrice, qty: quantity });
 
@@ -454,8 +541,12 @@ export default function Menu() {
   };
 
 
+
   const handleQtyChange = (product: Product, delta: number) => {
-    const parsedPrice = Number(String(product.price).replace(/[^\d]/g, ""));
+    // Gunakan harga promo jika ada, kalau tidak harga normal
+    const parsedPrice = product.promoPrice
+      ? Number(String(product.promoPrice).replace(/[^\d]/g, ""))
+      : Number(String(product.price).replace(/[^\d]/g, ""));
 
     if (delta > 0) {
       addToCart({ title: product.title, price: parsedPrice, qty: 1 });
@@ -613,6 +704,13 @@ export default function Menu() {
                     className="w-full aspect-square sm:aspect-[16/10] xl:aspect-[5/4] object-cover object-center group-hover:scale-105 transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/25 to-transparent" />
+                  {/* Promo badge — tampil lebih menonjol dari badge produk biasa */}
+                  {item.promoBadge && (
+                    <div className="absolute top-2 left-2 sm:top-3 sm:left-3 bg-gradient-to-r from-red-500 to-orange-500 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-[8px] sm:text-[11px] font-bold uppercase tracking-[0.6px] shadow-lg flex items-center gap-1">
+                      🔥 {item.promoBadge}
+                    </div>
+                  )}
+                  {/* Badge produk biasa (kanan atas) */}
                   {item.badge && (
                     <div className="absolute top-2 right-2 sm:top-3 sm:right-3 bg-[#c38358] text-white px-2 sm:px-3.5 py-1 sm:py-1.5 rounded-full text-[8px] sm:text-[11px] font-bold uppercase tracking-[0.6px] sm:tracking-[1px] shadow-lg">
                       {item.badge}
@@ -625,12 +723,44 @@ export default function Menu() {
                       {item.title}
                     </h2>
                     <div className="flex items-center justify-between flex-wrap gap-x-1 mt-1 sm:mt-2.5">
-                      <p className="text-[#c38358] text-[13px] sm:text-[19px] font-bold">{item.price}</p>
+                      {/* Harga — tampilkan promo price atau harga normal */}
+                      {item.promoPrice ? (
+                        <div className="flex flex-col">
+                          <span className="text-[10px] sm:text-[12px] text-gray-400 line-through leading-tight">{item.price}</span>
+                          <span className="text-red-500 text-[13px] sm:text-[19px] font-black leading-tight">{item.promoPrice}</span>
+                        </div>
+                      ) : (
+                        <p className="text-[#c38358] text-[13px] sm:text-[19px] font-bold">{item.price}</p>
+                      )}
                       <div className="flex items-center gap-1 text-[10px] sm:text-[12px] text-[#7a6a62] font-semibold">
                         <span className="text-yellow-500 font-bold">★</span>
                         <span>{getProductRatingSummary(item).average.toFixed(1)}</span>
                       </div>
                     </div>
+
+                    {/* Info promo: hemat berapa / jenis promo */}
+                    {item.promoPrice && item.promoType !== "beli1gratis1" && (() => {
+                      const orig = Number(String(item.price).replace(/[^\d]/g, ""));
+                      const discounted = Number(String(item.promoPrice).replace(/[^\d]/g, ""));
+                      const savings = orig - discounted;
+                      return savings > 0 ? (
+                        <div className="mt-1.5 inline-flex items-center gap-1 bg-red-50 text-red-600 border border-red-100 px-2 py-0.5 rounded-full text-[9px] sm:text-[11px] font-bold">
+                          🏷️ Hemat Rp{savings.toLocaleString("id-ID")}
+                        </div>
+                      ) : null;
+                    })()}
+                    {/* Beli X Gratis Y label */}
+                    {item.promoType === "beli1gratis1" && (
+                      <div className="mt-1.5 inline-flex items-center gap-1 bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full text-[9px] sm:text-[11px] font-bold">
+                        🎁 Beli {item.buyQuantity ?? 1} Gratis {item.freeQuantity ?? 1}
+                      </div>
+                    )}
+                    {/* Badge-only promo (promoBadge but no price change) */}
+                    {!item.promoPrice && item.promoBadge && item.promoType !== "beli1gratis1" && (
+                      <div className="mt-1.5 inline-flex items-center gap-1 bg-orange-50 text-orange-700 border border-orange-100 px-2 py-0.5 rounded-full text-[9px] sm:text-[11px] font-bold">
+                        🔥 {item.promoBadge}
+                      </div>
+                    )}
                   </div>
                   <p className="hidden sm:block mt-4 text-[#7a6a62] text-[14px] leading-6 line-clamp-3 flex-grow">
                     {item.description}
@@ -771,7 +901,7 @@ export default function Menu() {
                       </div>
 
                       {selectedProduct.title.includes("Bundle") ? (() => {
-                        const { price, originalPrice, isPromo } = calculateBundlePrice(selectedBrownies, selectedDrink);
+                        const { price, originalPrice, isPromo } = calculateBundlePrice(selectedBrownies, selectedDrink, dbBundlePromo);
                         return (
                           <div className="mt-4 flex flex-col gap-1">
                             <div className="flex items-baseline gap-3">
@@ -791,15 +921,141 @@ export default function Menu() {
                           </div>
                         );
                       })() : (
-                        <p className="mt-4 text-[#c38358] text-[22px] sm:text-[28px] font-black">
-                          {selectedProduct.price}
-                        </p>
+                        <div className="mt-4">
+                          {selectedProduct.promoPrice ? (
+                            <div className="flex flex-col gap-1">
+                              <span className="text-sm text-gray-400 line-through">{selectedProduct.price}</span>
+                              <span className="text-red-500 text-[22px] sm:text-[28px] font-black">{selectedProduct.promoPrice}</span>
+
+                              {/* Hitung dan tampilkan besaran hemat */}
+                              {selectedProduct.promoType !== "beli1gratis1" && (() => {
+                                const orig = Number(String(selectedProduct.price).replace(/[^\d]/g, ""));
+                                const disc = Number(String(selectedProduct.promoPrice).replace(/[^\d]/g, ""));
+                                const savings = orig - disc;
+                                return savings > 0 ? (
+                                  <div className="flex flex-wrap gap-2 mt-1">
+                                    <span className="inline-flex items-center gap-1 bg-red-50 text-red-600 border border-red-100 px-3 py-1 rounded-full text-xs font-bold">
+                                      🏷️ Hemat Rp{savings.toLocaleString("id-ID")}
+                                    </span>
+                                    {selectedProduct.promoBadge && (
+                                      <span className="inline-flex items-center gap-1 bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-xs font-bold">
+                                        🔥 {selectedProduct.promoBadge}
+                                      </span>
+                                    )}
+                                  </div>
+                                ) : null;
+                              })()}
+
+                              {/* Beli X Gratis Y */}
+                              {selectedProduct.promoType === "beli1gratis1" && (
+                                <div className="mt-1 inline-flex items-center gap-1.5 bg-purple-100 text-purple-700 px-3 py-1.5 rounded-full text-xs font-bold self-start">
+                                  🎁 Beli {selectedProduct.buyQuantity ?? 1} Gratis {selectedProduct.freeQuantity ?? 1} — Dapatkan bonus produk setiap pembelian!
+                                </div>
+                              )}
+                            </div>
+                          ) : (() => {
+                            // Tidak ada perubahan harga tapi ada badge (misal beli1gratis1 tanpa price)
+                            return (
+                              <div>
+                                <p className="text-[#c38358] text-[22px] sm:text-[28px] font-black">
+                                  {selectedProduct.price}
+                                </p>
+                                {selectedProduct.promoType === "beli1gratis1" && (
+                                  <div className="mt-2 inline-flex items-center gap-1.5 bg-purple-100 text-purple-700 px-3 py-1.5 rounded-full text-xs font-bold">
+                                    🎁 Beli {selectedProduct.buyQuantity ?? 1} Gratis {selectedProduct.freeQuantity ?? 1} — Dapatkan bonus produk setiap pembelian!
+                                  </div>
+                                )}
+                                {selectedProduct.promoBadge && selectedProduct.promoType !== "beli1gratis1" && (
+                                  <div className="mt-2 inline-flex items-center gap-1.5 bg-orange-100 text-orange-700 px-3 py-1.5 rounded-full text-xs font-bold">
+                                    🔥 {selectedProduct.promoBadge}
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })()}
+                        </div>
+
                       )}
 
                       {!selectedProduct.title.includes("Bundle") ? (
-                        <p className="mt-4 text-[#6d5b52] leading-relaxed text-[14px] sm:text-[15px]">
-                          {selectedProduct.description}
-                        </p>
+                        <>
+                          <p className="mt-4 text-[#6d5b52] leading-relaxed text-[14px] sm:text-[15px]">
+                            {selectedProduct.description}
+                          </p>
+
+                          {/* ======= BUNDLE PROMO DRINK SELECTOR ======= */}
+                          {selectedProduct.promoType === "bundle" && (() => {
+                            // Cari promo bundle yang berlaku untuk produk ini
+                            const bundlePromo = activePromos.find((p) =>
+                              p.promo_type === "bundle" &&
+                              (p.product_ids ?? []).includes(selectedProduct.productId ?? "")
+                            );
+                            if (!bundlePromo) return null;
+
+                            // Companion products = produk yg dipilih tanpa harga promo (minuman)
+                            const companionIds = (bundlePromo.product_ids ?? []).filter(
+                              (pid) => bundlePromo.product_prices?.[pid] == null
+                            );
+                            const companionProducts = dbProducts.filter((p) => companionIds.includes(p.id));
+                            if (companionProducts.length === 0) return null;
+
+                            return (
+                              <div className="mt-5 bg-gradient-to-br from-[#fff8f0] to-[#fdf3eb] p-4 sm:p-5 rounded-2xl border border-[#ead8c7] shadow-sm">
+                                {/* Header bundle info */}
+                                <div className="flex items-center gap-2 mb-1">
+                                  <span className="text-base">🎁</span>
+                                  <span className="text-[13px] sm:text-[14px] font-black text-[#2f221d]">
+                                    Paket Bundle — {selectedProduct.title}
+                                  </span>
+                                </div>
+                                <p className="text-[11px] sm:text-[12px] text-[#7a6a62] mb-4">
+                                  Pilih 1 minuman berikut dan dapatkan harga spesial&nbsp;
+                                  <span className="font-black text-red-500">{selectedProduct.promoPrice}</span>
+                                  &nbsp;(normal: <span className="line-through">{selectedProduct.price}</span>)
+                                </p>
+
+                                {/* Drink options */}
+                                <p className="text-[11px] font-bold text-[#9b6a50] uppercase tracking-wider mb-2">Pilih Minumanmu:</p>
+                                <div className="grid grid-cols-2 gap-2">
+                                  {companionProducts.map((drink) => (
+                                    <button
+                                      key={drink.id}
+                                      type="button"
+                                      onClick={() => setPromoBundleDrink(drink.title)}
+                                      className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-left transition-all duration-200 cursor-pointer ${
+                                        promoBundleDrink === drink.title
+                                          ? "bg-[#c38358] border-[#c38358] text-white shadow-md"
+                                          : "bg-white border-[#ead8c7] text-[#6d5b52] hover:border-[#c38358] hover:bg-[#fffbf7]"
+                                      }`}
+                                    >
+                                      <span className="text-base shrink-0">☕</span>
+                                      <span className="text-[11px] sm:text-[12px] font-bold leading-tight">{drink.title}</span>
+                                    </button>
+                                  ))}
+                                </div>
+
+                                {/* Total price summary */}
+                                {promoBundleDrink && (
+                                  <div className="mt-4 flex items-center justify-between bg-white rounded-xl px-4 py-3 border border-[#ead8c7]">
+                                    <div className="text-[12px] text-[#6d5b52]">
+                                      <span className="font-bold text-[#2f221d]">{selectedProduct.title}</span>
+                                      <span className="mx-1">+</span>
+                                      <span className="font-bold text-[#c38358]">{promoBundleDrink}</span>
+                                    </div>
+                                    <span className="text-[15px] font-black text-red-500 shrink-0">{selectedProduct.promoPrice}</span>
+                                  </div>
+                                )}
+
+                                {!promoBundleDrink && (
+                                  <p className="mt-3 text-[11px] text-[#c38358] font-semibold text-center">
+                                    ← Pilih minuman dulu untuk melanjutkan
+                                  </p>
+                                )}
+                              </div>
+                            );
+                          })()}
+                        </>
+
                       ) : (
                         <div className="mt-6 space-y-5 bg-[#fffaf5] p-4 sm:p-5 rounded-2xl border border-[#ead8c7]/65 shadow-sm">
                           {/* Brownies Selection */}
@@ -1032,30 +1288,51 @@ export default function Menu() {
 
                     {/* Modal Actions */}
                     {(() => {
+                      // Untuk bundle → gunakan kalkulasi bundle price
+                      // Untuk produk biasa → gunakan harga promo jika ada
                       const customPrice = selectedProduct.title.includes("Bundle")
                         ? calculateBundlePrice(selectedBrownies, selectedDrink).price
-                        : undefined;
+                        : selectedProduct.promoPrice
+                          ? Number(String(selectedProduct.promoPrice).replace(/[^\d]/g, ""))
+                          : undefined;
+
+                      // Untuk promo bundle: wajib pilih minuman dulu
+                      const needsDrinkSelection =
+                        selectedProduct.promoType === "bundle" &&
+                        !selectedProduct.title.includes("Bundle") &&
+                        !promoBundleDrink;
+
                       return (
-                        <div className="grid grid-cols-2 gap-3 mt-6">
-                          <button
-                            onClick={() => {
-                              handleAddToCart(selectedProduct, qty, false, customPrice);
-                              setOpen(false);
-                            }}
-                            className="inline-flex items-center justify-center bg-white border border-[#c38358] text-[#c38358] hover:bg-[#fff5ef] px-4 py-2.5 rounded-full text-[12px] sm:text-[13px] font-bold shadow-sm transition-all duration-300 cursor-pointer"
-                          >
-                            + Keranjang
-                          </button>
-                          <button
-                            onClick={() => {
-                              handleAddToCart(selectedProduct, qty, true, customPrice);
-                              setOpen(false);
-                            }}
-                            className="inline-flex items-center justify-center bg-[#c38358] hover:bg-[#a96d45] text-white px-4 py-2.5 rounded-full text-[12px] sm:text-[13px] font-bold shadow-[0_6px_18px_rgba(195,131,88,0.25)] hover:-translate-y-[1px] transition-all duration-300 cursor-pointer"
-                          >
-                            Beli Langsung
-                          </button>
+                        <div className="mt-6">
+                          {needsDrinkSelection && (
+                            <p className="text-center text-xs text-[#c38358] font-semibold mb-3 animate-pulse">
+                              ⬆️ Pilih minuman terlebih dahulu untuk lanjut checkout
+                            </p>
+                          )}
+                          <div className="grid grid-cols-2 gap-3">
+                            <button
+                              disabled={needsDrinkSelection}
+                              onClick={() => {
+                                handleAddToCart(selectedProduct, qty, false, customPrice);
+                                setOpen(false);
+                              }}
+                              className="inline-flex items-center justify-center bg-white border border-[#c38358] text-[#c38358] hover:bg-[#fff5ef] px-4 py-2.5 rounded-full text-[12px] sm:text-[13px] font-bold shadow-sm transition-all duration-300 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                            >
+                              + Keranjang
+                            </button>
+                            <button
+                              disabled={needsDrinkSelection}
+                              onClick={() => {
+                                handleAddToCart(selectedProduct, qty, true, customPrice);
+                                setOpen(false);
+                              }}
+                              className="inline-flex items-center justify-center bg-[#c38358] hover:bg-[#a96d45] text-white px-4 py-2.5 rounded-full text-[12px] sm:text-[13px] font-bold shadow-[0_6px_18px_rgba(195,131,88,0.25)] hover:-translate-y-[1px] transition-all duration-300 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                            >
+                              Beli Langsung
+                            </button>
+                          </div>
                         </div>
+
                       );
                     })()}
                   </div>

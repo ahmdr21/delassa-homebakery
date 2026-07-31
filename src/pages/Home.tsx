@@ -11,8 +11,8 @@ import {
   Plus,
   Minus,
 } from "lucide-react";
-import { getAllReviews, addProductReview } from "../utils/supabase";
-import type { Review } from "../utils/supabase";
+import { getAllReviews, addProductReview, getProducts, getBundlePromo } from "../utils/supabase";
+import type { Review, DBProduct, DBBundlePromo } from "../utils/supabase";
 
 /* ====================================================== */
 /* ASSETS */
@@ -68,67 +68,6 @@ type ProductRatingSummary = {
   total: number;
 };
 
-const products: Product[] = [
-  {
-    title: "Brownies Almond",
-    price: "Rp65.000",
-    badge: "Premium",
-    image: almond1,
-    description:
-      "Perpaduan brownies premium dengan topping almond crunchy yang gurih dan elegan.",
-    images: [
-      almond1,
-      almond2,
-    ],
-    rating: 4.8,
-    soldCount: "80+",
-  },
-
-  {
-    title: "Brownies Cookies",
-    price: "Rp68.000",
-    badge: "Best Seller",
-    image: cookies1,
-    description:
-      "Kombinasi brownies moist dengan topping cookies favorit untuk sweet moments spesial.",
-    images: [
-      cookies1,
-      cookies2,
-    ],
-    rating: 4.9,
-    soldCount: "200+",
-  },
-
-  {
-    title: "Brownies Mix Topping",
-    price: "Rp70.000",
-    badge: "Recommended",
-    image: mixImg,
-    description:
-      "Rich chocolate brownies dengan topping caramel biscuit, choco ball, sliced almond, chocolate cream biscuit, dan roasted peanut crumble.",
-    images: [
-      mix1,
-      mix2,
-    ],
-    rating: 4.8,
-    soldCount: "120+",
-  },
-
-  {
-    title: "Bundle Hemat: Brownies + Minuman",
-    price: isBundlePromoActive() ? "Rp65.000 - Rp82.000" : "Rp70.000 - Rp87.000",
-    badge: isBundlePromoActive() ? "Promo Bundle" : "Hemat",
-    image: mixImg,
-    description:
-      "Paket kombinasi hemat brownies premium pilihanmu dengan varian minuman segar khas Delassa.",
-    images: [
-      mixImg,
-      aren,
-    ],
-    rating: 5.0,
-    soldCount: "50+",
-  },
-];
 
 const trustSignals = [
   {
@@ -176,6 +115,107 @@ export default function Home() {
 
   const [selectedBrownies, setSelectedBrownies] = useState("Brownies Mix Topping");
   const [selectedDrink, setSelectedDrink] = useState("Kopi Susu Gula Aren");
+
+  const [dbProducts, setDbProducts] = useState<DBProduct[]>([]);
+  const [dbBundlePromo, setDbBundlePromo] = useState<DBBundlePromo | null>(null);
+
+  useEffect(() => {
+    getProducts(true).then(setDbProducts).catch(console.error);
+    getBundlePromo().then(setDbBundlePromo).catch(console.error);
+  }, []);
+
+  const products = useMemo<Product[]>(() => {
+    if (dbProducts.length === 0) {
+      return [
+        {
+          title: "Brownies Almond",
+          price: "Rp65.000",
+          badge: "Premium",
+          image: almond1,
+          description:
+            "Perpaduan brownies premium dengan topping almond crunchy yang gurih dan elegan.",
+          images: [
+            almond1,
+            almond2,
+          ],
+          rating: 4.8,
+          soldCount: "80+",
+        },
+        {
+          title: "Brownies Cookies",
+          price: "Rp68.000",
+          badge: "Best Seller",
+          image: cookies1,
+          description:
+            "Kombinasi brownies moist dengan topping cookies favorit untuk sweet moments spesial.",
+          images: [
+            cookies1,
+            cookies2,
+          ],
+          rating: 4.9,
+          soldCount: "200+",
+        },
+        {
+          title: "Brownies Mix Topping",
+          price: "Rp70.000",
+          badge: "Recommended",
+          image: mixImg,
+          description:
+            "Rich chocolate brownies dengan topping caramel biscuit, choco ball, sliced almond, chocolate cream biscuit, dan roasted peanut crumble.",
+          images: [
+            mix1,
+            mix2,
+          ],
+          rating: 4.8,
+          soldCount: "120+",
+        },
+        {
+          title: "Bundle Hemat: Brownies + Minuman",
+          price: isBundlePromoActive(dbBundlePromo) ? "Rp65.000 - Rp82.000" : "Rp70.000 - Rp87.000",
+          badge: isBundlePromoActive(dbBundlePromo) ? "Promo Bundle" : "Hemat",
+          image: mixImg,
+          description:
+            "Paket kombinasi hemat brownies premium pilihanmu dengan varian minuman segar khas Delassa.",
+          images: [
+            mixImg,
+            aren,
+          ],
+          rating: 5.0,
+          soldCount: "50+",
+        },
+      ];
+    }
+
+    const mapped: Product[] = dbProducts
+      .filter((p) => p.category_id === "brownies" && p.title !== "Brownies Classic")
+      .map((p) => ({
+        title: p.title,
+        price: `Rp${p.price.toLocaleString("id-ID")}`,
+        badge: p.badge,
+        image: p.image_url,
+        images: p.images && p.images.length > 0 ? p.images : [p.image_url],
+        rating: Number(p.rating),
+        soldCount: p.sold_count,
+        description: p.description || "",
+      }));
+
+    const bundleProduct = dbProducts.find((p) => p.category_id === "bundles" || p.title.includes("Bundle"));
+    if (bundleProduct) {
+      const isPromo = isBundlePromoActive(dbBundlePromo);
+      mapped.push({
+        title: bundleProduct.title,
+        price: isPromo ? "Rp65.000 - Rp82.000" : "Rp70.000 - Rp87.000",
+        badge: isPromo ? "Promo Bundle" : "Hemat",
+        image: bundleProduct.image_url,
+        images: bundleProduct.images && bundleProduct.images.length > 0 ? bundleProduct.images : [bundleProduct.image_url],
+        rating: Number(bundleProduct.rating),
+        soldCount: bundleProduct.sold_count,
+        description: bundleProduct.description || "",
+      });
+    }
+
+    return mapped;
+  }, [dbProducts, dbBundlePromo]);
 
   const { cart, setCartOpen, addToCart, updateQty } = useCart();
 
@@ -1033,7 +1073,7 @@ export default function Home() {
                       </div>
 
                       {selectedProduct.title.includes("Bundle") ? (() => {
-                        const { price, originalPrice, isPromo } = calculateBundlePrice(selectedBrownies, selectedDrink);
+                        const { price, originalPrice, isPromo } = calculateBundlePrice(selectedBrownies, selectedDrink, dbBundlePromo);
                         return (
                           <div className="mt-4 flex flex-col gap-1">
                             <div className="flex items-baseline gap-3">

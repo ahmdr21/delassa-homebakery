@@ -1,3 +1,5 @@
+import type { DBBundlePromo } from "../utils/supabase";
+
 export interface BundlePromoConfig {
   id: string;
   title: string;
@@ -8,11 +10,11 @@ export interface BundlePromoConfig {
   drinkUpgrades: Record<string, number>;
 }
 
-export const BUNDLE_PROMO: BundlePromoConfig = {
+export const FALLBACK_BUNDLE_PROMO: BundlePromoConfig = {
   id: "brownies-drink-bundle",
   title: "Bundle Hemat: Brownies + Minuman",
-  startDate: "2026-07-26", // Starts today
-  endDate: "2026-08-31",   // Ends August 31, 2026
+  startDate: "2026-07-26",
+  endDate: "2026-08-31",
   basePrices: {
     "Classic": 70000,
     "Almond": 80000,
@@ -37,26 +39,44 @@ export const BUNDLE_PROMO: BundlePromoConfig = {
 /**
  * Checks if the bundle promo is currently active.
  */
-export function isBundlePromoActive(): boolean {
+export function isBundlePromoActive(customConfig?: DBBundlePromo | null): boolean {
+  if (customConfig) {
+    if (!customConfig.is_active) return false;
+    const now = new Date();
+    const start = new Date(customConfig.start_date);
+    const end = new Date(customConfig.end_date);
+    end.setHours(23, 59, 59, 999);
+    return now >= start && now <= end;
+  }
+  
   const now = new Date();
-  const start = new Date(BUNDLE_PROMO.startDate);
-  const end = new Date(BUNDLE_PROMO.endDate);
-  end.setHours(23, 59, 59, 999); // Include the last day fully
+  const start = new Date(FALLBACK_BUNDLE_PROMO.startDate);
+  const end = new Date(FALLBACK_BUNDLE_PROMO.endDate);
+  end.setHours(23, 59, 59, 999);
   return now >= start && now <= end;
 }
 
 /**
  * Calculates the bundle price based on the selected brownies and drink.
  */
-export function calculateBundlePrice(browniesVarian: string, drinkVarian: string): { price: number; originalPrice: number; isPromo: boolean } {
-  const isPromo = isBundlePromoActive();
+export function calculateBundlePrice(
+  browniesVarian: string,
+  drinkVarian: string,
+  customConfig?: DBBundlePromo | null
+): { price: number; originalPrice: number; isPromo: boolean } {
+  const isPromo = isBundlePromoActive(customConfig);
   
   // Clean names to match keys
   const browniesKey = browniesVarian.replace("Brownies ", "");
-  const basePrice = BUNDLE_PROMO.basePrices[browniesKey] || BUNDLE_PROMO.basePrices[browniesVarian] || 85000;
-  const promoPrice = BUNDLE_PROMO.promoPrices[browniesKey] || BUNDLE_PROMO.promoPrices[browniesVarian] || 80000;
   
-  const drinkUpgrade = BUNDLE_PROMO.drinkUpgrades[drinkVarian] || 0;
+  const basePrices = FALLBACK_BUNDLE_PROMO.basePrices;
+  const promoPrices = customConfig ? customConfig.promo_prices : FALLBACK_BUNDLE_PROMO.promoPrices;
+  const drinkUpgrades = customConfig ? customConfig.drink_upgrades : FALLBACK_BUNDLE_PROMO.drinkUpgrades;
+  
+  const basePrice = basePrices[browniesKey] || basePrices[browniesVarian] || 85000;
+  const promoPrice = Number(promoPrices[browniesKey] || promoPrices[browniesVarian] || 80000);
+  
+  const drinkUpgrade = Number(drinkUpgrades[drinkVarian] || 0);
   
   const finalPrice = (isPromo ? promoPrice : basePrice) + drinkUpgrade;
   const originalPrice = basePrice + drinkUpgrade;
@@ -67,3 +87,4 @@ export function calculateBundlePrice(browniesVarian: string, drinkVarian: string
     isPromo,
   };
 }
+

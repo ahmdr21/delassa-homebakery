@@ -1,26 +1,11 @@
 import { useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
-import { getAllReviews, addProductReview } from "../utils/supabase";
+import { getAllReviews, addProductReview, getProducts } from "../utils/supabase";
 import type { Review } from "../utils/supabase";
 
 import "swiper/css";
 
-const productsList = [
-  "Umum / Bakery",
-  "Brownies Classic",
-  "Brownies Almond",
-  "Brownies Cookies",
-  "Brownies Mix Topping",
-  "Bolu Pandan",
-  "Bolu Pandan Keju",
-  "Bolu Keju",
-  "Choco Bliss",
-  "Mocha Bliss",
-  "Butterscotch Bliss",
-  "Kopi Susu Gula Aren",
-  "Roasted Milk Tea"
-];
 
 export default function Testimoni() {
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -38,8 +23,31 @@ export default function Testimoni() {
   const [filterProduct, setFilterProduct] = useState("Semua");
   const [filterSource, setFilterSource] = useState("all");
 
+  const [productsList, setProductsList] = useState<string[]>([
+    "Umum / Bakery",
+    "Brownies Classic",
+    "Brownies Almond",
+    "Brownies Cookies",
+    "Brownies Mix Topping",
+    "Bolu Pandan",
+    "Bolu Pandan Keju",
+    "Bolu Keju",
+    "Choco Bliss",
+    "Mocha Bliss",
+    "Butterscotch Bliss",
+    "Kopi Susu Gula Aren",
+    "Roasted Milk Tea"
+  ]);
+
   useEffect(() => {
     let isCurrent = true;
+
+    getProducts(true).then((data) => {
+      if (isCurrent) {
+        const titles = data.map((p) => p.title);
+        setProductsList(["Umum / Bakery", ...titles.filter((t) => !t.includes("Bundle"))]);
+      }
+    }).catch(console.error);
 
     getAllReviews()
       .then((data) => {
