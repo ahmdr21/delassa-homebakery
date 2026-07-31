@@ -47,6 +47,8 @@ export default function AdminPromosTab() {
   const [priority, setPriority] = useState(0);
   const [buyQuantity, setBuyQuantity] = useState(1);
   const [freeQuantity, setFreeQuantity] = useState(1);
+  const [freeProductId, setFreeProductId] = useState("");
+
 
   // product_id -> harga promo (string untuk input, null = tidak diisi)
   const [productPriceInputs, setProductPriceInputs] = useState<Record<string, string>>({});
@@ -82,6 +84,7 @@ export default function AdminPromosTab() {
     setPriority(0);
     setBuyQuantity(1);
     setFreeQuantity(1);
+    setFreeProductId("");
     setProductPriceInputs({});
     setMassDiscountType("none");
     setMassDiscountValue("");
@@ -103,6 +106,7 @@ export default function AdminPromosTab() {
     setPriority(p.priority ?? 0);
     setBuyQuantity(p.buy_quantity ?? 1);
     setFreeQuantity(p.free_quantity ?? 1);
+    setFreeProductId(p.free_product_id ?? "");
     setMassDiscountType("none");
     setMassDiscountValue("");
 
@@ -199,6 +203,7 @@ export default function AdminPromosTab() {
       priority: Number(priority) || 0,
       buy_quantity: promoType === "beli1gratis1" ? Number(buyQuantity) || 1 : 1,
       free_quantity: promoType === "beli1gratis1" ? Number(freeQuantity) || 1 : 1,
+      free_product_id: promoType === "beli1gratis1" ? (freeProductId || null) : null,
     };
 
     try {
@@ -291,10 +296,18 @@ export default function AdminPromosTab() {
                       <span>Prioritas: <b className="text-[#2f221d]">{p.priority ?? 0}</b></span>
                     </div>
                     {p.promo_type === "beli1gratis1" && (
-                      <div className="flex items-center gap-1.5">
-                        <Gift size={11} className="text-[#c38358] shrink-0" />
-                        <span>Aturan: <b className="text-purple-700">Beli {p.buy_quantity ?? 1} Gratis {p.free_quantity ?? 1}</b></span>
-                      </div>
+                      <>
+                        <div className="flex items-center gap-1.5">
+                          <Gift size={11} className="text-[#c38358] shrink-0" />
+                          <span>Aturan: <b className="text-purple-700">Beli {p.buy_quantity ?? 1} Gratis {p.free_quantity ?? 1}</b></span>
+                        </div>
+                        {p.free_product_id && (
+                          <div className="flex items-center gap-1.5">
+                            <Gift size={11} className="text-[#c38358] shrink-0" />
+                            <span>Hadiah: <b className="text-purple-700 truncate max-w-[80%]">{products.find(prod => prod.id === p.free_product_id)?.title || "Produk"}</b></span>
+                          </div>
+                        )}
+                      </>
                     )}
                     <div className="flex items-center gap-1.5">
                       <Package size={11} className="text-[#c38358] shrink-0" />
@@ -423,14 +436,31 @@ export default function AdminPromosTab() {
 
                 {/* BELI X GRATIS Y CONFIGURATION */}
                 {promoType === "beli1gratis1" && (
-                  <div className="bg-purple-50/60 p-4 rounded-2xl border border-purple-100 grid grid-cols-2 gap-4">
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-[11px] font-bold text-[#7a6a62] uppercase tracking-wider">Kuantitas Beli (X)</label>
-                      <input type="number" min={1} value={buyQuantity} onChange={(e) => setBuyQuantity(Math.max(1, Number(e.target.value)))} required className="w-full rounded-xl border border-[#ead8c7] bg-white px-4 py-2 text-sm outline-none focus:border-[#c38358]" />
+                  <div className="bg-purple-50/60 p-4 rounded-2xl border border-purple-100 space-y-3">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-[11px] font-bold text-[#7a6a62] uppercase tracking-wider">Kuantitas Beli (X)</label>
+                        <input type="number" min={1} value={buyQuantity} onChange={(e) => setBuyQuantity(Math.max(1, Number(e.target.value)))} required className="w-full rounded-xl border border-[#ead8c7] bg-white px-4 py-2 text-sm outline-none focus:border-[#c38358]" />
+                      </div>
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-[11px] font-bold text-[#7a6a62] uppercase tracking-wider">Kuantitas Gratis (Y)</label>
+                        <input type="number" min={1} value={freeQuantity} onChange={(e) => setFreeQuantity(Math.max(1, Number(e.target.value)))} required className="w-full rounded-xl border border-[#ead8c7] bg-white px-4 py-2 text-sm outline-none focus:border-[#c38358]" />
+                      </div>
                     </div>
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[11px] font-bold text-[#7a6a62] uppercase tracking-wider">Kuantitas Gratis (Y)</label>
-                      <input type="number" min={1} value={freeQuantity} onChange={(e) => setFreeQuantity(Math.max(1, Number(e.target.value)))} required className="w-full rounded-xl border border-[#ead8c7] bg-white px-4 py-2 text-sm outline-none focus:border-[#c38358]" />
+                      <label className="text-[11px] font-bold text-[#7a6a62] uppercase tracking-wider">Produk Hadiah (Gratis) *</label>
+                      <select
+                        value={freeProductId}
+                        onChange={(e) => setFreeProductId(e.target.value)}
+                        required={promoType === "beli1gratis1"}
+                        className="w-full rounded-xl border border-[#ead8c7] bg-white px-4 py-2 text-sm outline-none focus:border-[#c38358] font-semibold cursor-pointer"
+                      >
+                        <option value="">-- Pilih Produk Hadiah --</option>
+                        {products.map((p) => (
+                          <option key={p.id} value={p.id}>{p.title}</option>
+                        ))}
+                      </select>
+                      <p className="text-[9px] text-purple-700">Produk yang akan didapatkan pembeli secara gratis jika memenuhi jumlah pembelian.</p>
                     </div>
                   </div>
                 )}

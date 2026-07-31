@@ -263,6 +263,7 @@ export interface DBPromo {
   priority: number;
   buy_quantity: number;
   free_quantity: number;
+  free_product_id: string | null;
   created_at: string;
 }
 

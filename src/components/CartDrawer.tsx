@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useCart } from "../context/CartContext";
 import { formatCurrency } from "../utils/format";
+import { getProducts, getActivePromos } from "../utils/supabase";
+import type { DBProduct, DBPromoWithProducts } from "../utils/supabase";
 
 type CheckoutFormData = {
   customerName: string;
@@ -40,10 +42,72 @@ export default function CartDrawer({ onClose }: { onClose: () => void }) {
       return createEmptyCheckoutForm();
     }
   });
+
   const { customerName, phone, address, location, notes, pickupDate } = checkoutForm;
+  
   const isCustomerDataComplete = [customerName, phone, address, pickupDate].every(
     (value) => value.trim().length > 0
   );
+
+  // Load products and promos to calculate free items
+  const [dbProducts, setDbProducts] = useState<DBProduct[]>([]);
+  const [activePromos, setActivePromos] = useState<DBPromoWithProducts[]>([]);
+
+  useEffect(() => {
+    Promise.all([getProducts(true), getActivePromos()]).then(([prods, promos]) => {
+      setDbProducts(prods);
+      setActivePromos(promos);
+    });
+  }, []);
+
+  // Hitung free gifts secara dinamis berdasarkan isi keranjang
+  const freeGifts = useMemo(() => {
+    if (cart.length === 0 || dbProducts.length === 0 || activePromos.length === 0) return [];
+
+    const gifts: Array<{ title: string; qty: number; price: number }> = [];
+
+    // Filter promo Beli X Gratis Y saja
+    const buyFreePromos = activePromos.filter((p) => p.promo_type === "beli1gratis1");
+
+    buyFreePromos.forEach((promo) => {
+      // Cari produk hadiah (dengan fallback ke Kopi Susu Gula Aren)
+      const freeProd = promo.free_product_id
+        ? dbProducts.find((p) => p.id === promo.free_product_id)
+        : dbProducts.find((p) => p.title.toLowerCase() === "kopi susu gula aren");
+      if (!freeProd) return;
+
+      // Cari produk-produk yang terdaftar di promo ini
+      const promoProductTitles = dbProducts
+        .filter((p) => (promo.product_ids ?? []).includes(p.id))
+        .map((p) => p.title.toLowerCase());
+
+      // Hitung total qty dari produk terpilih yang ada di keranjang
+      let totalCount = 0;
+      cart.forEach((item) => {
+        // Bandingkan secara case-insensitive
+        // (menghapus keterangan bundle legacy/tambahan di kurung jika ada)
+        const cleanTitle = item.title.split(" (")[0].toLowerCase();
+        if (promoProductTitles.includes(cleanTitle)) {
+          totalCount += item.qty;
+        }
+      });
+
+      // Hitung berapa kali pembeli mendapatkan hadiah
+      if (totalCount >= promo.buy_quantity) {
+        const factor = Math.floor(totalCount / promo.buy_quantity);
+        const giftQty = factor * promo.free_quantity;
+        if (giftQty > 0) {
+          gifts.push({
+            title: `🎁 [Bonus] ${freeProd.title}`,
+            qty: giftQty,
+            price: 0,
+          });
+        }
+      }
+    });
+
+    return gifts;
+  }, [cart, dbProducts, activePromos]);
 
   useEffect(() => {
     try {
@@ -77,9 +141,9 @@ export default function CartDrawer({ onClose }: { onClose: () => void }) {
 Saya ingin mengonfirmasi pesanan.
 
 Pesanan:
-${cart
+${[...cart, ...freeGifts]
   .map(
-    (item) => `· ${item.title} x${item.qty} (${formatCurrency(item.price * item.qty)})`
+    (item) => `· ${item.title} x${item.qty} (${item.price === 0 ? "Gratis" : formatCurrency(item.price * item.qty)})`
   )
   .join("\n")}
 
@@ -161,8 +225,6 @@ Admin akan menghitung ongkir dan mengirim total pembayaran setelah konfirmasi.`;
               ))}
             </div>
 
-
-
             <div className="mt-6 rounded-[24px] border border-[#ead8c7] bg-white p-5">
               <p className="text-[16px] font-bold text-[#2f221d]">Data Customer</p>
               <p className="mt-1 text-[12px] font-semibold text-[#9b6a50]">
@@ -237,10 +299,16 @@ Admin akan menghitung ongkir dan mengirim total pembayaran setelah konfirmasi.`;
                       <span className="font-semibold">{formatCurrency(item.price * item.qty)}</span>
                     </div>
                   ))}
+                  {freeGifts.map((gift) => (
+                    <div key={gift.title} className="flex justify-between text-sm text-purple-700 font-bold bg-purple-50/50 px-2.5 py-1 rounded-lg">
+                      <span>{gift.title} <span className="text-purple-900 font-black">x{gift.qty}</span></span>
+                      <span className="font-black text-purple-900">Gratis</span>
+                    </div>
+                  ))}
                 </div>
                 <div className="mt-3 flex justify-between text-sm font-bold text-[#2f221d]">
                   <span>Total Pesanan</span>
-                  <span>{cart.reduce((sum, item) => sum + item.qty, 0)} Pcs</span>
+                  <span>{cart.reduce((sum, item) => sum + item.qty, 0) + freeGifts.reduce((sum, g) => sum + g.qty, 0)} Pcs</span>
                 </div>
               </div>
               <div className="flex items-center justify-between text-sm text-[#6d5b52]">

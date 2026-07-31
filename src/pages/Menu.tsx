@@ -72,6 +72,8 @@ type Product = {
   productId?: string | null;    // DB product id for promo matching
   buyQuantity?: number | null;
   freeQuantity?: number | null;
+  freeProductId?: string | null;
+  freeProductName?: string | null;
 };
 
 type Category = {
@@ -290,12 +292,26 @@ export default function Menu() {
           let promoType: string | null = null;
           let buyQuantity: number | null = null;
           let freeQuantity: number | null = null;
+          let freeProductId: string | null = null;
+          let freeProductName: string | null = null;
 
           if (applicablePromo) {
             promoType = applicablePromo.promo_type;
             promoBadge = applicablePromo.badge_label;
             buyQuantity = applicablePromo.buy_quantity;
             freeQuantity = applicablePromo.free_quantity;
+            freeProductId = applicablePromo.free_product_id;
+
+            if (applicablePromo.free_product_id) {
+              const fp = dbProducts.find((dp) => dp.id === applicablePromo.free_product_id);
+              if (fp) freeProductName = fp.title;
+            } else if (applicablePromo.promo_type === "beli1gratis1") {
+              const fallbackFp = dbProducts.find((dp) => dp.title.toLowerCase() === "kopi susu gula aren");
+              if (fallbackFp) {
+                freeProductId = fallbackFp.id;
+                freeProductName = fallbackFp.title;
+              }
+            }
 
             // Gunakan harga promo per-produk langsung dari database
             const perProductPrice = applicablePromo.product_prices?.[p.id];
@@ -319,6 +335,8 @@ export default function Menu() {
             promoType,
             buyQuantity,
             freeQuantity,
+            freeProductId,
+            freeProductName,
           };
         });
 
@@ -752,7 +770,7 @@ export default function Menu() {
                     {/* Beli X Gratis Y label */}
                     {item.promoType === "beli1gratis1" && (
                       <div className="mt-1.5 inline-flex items-center gap-1 bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full text-[9px] sm:text-[11px] font-bold">
-                        🎁 Beli {item.buyQuantity ?? 1} Gratis {item.freeQuantity ?? 1}
+                        🎁 Beli {item.buyQuantity ?? 1} Gratis {item.freeQuantity ?? 1} {item.freeProductName ? ` ${item.freeProductName}` : ""}
                       </div>
                     )}
                     {/* Badge-only promo (promoBadge but no price change) */}
@@ -949,7 +967,7 @@ export default function Menu() {
                               {/* Beli X Gratis Y */}
                               {selectedProduct.promoType === "beli1gratis1" && (
                                 <div className="mt-1 inline-flex items-center gap-1.5 bg-purple-100 text-purple-700 px-3 py-1.5 rounded-full text-xs font-bold self-start">
-                                  🎁 Beli {selectedProduct.buyQuantity ?? 1} Gratis {selectedProduct.freeQuantity ?? 1} — Dapatkan bonus produk setiap pembelian!
+                                  🎁 Beli {selectedProduct.buyQuantity ?? 1} Gratis {selectedProduct.freeQuantity ?? 1} {selectedProduct.freeProductName ? ` ${selectedProduct.freeProductName}` : ""} — Dapatkan bonus produk setiap pembelian!
                                 </div>
                               )}
                             </div>
@@ -962,7 +980,7 @@ export default function Menu() {
                                 </p>
                                 {selectedProduct.promoType === "beli1gratis1" && (
                                   <div className="mt-2 inline-flex items-center gap-1.5 bg-purple-100 text-purple-700 px-3 py-1.5 rounded-full text-xs font-bold">
-                                    🎁 Beli {selectedProduct.buyQuantity ?? 1} Gratis {selectedProduct.freeQuantity ?? 1} — Dapatkan bonus produk setiap pembelian!
+                                    🎁 Beli {selectedProduct.buyQuantity ?? 1} Gratis {selectedProduct.freeQuantity ?? 1} {selectedProduct.freeProductName ? ` ${selectedProduct.freeProductName}` : ""} — Dapatkan bonus produk setiap pembelian!
                                   </div>
                                 )}
                                 {selectedProduct.promoBadge && selectedProduct.promoType !== "beli1gratis1" && (
