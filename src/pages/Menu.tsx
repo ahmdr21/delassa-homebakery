@@ -816,7 +816,7 @@ export default function Menu() {
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
-                          if (item.title.includes("Bundle")) {
+                          if (item.title.includes("Bundle") || item.promoType === "bundle") {
                             setShowWriteForm(false);
                             setShowAllReviews(false);
                             setReviews([]);
