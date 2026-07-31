@@ -146,9 +146,9 @@ export default function CartDrawer({ onClose }: { onClose: () => void }) {
         status: "pending",
         notes: notes.trim() || null,
       });
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to log order to database:", err);
-      // Fallback: don't block user if database write fails
+      alert("Gagal mencatat pesanan ke database: " + (err?.message || err));
     }
 
     // Redirect to WhatsApp
