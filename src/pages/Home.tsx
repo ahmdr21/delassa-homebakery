@@ -23,6 +23,7 @@ import banner1 from "../assets/bannerdesktop13.webp";
 import banner2 from "../assets/bannerdesktop14.webp";
 import banner3 from "../assets/bannerdesktop15.webp";
 import banner4 from "../assets/bannerdesktop17.webp";
+import banner5 from "../assets/bannerdesktop18.webp";
 
 /* FRESH SECTION */
 import freshImage from "../assets/fresh.webp";
@@ -46,6 +47,7 @@ import { isBundlePromoActive, calculateBundlePrice } from "../data/promos";
 /* ====================================================== */
 
 const banners = [
+  banner5,
   banner4,
   banner1,
   banner2,
@@ -1279,11 +1281,10 @@ export default function Home() {
                                         key={drink.id}
                                         type="button"
                                         onClick={() => setPromoBundleDrink(drink.title)}
-                                        className={`flex items-center justify-between px-3 py-2.5 rounded-xl border text-left transition-all duration-200 cursor-pointer ${
-                                          promoBundleDrink === drink.title
-                                            ? "bg-[#c38358] border-[#c38358] text-white shadow-md"
-                                            : "bg-white border-[#ead8c7] text-[#6d5b52] hover:border-[#c38358] hover:bg-[#fffbf7]"
-                                        }`}
+                                        className={`flex items-center justify-between px-3 py-2.5 rounded-xl border text-left transition-all duration-200 cursor-pointer ${promoBundleDrink === drink.title
+                                          ? "bg-[#c38358] border-[#c38358] text-white shadow-md"
+                                          : "bg-white border-[#ead8c7] text-[#6d5b52] hover:border-[#c38358] hover:bg-[#fffbf7]"
+                                          }`}
                                       >
                                         <div className="flex items-center gap-2 truncate">
                                           <span className="text-base shrink-0">☕</span>
@@ -1345,11 +1346,10 @@ export default function Home() {
                                   key={opt.name}
                                   type="button"
                                   onClick={() => setSelectedBrownies(opt.name)}
-                                  className={`px-3 py-2.5 rounded-xl border text-[11px] sm:text-[12px] font-bold transition-all duration-300 cursor-pointer ${
-                                    selectedBrownies === opt.name
-                                      ? "bg-[#c38358] border-[#c38358] text-white shadow-sm"
-                                      : "bg-white border-[#ead8c7] text-[#6d5b52] hover:bg-[#fffbf7]"
-                                  }`}
+                                  className={`px-3 py-2.5 rounded-xl border text-[11px] sm:text-[12px] font-bold transition-all duration-300 cursor-pointer ${selectedBrownies === opt.name
+                                    ? "bg-[#c38358] border-[#c38358] text-white shadow-sm"
+                                    : "bg-white border-[#ead8c7] text-[#6d5b52] hover:bg-[#fffbf7]"
+                                    }`}
                                 >
                                   {opt.label}
                                 </button>
@@ -1374,11 +1374,10 @@ export default function Home() {
                                   key={opt.name}
                                   type="button"
                                   onClick={() => setSelectedDrink(opt.name)}
-                                  className={`px-2.5 py-2.5 rounded-xl border text-[10px] sm:text-[11px] font-bold transition-all duration-300 cursor-pointer ${
-                                    selectedDrink === opt.name
-                                      ? "bg-[#c38358] border-[#c38358] text-white shadow-sm"
-                                      : "bg-white border-[#ead8c7] text-[#6d5b52] hover:bg-[#fffbf7]"
-                                  }`}
+                                  className={`px-2.5 py-2.5 rounded-xl border text-[10px] sm:text-[11px] font-bold transition-all duration-300 cursor-pointer ${selectedDrink === opt.name
+                                    ? "bg-[#c38358] border-[#c38358] text-white shadow-sm"
+                                    : "bg-white border-[#ead8c7] text-[#6d5b52] hover:bg-[#fffbf7]"
+                                    }`}
                                 >
                                   {opt.label}
                                 </button>
