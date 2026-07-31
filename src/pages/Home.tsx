@@ -11,8 +11,8 @@ import {
   Plus,
   Minus,
 } from "lucide-react";
-import { getAllReviews, addProductReview, getProducts, getBundlePromo } from "../utils/supabase";
-import type { Review, DBProduct, DBBundlePromo } from "../utils/supabase";
+import { getAllReviews, addProductReview, getProducts, getBundlePromo, getActivePromos } from "../utils/supabase";
+import type { Review, DBProduct, DBBundlePromo, DBPromoWithProducts } from "../utils/supabase";
 
 /* ====================================================== */
 /* ASSETS */
@@ -61,6 +61,14 @@ type Product = {
   images: string[];
   rating?: number;
   soldCount?: string;
+  productId?: string;
+  promoPrice?: string | null;
+  promoBadge?: string | null;
+  promoType?: string | null;
+  buyQuantity?: number | null;
+  freeQuantity?: number | null;
+  freeProductId?: string | null;
+  freeProductName?: string | null;
 };
 
 type ProductRatingSummary = {
@@ -118,10 +126,17 @@ export default function Home() {
 
   const [dbProducts, setDbProducts] = useState<DBProduct[]>([]);
   const [dbBundlePromo, setDbBundlePromo] = useState<DBBundlePromo | null>(null);
+  const [activePromos, setActivePromos] = useState<DBPromoWithProducts[]>([]);
+  const [promoBundleDrink, setPromoBundleDrink] = useState("");
 
   useEffect(() => {
-    getProducts(true).then(setDbProducts).catch(console.error);
-    getBundlePromo().then(setDbBundlePromo).catch(console.error);
+    Promise.all([getProducts(true), getBundlePromo(), getActivePromos()])
+      .then(([prods, promo, promos]) => {
+        setDbProducts(prods);
+        setDbBundlePromo(promo);
+        setActivePromos(promos);
+      })
+      .catch(console.error);
   }, []);
 
   const products = useMemo<Product[]>(() => {
@@ -188,16 +203,67 @@ export default function Home() {
 
     const mapped: Product[] = dbProducts
       .filter((p) => p.category_id === "brownies" && p.title !== "Brownies Classic")
-      .map((p) => ({
-        title: p.title,
-        price: `Rp${p.price.toLocaleString("id-ID")}`,
-        badge: p.badge,
-        image: p.image_url,
-        images: p.images && p.images.length > 0 ? p.images : [p.image_url],
-        rating: Number(p.rating),
-        soldCount: p.sold_count,
-        description: p.description || "",
-      }));
+      .map((p) => {
+        let priceStr = `Rp${p.price.toLocaleString("id-ID")}`;
+        let badgeStr = p.badge;
+
+        // Cek apakah ada promo aktif yang berlaku untuk produk ini
+        const applicablePromo = activePromos.find((promo) =>
+          (promo.product_ids ?? []).includes(p.id)
+        );
+
+        let promoPrice: string | null = null;
+        let promoBadge: string | null = null;
+        let promoType: string | null = null;
+        let buyQuantity: number | null = null;
+        let freeQuantity: number | null = null;
+        let freeProductId: string | null = null;
+        let freeProductName: string | null = null;
+
+        if (applicablePromo) {
+          promoType = applicablePromo.promo_type;
+          promoBadge = applicablePromo.badge_label;
+          buyQuantity = applicablePromo.buy_quantity;
+          freeQuantity = applicablePromo.free_quantity;
+          freeProductId = applicablePromo.free_product_id;
+
+          if (applicablePromo.free_product_id) {
+            const fp = dbProducts.find((dp) => dp.id === applicablePromo.free_product_id);
+            if (fp) freeProductName = fp.title;
+          } else if (applicablePromo.promo_type === "beli1gratis1") {
+            const fallbackFp = dbProducts.find((dp) => dp.title.toLowerCase() === "kopi susu gula aren");
+            if (fallbackFp) {
+              freeProductId = fallbackFp.id;
+              freeProductName = fallbackFp.title;
+            }
+          }
+
+          // Gunakan harga promo per-produk langsung dari database
+          const perProductPrice = applicablePromo.product_prices?.[p.id];
+          if (perProductPrice != null) {
+            promoPrice = `Rp${perProductPrice.toLocaleString("id-ID")}`;
+          }
+        }
+
+        return {
+          title: p.title,
+          price: priceStr,
+          badge: badgeStr,
+          description: p.description || "",
+          image: p.image_url,
+          images: p.images && p.images.length > 0 ? p.images : [p.image_url],
+          rating: Number(p.rating),
+          soldCount: p.sold_count,
+          productId: p.id,
+          promoPrice,
+          promoBadge,
+          promoType,
+          buyQuantity,
+          freeQuantity,
+          freeProductId,
+          freeProductName,
+        };
+      });
 
     const bundleProduct = dbProducts.find((p) => p.category_id === "bundles" || p.title.includes("Bundle"));
     if (bundleProduct) {
@@ -225,6 +291,7 @@ export default function Home() {
         setSelectedBrownies("Brownies Mix Topping");
         setSelectedDrink("Kopi Susu Gula Aren");
       }
+      setPromoBundleDrink("");
     }
   }, [selectedProduct]);
 
@@ -239,11 +306,18 @@ export default function Home() {
   const handleAddToCart = (product: Product, quantity: number = 1, openDrawer: boolean = false, customPrice?: number) => {
     const parsedPrice = customPrice !== undefined
       ? customPrice
-      : Number(String(product.price).replace(/[^\d]/g, ""));
+      : product.promoPrice
+        ? Number(String(product.promoPrice).replace(/[^\d]/g, ""))
+        : Number(String(product.price).replace(/[^\d]/g, ""));
 
-    const title = product.title.includes("Bundle")
-      ? `${product.title} (${selectedBrownies.replace("Brownies ", "")} + ${selectedDrink})`
-      : product.title;
+    let title: string;
+    if (product.title.includes("Bundle")) {
+      title = `${product.title} (${selectedBrownies.replace("Brownies ", "")} + ${selectedDrink})`;
+    } else if (product.promoType === "bundle" && promoBundleDrink) {
+      title = `${product.title} + ${promoBundleDrink}`;
+    } else {
+      title = product.title;
+    }
 
     addToCart({ title, price: parsedPrice, qty: quantity });
 
@@ -253,7 +327,9 @@ export default function Home() {
   };
 
   const handleQtyChange = (product: Product, delta: number) => {
-    const parsedPrice = Number(String(product.price).replace(/[^\d]/g, ""));
+    const parsedPrice = product.promoPrice
+      ? Number(String(product.promoPrice).replace(/[^\d]/g, ""))
+      : Number(String(product.price).replace(/[^\d]/g, ""));
 
     if (delta > 0) {
       addToCart({ title: product.title, price: parsedPrice, qty: 1 });
@@ -915,6 +991,13 @@ export default function Home() {
                     className="w-full aspect-square sm:aspect-[16/10] lg:aspect-[16/9] object-cover object-center group-hover:scale-108 transition-transform duration-700 ease-out"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
+                  {/* Promo badge (kiri atas) */}
+                  {item.promoBadge && (
+                    <div className="absolute top-2.5 left-2.5 bg-gradient-to-r from-red-500 to-orange-500 text-white px-2.5 py-1 rounded-full text-[8px] sm:text-[10px] font-bold uppercase tracking-[0.5px] shadow-md z-10">
+                      🔥 {item.promoBadge}
+                    </div>
+                  )}
+                  {/* Badge produk biasa (kanan atas) */}
                   {item.badge && (
                     <div className="absolute top-3 right-3 bg-gradient-to-r from-[#d99f73] to-[#b07b5d] text-white px-3 sm:px-4 py-1 sm:py-1.5 rounded-full text-[9px] sm:text-[11px] font-extrabold uppercase tracking-[1px] shadow-md border border-white/20">
                       {item.badge}
@@ -927,12 +1010,43 @@ export default function Home() {
                       {item.title}
                     </h3>
                     <div className="flex items-center justify-between flex-wrap gap-x-1 mt-1 sm:mt-2.5">
-                      <p className="text-[#c38358] text-[14px] sm:text-[20px] font-extrabold">{item.price}</p>
+                      {item.promoPrice ? (
+                        <div className="flex flex-col">
+                          <span className="text-[10px] sm:text-[12px] text-gray-400 line-through leading-tight">{item.price}</span>
+                          <span className="text-red-500 text-[14px] sm:text-[20px] font-extrabold leading-tight">{item.promoPrice}</span>
+                        </div>
+                      ) : (
+                        <p className="text-[#c38358] text-[14px] sm:text-[20px] font-extrabold">{item.price}</p>
+                      )}
                       <div className="flex items-center gap-1 text-[10px] sm:text-[12px] text-[#7a6a62] font-semibold">
                         <span className="text-yellow-500 font-bold">★</span>
                         <span>{getProductRatingSummary(item).average.toFixed(1)}</span>
                       </div>
                     </div>
+
+                    {/* Info promo: hemat berapa / jenis promo */}
+                    {item.promoPrice && item.promoType !== "beli1gratis1" && (() => {
+                      const orig = Number(String(item.price).replace(/[^\d]/g, ""));
+                      const discounted = Number(String(item.promoPrice).replace(/[^\d]/g, ""));
+                      const savings = orig - discounted;
+                      return savings > 0 ? (
+                        <div className="mt-1.5 inline-flex items-center gap-1 bg-red-50 text-red-600 border border-red-100 px-2 py-0.5 rounded-full text-[9px] sm:text-[11px] font-bold">
+                          🏷️ Hemat Rp{savings.toLocaleString("id-ID")}
+                        </div>
+                      ) : null;
+                    })()}
+                    {/* Beli X Gratis Y label */}
+                    {item.promoType === "beli1gratis1" && (
+                      <div className="mt-1.5 inline-flex items-center gap-1 bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full text-[9px] sm:text-[11px] font-bold">
+                        🎁 Beli {item.buyQuantity ?? 1} Gratis {item.freeQuantity ?? 1} {item.freeProductName ? ` ${item.freeProductName}` : ""}
+                      </div>
+                    )}
+                    {/* Badge-only promo (promoBadge but no price change) */}
+                    {!item.promoPrice && item.promoBadge && item.promoType !== "beli1gratis1" && (
+                      <div className="mt-1.5 inline-flex items-center gap-1 bg-orange-50 text-orange-700 border border-orange-100 px-2 py-0.5 rounded-full text-[9px] sm:text-[11px] font-bold">
+                        🔥 {item.promoBadge}
+                      </div>
+                    )}
                   </div>
                   <p className="hidden sm:block mt-4 text-[#7a6a62] text-[14px] leading-6 line-clamp-3 flex-grow">
                     {item.description}
@@ -969,7 +1083,7 @@ export default function Home() {
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
-                          if (item.title.includes("Bundle")) {
+                          if (item.title.includes("Bundle") || item.promoType === "bundle") {
                             setShowWriteForm(false);
                             setShowAllReviews(false);
                             setReviews([]);
@@ -1092,16 +1206,127 @@ export default function Home() {
                             )}
                           </div>
                         );
-                      })() : (
+                      })() : selectedProduct.promoPrice ? (
+                        <div className="mt-4 flex flex-col gap-1">
+                          <div className="flex items-baseline gap-3">
+                            <span className="text-red-500 text-[22px] sm:text-[28px] font-black">
+                              {selectedProduct.promoPrice}
+                            </span>
+                            <span className="text-gray-400 text-sm sm:text-base line-through">
+                              {selectedProduct.price}
+                            </span>
+                          </div>
+                          <div className="inline-flex items-center gap-1.5 self-start bg-red-50 text-red-600 px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold border border-red-100 shadow-sm animate-pulse">
+                            <span>🔥 PROMO AKTIF</span>
+                          </div>
+                        </div>
+                      ) : (
                         <p className="mt-4 text-[#c38358] text-[22px] sm:text-[28px] font-black">
                           {selectedProduct.price}
                         </p>
                       )}
 
+                      {/* Info Beli 1 Gratis 1 inside modal */}
+                      {selectedProduct.promoType === "beli1gratis1" && (
+                        <div className="mt-3 inline-flex items-center gap-2 bg-purple-50 text-purple-700 border border-purple-100 px-3 py-1.5 rounded-2xl text-[12px] font-extrabold shadow-sm">
+                          🎁 Beli {selectedProduct.buyQuantity ?? 1} Gratis {selectedProduct.freeQuantity ?? 1} {selectedProduct.freeProductName ? ` ${selectedProduct.freeProductName}` : ""}
+                        </div>
+                      )}
+
                       {!selectedProduct.title.includes("Bundle") ? (
-                        <p className="mt-4 text-[#6d5b52] leading-relaxed text-[14px] sm:text-[15px]">
-                          {selectedProduct.description}
-                        </p>
+                        <>
+                          <p className="mt-4 text-[#6d5b52] leading-relaxed text-[14px] sm:text-[15px]">
+                            {selectedProduct.description}
+                          </p>
+
+                          {/* ======= BUNDLE PROMO DRINK SELECTOR ======= */}
+                          {selectedProduct.promoType === "bundle" && (() => {
+                            // Cari promo bundle yang berlaku untuk produk ini
+                            const bundlePromo = activePromos.find((p) =>
+                              p.promo_type === "bundle" &&
+                              (p.product_ids ?? []).includes(selectedProduct.productId ?? "")
+                            );
+                            if (!bundlePromo) return null;
+
+                            // Companion products = semua produk dalam promo selain produk utama (brownies)
+                            const companionIds = (bundlePromo.product_ids ?? []).filter(
+                              (pid) => pid !== selectedProduct.productId
+                            );
+                            const companionProducts = dbProducts.filter((p) => companionIds.includes(p.id));
+                            if (companionProducts.length === 0) return null;
+
+                            return (
+                              <div className="mt-5 bg-gradient-to-br from-[#fff8f0] to-[#fdf3eb] p-4 sm:p-5 rounded-2xl border border-[#ead8c7] shadow-sm">
+                                {/* Header bundle info */}
+                                <div className="flex items-center gap-2 mb-1">
+                                  <span className="text-base">🎁</span>
+                                  <span className="text-[13px] sm:text-[14px] font-black text-[#2f221d]">
+                                    Paket Bundle — {selectedProduct.title}
+                                  </span>
+                                </div>
+                                <p className="text-[11px] sm:text-[12px] text-[#7a6a62] mb-4">
+                                  Pilih 1 minuman berikut untuk mendapatkan harga bundle spesial!
+                                </p>
+
+                                {/* Drink options */}
+                                <p className="text-[11px] font-bold text-[#9b6a50] uppercase tracking-wider mb-2">Pilih Minumanmu:</p>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                  {companionProducts.map((drink) => {
+                                    const drinkPrice = bundlePromo.product_prices?.[drink.id];
+                                    const displayPrice = drinkPrice != null ? `Rp${drinkPrice.toLocaleString("id-ID")}` : selectedProduct.promoPrice;
+                                    return (
+                                      <button
+                                        key={drink.id}
+                                        type="button"
+                                        onClick={() => setPromoBundleDrink(drink.title)}
+                                        className={`flex items-center justify-between px-3 py-2.5 rounded-xl border text-left transition-all duration-200 cursor-pointer ${
+                                          promoBundleDrink === drink.title
+                                            ? "bg-[#c38358] border-[#c38358] text-white shadow-md"
+                                            : "bg-white border-[#ead8c7] text-[#6d5b52] hover:border-[#c38358] hover:bg-[#fffbf7]"
+                                        }`}
+                                      >
+                                        <div className="flex items-center gap-2 truncate">
+                                          <span className="text-base shrink-0">☕</span>
+                                          <span className="text-[11px] sm:text-[12px] font-bold leading-tight truncate">{drink.title}</span>
+                                        </div>
+                                        <span className={`text-[10px] font-black shrink-0 ${promoBundleDrink === drink.title ? "text-white" : "text-red-500"}`}>
+                                          {displayPrice}
+                                        </span>
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+
+                                {/* Total price summary */}
+                                {promoBundleDrink && (() => {
+                                  const selectedDrinkProduct = companionProducts.find(p => p.title === promoBundleDrink);
+                                  const customBundlePrice = selectedDrinkProduct && bundlePromo.product_prices?.[selectedDrinkProduct.id]
+                                    ? bundlePromo.product_prices[selectedDrinkProduct.id]
+                                    : null;
+                                  const displayPrice = customBundlePrice !== null && customBundlePrice !== undefined
+                                    ? `Rp${customBundlePrice.toLocaleString("id-ID")}`
+                                    : selectedProduct.promoPrice;
+                                  return (
+                                    <div className="mt-4 flex items-center justify-between bg-white rounded-xl px-4 py-3 border border-[#ead8c7]">
+                                      <div className="text-[12px] text-[#6d5b52]">
+                                        <span className="font-bold text-[#2f221d]">{selectedProduct.title}</span>
+                                        <span className="mx-1">+</span>
+                                        <span className="font-bold text-[#c38358]">{promoBundleDrink}</span>
+                                      </div>
+                                      <span className="text-[15px] font-black text-red-500 shrink-0">{displayPrice}</span>
+                                    </div>
+                                  );
+                                })()}
+
+                                {!promoBundleDrink && (
+                                  <p className="mt-3 text-[11px] text-[#c38358] font-semibold text-center">
+                                    ← Pilih minuman dulu untuk melanjutkan
+                                  </p>
+                                )}
+                              </div>
+                            );
+                          })()}
+                        </>
                       ) : (
                         <div className="mt-6 space-y-5 bg-[#fffaf5] p-4 sm:p-5 rounded-2xl border border-[#ead8c7]/65 shadow-sm">
                           {/* Brownies Selection */}
@@ -1337,29 +1562,68 @@ export default function Home() {
 
                       {/* Modal Actions */}
                       {(() => {
-                        const customPrice = selectedProduct.title.includes("Bundle")
-                          ? calculateBundlePrice(selectedBrownies, selectedDrink).price
-                          : undefined;
+                        // Untuk bundle legacy -> gunakan kalkulasi bundle price legacy
+                        // Untuk promo bundle baru -> hitung berdasarkan drink custom price jika ada
+                        let customPrice: number | undefined;
+                        if (selectedProduct.title.includes("Bundle")) {
+                          customPrice = calculateBundlePrice(selectedBrownies, selectedDrink).price;
+                        } else if (selectedProduct.promoType === "bundle" && promoBundleDrink) {
+                          const bundlePromo = activePromos.find((p) =>
+                            p.promo_type === "bundle" &&
+                            (p.product_ids ?? []).includes(selectedProduct.productId ?? "")
+                          );
+                          if (bundlePromo) {
+                            const selectedDrinkProduct = dbProducts.find(p => p.title === promoBundleDrink);
+                            const overridePrice = selectedDrinkProduct ? bundlePromo.product_prices?.[selectedDrinkProduct.id] : null;
+                            if (overridePrice != null) {
+                              customPrice = overridePrice;
+                            } else {
+                              customPrice = selectedProduct.promoPrice
+                                ? Number(String(selectedProduct.promoPrice).replace(/[^\d]/g, ""))
+                                : undefined;
+                            }
+                          }
+                        } else {
+                          customPrice = selectedProduct.promoPrice
+                            ? Number(String(selectedProduct.promoPrice).replace(/[^\d]/g, ""))
+                            : undefined;
+                        }
+
+                        // Untuk promo bundle: wajib pilih minuman dulu
+                        const needsDrinkSelection =
+                          selectedProduct.promoType === "bundle" &&
+                          !selectedProduct.title.includes("Bundle") &&
+                          !promoBundleDrink;
+
                         return (
-                          <div className="grid grid-cols-2 gap-3">
-                            <button
-                              onClick={() => {
-                                handleAddToCart(selectedProduct, qty, false, customPrice);
-                                setOpen(false);
-                              }}
-                              className="inline-flex items-center justify-center bg-white border border-[#c38358] text-[#c38358] hover:bg-[#fff5ef] px-4 py-2.5 rounded-full text-[12px] sm:text-[13px] font-bold shadow-sm transition-all duration-300 cursor-pointer"
-                            >
-                              + Keranjang
-                            </button>
-                            <button
-                              onClick={() => {
-                                handleAddToCart(selectedProduct, qty, true, customPrice);
-                                setOpen(false);
-                              }}
-                              className="inline-flex items-center justify-center bg-[#c38358] hover:bg-[#a96d45] text-white px-4 py-2.5 rounded-full text-[12px] sm:text-[13px] font-bold shadow-[0_6px_18px_rgba(195,131,88,0.25)] hover:-translate-y-[1px] transition-all duration-300 cursor-pointer"
-                            >
-                              Beli Langsung
-                            </button>
+                          <div>
+                            {needsDrinkSelection && (
+                              <p className="text-center text-xs text-[#c38358] font-semibold mb-3 animate-pulse">
+                                ⬆️ Pilih minuman terlebih dahulu untuk lanjut checkout
+                              </p>
+                            )}
+                            <div className="grid grid-cols-2 gap-3">
+                              <button
+                                disabled={needsDrinkSelection}
+                                onClick={() => {
+                                  handleAddToCart(selectedProduct, qty, false, customPrice);
+                                  setOpen(false);
+                                }}
+                                className="inline-flex items-center justify-center bg-white border border-[#c38358] text-[#c38358] hover:bg-[#fff5ef] px-4 py-2.5 rounded-full text-[12px] sm:text-[13px] font-bold shadow-sm transition-all duration-300 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                              >
+                                + Keranjang
+                              </button>
+                              <button
+                                disabled={needsDrinkSelection}
+                                onClick={() => {
+                                  handleAddToCart(selectedProduct, qty, true, customPrice);
+                                  setOpen(false);
+                                }}
+                                className="inline-flex items-center justify-center bg-[#c38358] hover:bg-[#a96d45] text-white px-4 py-2.5 rounded-full text-[12px] sm:text-[13px] font-bold shadow-[0_6px_18px_rgba(195,131,88,0.25)] hover:-translate-y-[1px] transition-all duration-300 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                              >
+                                Beli Langsung
+                              </button>
+                            </div>
                           </div>
                         );
                       })()}
