@@ -44,9 +44,9 @@ export default function AdminPromosTab() {
   const [startDate, setStartDate] = useState(new Date().toISOString().split("T")[0]);
   const [endDate, setEndDate] = useState(new Date().toISOString().split("T")[0]);
   const [isActive, setIsActive] = useState(true);
-  const [priority, setPriority] = useState(0);
-  const [buyQuantity, setBuyQuantity] = useState(1);
-  const [freeQuantity, setFreeQuantity] = useState(1);
+  const [priority, setPriority] = useState("0");
+  const [buyQuantity, setBuyQuantity] = useState("1");
+  const [freeQuantity, setFreeQuantity] = useState("1");
   const [freeProductId, setFreeProductId] = useState("");
 
 
@@ -81,9 +81,9 @@ export default function AdminPromosTab() {
     setStartDate(new Date().toISOString().split("T")[0]);
     setEndDate(new Date().toISOString().split("T")[0]);
     setIsActive(true);
-    setPriority(0);
-    setBuyQuantity(1);
-    setFreeQuantity(1);
+    setPriority("0");
+    setBuyQuantity("1");
+    setFreeQuantity("1");
     setFreeProductId("");
     setProductPriceInputs({});
     setMassDiscountType("none");
@@ -103,9 +103,9 @@ export default function AdminPromosTab() {
     setStartDate(p.start_date);
     setEndDate(p.end_date);
     setIsActive(p.is_active);
-    setPriority(p.priority ?? 0);
-    setBuyQuantity(p.buy_quantity ?? 1);
-    setFreeQuantity(p.free_quantity ?? 1);
+    setPriority(String(p.priority ?? 0));
+    setBuyQuantity(String(p.buy_quantity ?? 1));
+    setFreeQuantity(String(p.free_quantity ?? 1));
     setFreeProductId(p.free_product_id ?? "");
     setMassDiscountType("none");
     setMassDiscountValue("");
@@ -440,11 +440,11 @@ export default function AdminPromosTab() {
                     <div className="grid grid-cols-2 gap-4">
                       <div className="flex flex-col gap-1.5">
                         <label className="text-[11px] font-bold text-[#7a6a62] uppercase tracking-wider">Kuantitas Beli (X)</label>
-                        <input type="number" min={1} value={buyQuantity} onChange={(e) => setBuyQuantity(Math.max(1, Number(e.target.value)))} required className="w-full rounded-xl border border-[#ead8c7] bg-white px-4 py-2 text-sm outline-none focus:border-[#c38358]" />
+                        <input type="text" inputMode="numeric" pattern="[0-9]*" value={buyQuantity} onChange={(e) => setBuyQuantity(e.target.value.replace(/[^0-9]/g, ""))} required className="w-full rounded-xl border border-[#ead8c7] bg-white px-4 py-2 text-sm outline-none focus:border-[#c38358]" />
                       </div>
                       <div className="flex flex-col gap-1.5">
                         <label className="text-[11px] font-bold text-[#7a6a62] uppercase tracking-wider">Kuantitas Gratis (Y)</label>
-                        <input type="number" min={1} value={freeQuantity} onChange={(e) => setFreeQuantity(Math.max(1, Number(e.target.value)))} required className="w-full rounded-xl border border-[#ead8c7] bg-white px-4 py-2 text-sm outline-none focus:border-[#c38358]" />
+                        <input type="text" inputMode="numeric" pattern="[0-9]*" value={freeQuantity} onChange={(e) => setFreeQuantity(e.target.value.replace(/[^0-9]/g, ""))} required className="w-full rounded-xl border border-[#ead8c7] bg-white px-4 py-2 text-sm outline-none focus:border-[#c38358]" />
                       </div>
                     </div>
                     <div className="flex flex-col gap-1.5">
@@ -469,7 +469,7 @@ export default function AdminPromosTab() {
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="flex flex-col gap-1.5">
                     <label className="text-[11px] font-bold text-[#7a6a62] uppercase tracking-wider">Prioritas Promo *</label>
-                    <input type="number" value={priority} onChange={(e) => setPriority(Number(e.target.value))} required className="w-full rounded-xl border border-[#ead8c7] bg-[#fdf7f2] px-4 py-2.5 text-sm outline-none focus:border-[#c38358]" />
+                    <input type="text" inputMode="numeric" pattern="[0-9]*" value={priority} onChange={(e) => setPriority(e.target.value.replace(/[^0-9]/g, ""))} required className="w-full rounded-xl border border-[#ead8c7] bg-[#fdf7f2] px-4 py-2.5 text-sm outline-none focus:border-[#c38358]" />
                     <p className="text-[10px] text-[#a08070]">Semakin tinggi angka, semakin didahulukan jika bertabrakan.</p>
                   </div>
                   <div className="flex flex-col gap-1.5">
