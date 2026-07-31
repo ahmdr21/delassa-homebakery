@@ -4,18 +4,23 @@ import { logout, getCurrentUser } from "../utils/auth";
 import { useEffect, useMemo, useState } from "react";
 import AdminProductsTab from "../components/admin/AdminProductsTab";
 import AdminPromosTab from "../components/admin/AdminPromosTab";
+import AdminOverviewTab from "../components/admin/AdminOverviewTab";
 import logo from "../assets/delassa.webp";
-import { MessageSquare, Package, Tag, LogOut, RefreshCw, Trash2, Search, ShieldCheck, EyeOff } from "lucide-react";
+import { MessageSquare, Package, Tag, LogOut, RefreshCw, Trash2, Search, ShieldCheck, EyeOff, LayoutDashboard } from "lucide-react";
 import {
   getAllReviewsForAdmin,
   updateProductReview,
   deleteProductReview,
   getProducts,
+  getOrderLogs,
+  updateOrderLogStatus,
+  deleteOrderLog,
 } from "../utils/supabase";
 import type {
   ProductReviewUpdate,
   Review,
   ReviewSource,
+  DBOrderLog,
 } from "../utils/supabase";
 
 
@@ -36,7 +41,7 @@ const emptyReview: Review = {
 };
 
 export default function AdminReviews() {
-  const [activeTab, setActiveTab] = useState<"reviews" | "products" | "promos">("reviews");
+  const [activeTab, setActiveTab] = useState<"overview" | "reviews" | "products" | "promos">("overview");
   const [productsList, setProductsList] = useState<string[]>([
     "Umum / Bakery",
     "Brownies Classic",
@@ -61,6 +66,24 @@ export default function AdminReviews() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const [adminEmail, setAdminEmail] = useState("");
+
+  // Order Logs States
+  const [orderLogs, setOrderLogs] = useState<DBOrderLog[]>([]);
+  const [loadingOrders, setLoadingOrders] = useState(true);
+
+  const loadOrders = async () => {
+    setLoadingOrders(true);
+    try {
+      const data = await getOrderLogs();
+      setOrderLogs(data);
+    } catch (err) {
+      console.error(err);
+      showToast("Gagal memuat histori pesanan.", "error");
+    } finally {
+      setLoadingOrders(false);
+    }
+  };
+
   const loadReviews = async () => {
     setLoading(true);
     setError("");
@@ -71,7 +94,6 @@ export default function AdminReviews() {
         if (current.id && data.some((review) => review.id === current.id)) {
           return data.find((review) => review.id === current.id) ?? data[0] ?? emptyReview;
         }
-
         return data[0] ?? emptyReview;
       });
     } catch (err) {
@@ -82,48 +104,50 @@ export default function AdminReviews() {
     }
   };
 
+  const refreshAllData = async () => {
+    await Promise.all([loadReviews(), loadOrders()]);
+  };
+
   useEffect(() => {
-  let isCurrent = true;
+    let isCurrent = true;
 
-  getProducts(true).then((data) => {
-    if (isCurrent) {
-      const titles = data.map((p) => p.title);
-      setProductsList(["Umum / Bakery", ...titles.filter((t) => !t.includes("Bundle"))]);
-    }
-  }).catch(console.error);
+    getProducts(true).then((data) => {
+      if (isCurrent) {
+        const titles = data.map((p) => p.title);
+        setProductsList(["Umum / Bakery", ...titles.filter((t) => !t.includes("Bundle"))]);
+      }
+    }).catch(console.error);
 
-  // Ambil email admin yang sedang login
-  getCurrentUser().then((user) => {
-    if (!isCurrent) return;
-    setAdminEmail(user?.email ?? "");
-  });
-
-  // Ambil data review
-  getAllReviewsForAdmin()
-    .then((data) => {
+    // Ambil email admin yang sedang login
+    getCurrentUser().then((user) => {
       if (!isCurrent) return;
+      setAdminEmail(user?.email ?? "");
+    });
 
-      setReviews(data);
-      setSelectedReview(data[0] ?? emptyReview);
-    })
-    .catch((err) => {
+    // Ambil data review & order logs
+    Promise.all([
+      getAllReviewsForAdmin(),
+      getOrderLogs()
+    ]).then(([reviewsData, logsData]) => {
       if (!isCurrent) return;
-
+      setReviews(reviewsData);
+      setSelectedReview(reviewsData[0] ?? emptyReview);
+      setOrderLogs(logsData);
+    }).catch((err) => {
+      if (!isCurrent) return;
       console.error(err);
-      setError(
-        "Gagal memuat data review. Pastikan policy Supabase admin sudah mengizinkan read."
-      );
-    })
-    .finally(() => {
+      setError("Gagal memuat data dari Supabase. Pastikan database/RLS sudah benar.");
+    }).finally(() => {
       if (isCurrent) {
         setLoading(false);
+        setLoadingOrders(false);
       }
     });
 
-  return () => {
-    isCurrent = false;
-  };
-}, []);
+    return () => {
+      isCurrent = false;
+    };
+  }, []);
 
   const counts = useMemo(() => {
     return {
@@ -263,12 +287,12 @@ const handleDeleteReview = async () => {
 
             <button
               type="button"
-              onClick={loadReviews}
-              disabled={loading}
+              onClick={refreshAllData}
+              disabled={loading || loadingOrders}
               className="flex items-center gap-2 rounded-2xl border border-[#c38358] bg-white px-4 py-2.5 text-xs font-bold text-[#c38358] transition hover:bg-[#fff5ef] disabled:opacity-60 cursor-pointer shadow-sm active:scale-[0.98]"
               title="Refresh Data"
             >
-              <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
+              <RefreshCw size={14} className={(loading || loadingOrders) ? "animate-spin" : ""} />
               Refresh
             </button>
 
@@ -284,8 +308,9 @@ const handleDeleteReview = async () => {
         </div>
 
         {/* TABS HEADER */}
-        <div className="flex bg-[#f2e7dd]/40 p-1.5 rounded-2xl mt-8 gap-1.5 max-w-xl border border-[#ead8c7]/40 shadow-inner">
+        <div className="flex bg-[#f2e7dd]/40 p-1.5 rounded-2xl mt-8 gap-1.5 max-w-2xl border border-[#ead8c7]/40 shadow-inner">
           {[
+            { id: "overview", label: "Ringkasan Toko", icon: <LayoutDashboard size={15} /> },
             { id: "reviews", label: "Moderasi Ulasan", icon: <MessageSquare size={15} /> },
             { id: "products", label: "Kelola Produk", icon: <Package size={15} /> },
             { id: "promos", label: "Kelola Promo", icon: <Tag size={15} /> }
@@ -304,6 +329,33 @@ const handleDeleteReview = async () => {
             </button>
           ))}
         </div>
+
+        {activeTab === "overview" && (
+          <AdminOverviewTab
+            orderLogs={orderLogs}
+            loading={loadingOrders}
+            onUpdateStatus={async (id, status) => {
+              try {
+                await updateOrderLogStatus(id, status);
+                setOrderLogs((prev) =>
+                  prev.map((log) => (log.id === id ? { ...log, status } : log))
+                );
+                showToast("Status pesanan diperbarui!", "success");
+              } catch (err) {
+                showToast("Gagal memperbarui status.", "error");
+              }
+            }}
+            onDelete={async (id) => {
+              try {
+                await deleteOrderLog(id);
+                setOrderLogs((prev) => prev.filter((log) => log.id !== id));
+                showToast("Histori pesanan berhasil dihapus!", "success");
+              } catch (err) {
+                showToast("Gagal menghapus histori pesanan.", "error");
+              }
+            }}
+          />
+        )}
 
         {activeTab === "reviews" && (
           <>

@@ -626,3 +626,92 @@ export async function deletePromo(id: string): Promise<void> {
   const { error } = await supabase.from("promos").delete().eq("id", id);
   if (error) { console.error("Delete Promo Error:", error); throw error; }
 }
+
+/* =====================================================
+   ORDER LOG TYPES & OPERATIONS
+===================================================== */
+export interface DBOrderItem {
+  title: string;
+  qty: number;
+  price: number;
+}
+
+export interface DBOrderLog {
+  id: string;
+  customer_name: string;
+  phone: string | null;
+  pickup_date: string | null;
+  items: DBOrderItem[];
+  total_amount: number;
+  status: "pending" | "confirmed" | "completed" | "cancelled";
+  notes: string | null;
+  created_at: string;
+}
+
+// Log order baru ke database saat checkout
+export async function logOrder(order: Omit<DBOrderLog, "id" | "created_at">): Promise<void> {
+  if (!supabase) {
+    console.warn("Supabase is not configured. Order logging skipped.");
+    return;
+  }
+  const { error } = await supabase.from("order_logs").insert({
+    customer_name: order.customer_name,
+    phone: order.phone,
+    pickup_date: order.pickup_date,
+    items: order.items,
+    total_amount: order.total_amount,
+    status: order.status,
+    notes: order.notes,
+  });
+
+  if (error) {
+    console.error("Log Order Error:", error);
+    throw error;
+  }
+}
+
+// Mengambil seluruh data log order (untuk admin)
+export async function getOrderLogs(): Promise<DBOrderLog[]> {
+  if (!supabase) {
+    return [];
+  }
+  const { data, error } = await supabase
+    .from("order_logs")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Get Order Logs Error:", error);
+    throw error;
+  }
+
+  return data ?? [];
+}
+
+// Update status log order (oleh admin)
+export async function updateOrderLogStatus(id: string, status: DBOrderLog["status"]): Promise<void> {
+  if (!supabase) throw new Error("Supabase is not configured.");
+  const { error } = await supabase
+    .from("order_logs")
+    .update({ status })
+    .eq("id", id);
+
+  if (error) {
+    console.error("Update Order Status Error:", error);
+    throw error;
+  }
+}
+
+// Hapus log order (oleh admin)
+export async function deleteOrderLog(id: string): Promise<void> {
+  if (!supabase) throw new Error("Supabase is not configured.");
+  const { error } = await supabase
+    .from("order_logs")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    console.error("Delete Order Log Error:", error);
+    throw error;
+  }
+}

@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { useCart } from "../context/CartContext";
 import { formatCurrency } from "../utils/format";
-import { getProducts, getActivePromos } from "../utils/supabase";
+import { getProducts, getActivePromos, logOrder } from "../utils/supabase";
 import type { DBProduct, DBPromoWithProducts } from "../utils/supabase";
 
 type CheckoutFormData = {
@@ -121,11 +121,44 @@ export default function CartDrawer({ onClose }: { onClose: () => void }) {
     setCheckoutForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleConfirmOrder = () => {
-    if (!isCustomerDataComplete) return;
+  const [submitting, setSubmitting] = useState(false);
 
+  const handleConfirmOrder = async (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
+    if (!isCustomerDataComplete || submitting) return;
+
+    setSubmitting(true);
+    try {
+      // Build order items array
+      const orderItems = [...cart, ...freeGifts].map((item) => ({
+        title: item.title,
+        qty: item.qty,
+        price: item.price,
+      }));
+
+      // Log order to database
+      await logOrder({
+        customer_name: customerName.trim(),
+        phone: phone.trim() || null,
+        pickup_date: pickupDate || null,
+        items: orderItems,
+        total_amount: totalAmount,
+        status: "pending",
+        notes: notes.trim() || null,
+      });
+    } catch (err) {
+      console.error("Failed to log order to database:", err);
+      // Fallback: don't block user if database write fails
+    }
+
+    // Redirect to WhatsApp
+    const waUrl = `https://wa.me/6287715443313?text=${encodeURIComponent(whatsappMessage)}`;
+    window.open(waUrl, "_blank", "noopener,noreferrer");
+
+    // Cleanup states
     clearCart();
     setCheckoutForm(createEmptyCheckoutForm());
+    setSubmitting(false);
 
     try {
       localStorage.removeItem(CHECKOUT_FORM_STORAGE_KEY);
@@ -329,25 +362,17 @@ Admin akan menghitung ongkir dan mengirim total pembayaran setelah konfirmasi.`;
               Setelah tombol ini ditekan, admin akan mengonfirmasi pesanan, menghitung ongkir, lalu mengirim total pembayaran.
             </p>
 
-            <a
-              href={
-                isCustomerDataComplete
-                  ? `https://wa.me/6287715443313?text=${encodeURIComponent(whatsappMessage)}`
-                  : undefined
-              }
-              target="_blank"
-              rel="noreferrer"
+            <button
               onClick={handleConfirmOrder}
-              aria-disabled={!isCustomerDataComplete}
-              tabIndex={isCustomerDataComplete ? 0 : -1}
+              disabled={!isCustomerDataComplete || submitting}
               className={`mt-4 inline-flex w-full items-center justify-center rounded-full px-5 py-4 text-sm font-semibold text-white shadow-lg transition ${
-                isCustomerDataComplete
-                  ? "bg-[#b08769] hover:bg-[#9d7453]"
+                isCustomerDataComplete && !submitting
+                  ? "bg-[#b08769] hover:bg-[#9d7453] cursor-pointer"
                   : "pointer-events-none cursor-not-allowed bg-[#d2b9a5] opacity-70"
               }`}
             >
-              Konfirmasi Pesanan
-            </a>
+              {submitting ? "Memproses Pesanan..." : "Konfirmasi Pesanan"}
+            </button>
           </>
         )}
       </div>
