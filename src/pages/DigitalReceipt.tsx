@@ -18,11 +18,14 @@ export default function DigitalReceipt() {
       try {
         setLoading(true);
         
-        // Cek apakah parameter merupakan format UUID
-        const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(orderId);
+        // Bersihkan trailing slash dan spasi dari route parameter
+        const cleanOrderId = orderId.trim().replace(/\/+$/, "");
+        
+        // Cek apakah parameter merupakan format UUID (panjang 36 karakter dan ada tanda hubung)
+        const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(cleanOrderId);
         
         if (isUuid) {
-          const data = await getOrderLogById(orderId);
+          const data = await getOrderLogById(cleanOrderId);
           if (data) {
             setOrder(data);
           } else {
@@ -30,7 +33,7 @@ export default function DigitalReceipt() {
           }
         } else {
           // Decode lokal dari base64 URL
-          const decodedData = decodeOrderFromUrl(orderId);
+          const decodedData = decodeOrderFromUrl(cleanOrderId);
           if (decodedData) {
             setOrder(decodedData);
           } else {

@@ -51,6 +51,7 @@ function AppContent() {
 
               {/* Public Digital Receipt */}
               <Route path="/struk/:orderId" element={<DigitalReceipt />} />
+              <Route path="/struk/:orderId/" element={<DigitalReceipt />} />
 
               {/* Admin Login */}
               <Route path="/admin/login" element={<AdminLogin />} />

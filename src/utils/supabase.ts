@@ -743,25 +743,33 @@ export async function getOrderLogById(id: string): Promise<DBOrderLog | null> {
 
 // Encode order log to a URL-safe base64 string
 export function encodeOrderToUrl(order: DBOrderLog): string {
-  const shortOrder = {
-    id: order.id,
-    n: order.customer_name,
-    p: order.phone,
-    d: order.pickup_date,
-    i: (order.items || []).map(item => ({
-      t: item.title,
-      q: item.qty,
-      p: item.price
-    })),
-    o: order.ongkir || 0,
-    no: order.notes,
-    s: order.status
-  };
-  const jsonStr = JSON.stringify(shortOrder);
-  const base64 = btoa(encodeURIComponent(jsonStr).replace(/%([0-9A-F]{2})/g, (_, p1) => {
-    return String.fromCharCode(parseInt(p1, 16));
-  }));
-  return base64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  try {
+    const shortOrder = {
+      id: order.id,
+      n: order.customer_name,
+      p: order.phone,
+      d: order.pickup_date,
+      i: (order.items || []).map(item => ({
+        t: item.title,
+        q: item.qty,
+        p: item.price
+      })),
+      o: order.ongkir || 0,
+      no: order.notes,
+      s: order.status
+    };
+    const jsonStr = JSON.stringify(shortOrder);
+    const bytes = new TextEncoder().encode(jsonStr);
+    let binString = "";
+    for (let i = 0; i < bytes.byteLength; i++) {
+      binString += String.fromCharCode(bytes[i]);
+    }
+    const base64 = btoa(binString);
+    return base64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  } catch (err) {
+    console.error("Encode Order Error:", err);
+    return "";
+  }
 }
 
 // Decode URL-safe base64 string back to DBOrderLog
@@ -771,9 +779,12 @@ export function decodeOrderFromUrl(base64Str: string): DBOrderLog | null {
     while (base64.length % 4) {
       base64 += "=";
     }
-    const jsonStr = decodeURIComponent(atob(base64).split("").map(c => {
-      return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(""));
+    const binString = atob(base64);
+    const bytes = new Uint8Array(binString.length);
+    for (let i = 0; i < binString.length; i++) {
+      bytes[i] = binString.charCodeAt(i);
+    }
+    const jsonStr = new TextDecoder().decode(bytes);
     const shortOrder = JSON.parse(jsonStr);
     
     return {
