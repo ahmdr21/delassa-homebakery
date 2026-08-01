@@ -740,3 +740,60 @@ export async function getOrderLogById(id: string): Promise<DBOrderLog | null> {
 
   return data as DBOrderLog | null;
 }
+
+// Encode order log to a URL-safe base64 string
+export function encodeOrderToUrl(order: DBOrderLog): string {
+  const shortOrder = {
+    id: order.id,
+    n: order.customer_name,
+    p: order.phone,
+    d: order.pickup_date,
+    i: (order.items || []).map(item => ({
+      t: item.title,
+      q: item.qty,
+      p: item.price
+    })),
+    o: order.ongkir || 0,
+    no: order.notes,
+    s: order.status
+  };
+  const jsonStr = JSON.stringify(shortOrder);
+  const base64 = btoa(encodeURIComponent(jsonStr).replace(/%([0-9A-F]{2})/g, (_, p1) => {
+    return String.fromCharCode(parseInt(p1, 16));
+  }));
+  return base64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+// Decode URL-safe base64 string back to DBOrderLog
+export function decodeOrderFromUrl(base64Str: string): DBOrderLog | null {
+  try {
+    let base64 = base64Str.replace(/-/g, "+").replace(/_/g, "/");
+    while (base64.length % 4) {
+      base64 += "=";
+    }
+    const jsonStr = decodeURIComponent(atob(base64).split("").map(c => {
+      return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(""));
+    const shortOrder = JSON.parse(jsonStr);
+    
+    return {
+      id: shortOrder.id || "temp",
+      customer_name: shortOrder.n || "",
+      phone: shortOrder.p || null,
+      pickup_date: shortOrder.d || null,
+      items: (shortOrder.i || []).map((item: any) => ({
+        title: item.t || "",
+        qty: item.q || 0,
+        price: item.p || 0
+      })),
+      ongkir: shortOrder.o || 0,
+      total_amount: (shortOrder.i || []).reduce((sum: number, item: any) => sum + (item.p * item.q), 0) + (shortOrder.o || 0),
+      status: shortOrder.s || "completed",
+      notes: shortOrder.no || null,
+      created_at: new Date().toISOString()
+    };
+  } catch (err) {
+    console.error("Decode Order Error:", err);
+    return null;
+  }
+}

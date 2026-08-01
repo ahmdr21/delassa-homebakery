@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { getOrderLogById } from "../utils/supabase";
+import { getOrderLogById, decodeOrderFromUrl } from "../utils/supabase";
 import type { DBOrderLog } from "../utils/supabase";
 import { formatCurrency } from "../utils/format";
 import { Download, ArrowLeft, Loader2, AlertCircle, CheckCircle } from "lucide-react";
@@ -17,13 +17,25 @@ export default function DigitalReceipt() {
       if (!orderId) return;
       try {
         setLoading(true);
-        // Supabase query can take either full UUID or partial id
-        // Let's query by ID directly
-        const data = await getOrderLogById(orderId);
-        if (data) {
-          setOrder(data);
+        
+        // Cek apakah parameter merupakan format UUID
+        const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(orderId);
+        
+        if (isUuid) {
+          const data = await getOrderLogById(orderId);
+          if (data) {
+            setOrder(data);
+          } else {
+            setError("Pesanan tidak ditemukan.");
+          }
         } else {
-          setError("Pesanan tidak ditemukan.");
+          // Decode lokal dari base64 URL
+          const decodedData = decodeOrderFromUrl(orderId);
+          if (decodedData) {
+            setOrder(decodedData);
+          } else {
+            setError("Format link struk salah atau data rusak.");
+          }
         }
       } catch (err) {
         console.error(err);

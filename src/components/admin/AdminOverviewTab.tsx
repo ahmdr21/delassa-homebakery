@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
+import { encodeOrderToUrl } from "../../utils/supabase";
 import type { DBOrderLog, DBOrderItem } from "../../utils/supabase";
 import { formatCurrency } from "../../utils/format";
 import { DollarSign, ShoppingBag, TrendingUp, Calendar, Search, Trash2, Eye, Printer, Copy, Save } from "lucide-react";
@@ -54,7 +55,8 @@ export default function AdminOverviewTab({
         })
       : "-";
 
-    const shareableUrl = `${window.location.origin}/struk/${selectedOrder.id}`;
+    const encodedData = encodeOrderToUrl(selectedOrder);
+    const shareableUrl = `${window.location.origin}/struk/${encodedData}`;
 
     const text = `🧾 *STRUK DIGITAL - DELASSA HOME BAKERY*
 ----------------------------------------
@@ -894,7 +896,8 @@ Terima kasih sudah memesan di Delassa! ✨`;
                     
                     <button
                       onClick={() => {
-                        const link = `${window.location.origin}/struk/${selectedOrder.id}`;
+                        const encodedData = encodeOrderToUrl(selectedOrder);
+                        const link = `${window.location.origin}/struk/${encodedData}`;
                         navigator.clipboard.writeText(link);
                         showToast("Link struk digital berhasil disalin!", "success");
                       }}
