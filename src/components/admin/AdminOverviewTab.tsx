@@ -190,13 +190,13 @@ Terima kasih sudah memesan di Delassa! ✨`;
             
             /* Hide scrollbar */
             ::-webkit-scrollbar { display: none; }
-            img.logo-print {
-              width: 50px;
-              height: 50px;
-              border-radius: 50%;
-              object-fit: cover;
-              border: 1px solid #ead8c7;
-              margin-bottom: 8px;
+            img {
+              width: 60px !important;
+              height: 60px !important;
+              border-radius: 50% !important;
+              object-fit: cover !important;
+              border: 1px solid #ead8c7 !important;
+              margin-bottom: 8px !important;
             }
           </style>
         </head>

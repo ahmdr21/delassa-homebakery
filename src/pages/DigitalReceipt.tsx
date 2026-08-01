@@ -263,6 +263,14 @@ export default function DigitalReceipt() {
             padding: 5px !important;
             margin: 0 !important;
           }
+          #receipt-view img {
+            width: 60px !important;
+            height: 60px !important;
+            border-radius: 50% !important;
+            object-fit: cover !important;
+            margin-bottom: 12px !important;
+            border: 1px solid #ead8c7 !important;
+          }
           .no-print {
             display: none !important;
           }
