@@ -721,58 +721,35 @@ export async function deleteOrderLog(id: string): Promise<void> {
   }
 }
 
-// Ambil log order berdasarkan ID (untuk struk digital publik)
+// Ambil log order berdasarkan ID (untuk struk digital publik - RPC aman bypass RLS)
 export async function getOrderLogById(id: string): Promise<DBOrderLog | null> {
   if (!supabase) {
     console.warn("Supabase is not configured.");
     return null;
   }
+  
+  // Panggil RPC database yang kita buat untuk mengambil order berdasarkan UUID secara aman
   const { data, error } = await supabase
-    .from("order_logs")
-    .select("*")
-    .eq("id", id)
-    .maybeSingle();
+    .rpc("get_public_order_by_id", { order_uuid: id });
 
   if (error) {
     console.error("Get Order Log By ID Error:", error);
     throw error;
   }
 
-  return data as DBOrderLog | null;
-}
-
-// Encode order log to a URL-safe base64 string
-export function encodeOrderToUrl(order: DBOrderLog): string {
-  try {
-    const shortOrder = {
-      id: order.id,
-      n: order.customer_name,
-      p: order.phone,
-      d: order.pickup_date,
-      i: (order.items || []).map(item => ({
-        t: item.title,
-        q: item.qty,
-        p: item.price
-      })),
-      o: order.ongkir || 0,
-      no: order.notes,
-      s: order.status
-    };
-    const jsonStr = JSON.stringify(shortOrder);
-    const bytes = new TextEncoder().encode(jsonStr);
-    let binString = "";
-    for (let i = 0; i < bytes.byteLength; i++) {
-      binString += String.fromCharCode(bytes[i]);
-    }
-    const base64 = btoa(binString);
-    return base64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
-  } catch (err) {
-    console.error("Encode Order Error:", err);
-    return "";
+  // Karena RPC mengembalikan set/array, ambil elemen pertama jika ada
+  if (data && data.length > 0) {
+    return data[0] as DBOrderLog;
   }
+  return null;
 }
 
-// Decode URL-safe base64 string back to DBOrderLog
+// Encode order log to a URL-safe string (Sekarang langsung menggunakan ID UUID agar link pendek & WhatsApp link-friendly)
+export function encodeOrderToUrl(order: DBOrderLog): string {
+  return order.id;
+}
+
+// Decode URL-safe base64 string back to DBOrderLog (Tetap dipertahankan sebagai cadangan jika dibutuhkan)
 export function decodeOrderFromUrl(base64Str: string): DBOrderLog | null {
   try {
     let base64 = base64Str.replace(/-/g, "+").replace(/_/g, "/");
