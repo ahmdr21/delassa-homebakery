@@ -75,8 +75,13 @@ Terima kasih sudah memesan di Delassa! ✨`;
     alert("Format teks WhatsApp berhasil disalin ke clipboard!");
   };
 
-  const handlePrint = () => {
+  const handlePrint = (notaId: string) => {
+    const originalTitle = document.title;
+    document.title = `Struk-Delassa-${notaId}`;
     window.print();
+    setTimeout(() => {
+      document.title = originalTitle;
+    }, 1000);
   };
 
   const handleSaveOrder = async () => {
@@ -605,10 +610,15 @@ Terima kasih sudah memesan di Delassa! ✨`;
                       <div className="relative">
                         <span className="absolute left-3.5 top-1/2 -translate-y-1/2 font-bold text-gray-400">Rp</span>
                         <input
-                          type="number"
-                          value={localOngkir}
-                          onChange={(e) => setLocalOngkir(Number(e.target.value) || 0)}
-                          placeholder="Masukkan tarif ongkir"
+                          type="text"
+                          inputMode="numeric"
+                          pattern="[0-9]*"
+                          value={localOngkir === 0 ? "" : localOngkir}
+                          onChange={(e) => {
+                            const val = e.target.value.replace(/\D/g, "");
+                            setLocalOngkir(val === "" ? 0 : Number(val));
+                          }}
+                          placeholder="0"
                           className="w-full pl-9 pr-4 py-2 border border-[#ead8c7] rounded-xl outline-none focus:border-[#c38358] bg-[#fffaf5] text-sm font-semibold"
                         />
                       </div>
@@ -725,7 +735,7 @@ Terima kasih sudah memesan di Delassa! ✨`;
                   {/* Actions underneath the receipt (no-print) */}
                   <div className="w-full max-w-[380px] mt-4 grid grid-cols-2 gap-3 no-print">
                     <button
-                      onClick={handlePrint}
+                      onClick={() => handlePrint(notaId)}
                       className="flex items-center justify-center gap-1.5 bg-white border border-[#c38358] text-[#c38358] hover:bg-[#fff5ef] rounded-xl py-2.5 font-bold text-xs shadow-sm transition cursor-pointer"
                     >
                       <Printer size={14} />
