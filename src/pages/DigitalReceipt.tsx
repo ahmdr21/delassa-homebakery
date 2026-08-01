@@ -239,19 +239,13 @@ export default function DigitalReceipt() {
         )}
 
         {/* Payment Transfer Info */}
-        <div className="pt-6 pb-2 text-center text-xs">
-          <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-2">Metode Pembayaran</p>
-          <div className="bg-[#fffaf5] border border-[#ead8c7]/50 rounded-2xl p-4 inline-block min-w-[240px] shadow-sm">
-            <p className="font-bold text-[#2f221d]">Transfer Bank BCA</p>
-            <p className="text-lg font-black text-[#c38358] tracking-widest my-1 select-all">123456789</p>
-            <p className="text-[10px] text-[#8e7b72] font-semibold">a/n Delassa Home Bakery</p>
-          </div>
+        <div className="pt-6 pb-2 text-center text-xs flex flex-col items-center">
+          <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Metode Pembayaran</p>
+          <p className="font-bold text-[#2f221d] text-sm mb-6">Transfer Bank BCA</p>
           
-          <div className="mt-6 flex flex-col items-center">
-            <CheckCircle className="text-green-500 w-5 h-5 mb-1.5" />
-            <p className="text-[10px] text-[#c38358] font-bold uppercase tracking-wider">Terima kasih atas pesanan Anda!</p>
-            <p className="text-[9px] text-gray-400 mt-1">Silakan simpan struk ini sebagai bukti transaksi sah.</p>
-          </div>
+          <CheckCircle className="text-green-500 w-5 h-5 mb-1.5" />
+          <p className="text-[10px] text-[#c38358] font-bold uppercase tracking-wider">Terima kasih atas pesanan Anda!</p>
+          <p className="text-[9px] text-gray-400 mt-1">Silakan simpan struk ini sebagai bukti transaksi sah.</p>
         </div>
 
       </div>
