@@ -833,6 +833,20 @@ Terima kasih sudah memesan di Delassa! ✨`;
                             : "-"}
                         </span>
                       </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-400 uppercase text-[9px] font-bold tracking-wider">Tgl Transaksi:</span>
+                        <span className="font-semibold">
+                          {selectedOrder.created_at
+                            ? new Date(selectedOrder.created_at).toLocaleDateString("id-ID", {
+                                year: "numeric",
+                                month: "2-digit",
+                                day: "2-digit",
+                                hour: "2-digit",
+                                minute: "2-digit"
+                              }).replace(/\./g, ":")
+                            : "-"}
+                        </span>
+                      </div>
                     </div>
 
                     {/* Items table */}
@@ -867,12 +881,8 @@ Terima kasih sudah memesan di Delassa! ✨`;
                       </div>
                     </div>
 
-                    {/* Payment Instruction */}
-                    <div className="pt-4 text-center space-y-1">
-                      <p className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Metode Pembayaran</p>
-                      <p className="text-[11px] font-bold text-[#2f221d]">Transfer Bank BCA</p>
-                      <p className="text-sm font-black text-[#c38358] tracking-widest leading-none">123456789</p>
-                      <p className="text-[9px] text-gray-400">a/n Delassa Home Bakery</p>
+                    {/* Footer Thank You */}
+                    <div className="pt-4 text-center">
                       <p className="text-[10px] text-[#c38358] font-bold mt-2 leading-tight">Terima kasih atas pesanan Anda! ✨</p>
                     </div>
                   </div>

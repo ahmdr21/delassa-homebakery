@@ -183,6 +183,20 @@ export default function DigitalReceipt() {
               <p className="font-semibold mt-0.5">{order.phone}</p>
             </div>
           )}
+          <div className="text-right">
+            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Waktu Transaksi</p>
+            <p className="font-semibold mt-0.5">
+              {order.created_at
+                ? new Date(order.created_at).toLocaleDateString("id-ID", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit"
+                  }).replace(/\./g, ":")
+                : "-"}
+            </p>
+          </div>
         </div>
 
         {/* Items Table */}
@@ -238,11 +252,8 @@ export default function DigitalReceipt() {
           </div>
         )}
 
-        {/* Payment Transfer Info */}
+        {/* Footer Info */}
         <div className="pt-6 pb-2 text-center text-xs flex flex-col items-center">
-          <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Metode Pembayaran</p>
-          <p className="font-bold text-[#2f221d] text-sm mb-6">Transfer Bank BCA</p>
-          
           <CheckCircle className="text-green-500 w-5 h-5 mb-1.5" />
           <p className="text-[10px] text-[#c38358] font-bold uppercase tracking-wider">Terima kasih atas pesanan Anda!</p>
           <p className="text-[9px] text-gray-400 mt-1">Silakan simpan struk ini sebagai bukti transaksi sah.</p>
