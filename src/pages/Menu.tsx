@@ -1169,7 +1169,7 @@ export default function Menu() {
 
                       {showWriteForm ? (
                         <form onSubmit={handleSubmitReview} className="bg-white p-4 rounded-xl border border-[#ead8c7]/50 flex flex-col gap-3">
-                          <h5 className="text-[12px] sm:text-[13px] font-bold text-[#2f221d]">Beri Ulasan Produk 🤎</h5>
+                          <h5 className="text-[12px] sm:text-[13px] font-bold text-[#2f221d]">Beri Ulasan Produk</h5>
                           <div className="grid grid-cols-2 gap-2">
                             <input
                               type="text"
@@ -1215,7 +1215,7 @@ export default function Menu() {
                             disabled={submittingReview}
                             className="bg-[#c38358] text-white py-2 rounded-lg font-bold text-[12px] hover:bg-[#a96d45] transition disabled:opacity-50 cursor-pointer"
                           >
-                            {submittingReview ? "Mengirim..." : "Kirim Ulasan 🚀"}
+                            {submittingReview ? "Mengirim..." : "Kirim Ulasan"}
                           </button>
                         </form>
                       ) : loadingReviews ? (
@@ -1225,7 +1225,6 @@ export default function Menu() {
                         </div>
                       ) : reviews.length === 0 ? (
                         <div className="text-center py-5 bg-gradient-to-br from-[#fffcf9] to-[#fdf3eb] rounded-2xl border border-[#ead8c7]/40">
-                          <div className="text-2xl mb-1.5">✍️</div>
                           <p className="text-[#7a6a62] text-[12px] sm:text-[13px] font-medium">Belum ada ulasan</p>
                           <p className="text-[#9b8a82] text-[11px] mt-0.5">Jadilah yang pertama memberi ulasan!</p>
                         </div>

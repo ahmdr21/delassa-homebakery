@@ -281,20 +281,20 @@ export default function AdminProductsTab() {
           <h2 className="text-xl font-bold text-[#2f221d]">Daftar Produk</h2>
           <p className="text-xs text-[#7a6a62] mt-0.5">Kelola menu makanan dan kategori bakery di sini.</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 w-full sm:w-auto">
           <button
             onClick={() => setShowCategoryModal(true)}
-            className="flex items-center gap-2 rounded-xl border border-[#c38358] text-[#c38358] hover:bg-[#fff5ef] px-4 py-2.5 text-sm font-bold shadow-sm transition cursor-pointer"
+            className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 rounded-xl border border-[#c38358] text-[#c38358] hover:bg-[#fff5ef] px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-bold shadow-sm transition cursor-pointer"
           >
-            <FolderOpen size={16} />
-            Kelola Kategori
+            <FolderOpen size={14} />
+            <span>Kategori</span>
           </button>
           <button
             onClick={openAddModal}
-            className="flex items-center gap-2 rounded-xl bg-[#c38358] hover:bg-[#a96d45] text-white px-4 py-2.5 text-sm font-bold shadow-md transition cursor-pointer"
+            className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 rounded-xl bg-[#c38358] hover:bg-[#a96d45] text-white px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-bold shadow-md transition cursor-pointer"
           >
-            <Plus size={16} />
-            Tambah Produk
+            <Plus size={14} />
+            <span>Tambah Produk</span>
           </button>
         </div>
       </div>

@@ -261,16 +261,16 @@ const handleDeleteReview = async () => {
     <main className="min-h-screen bg-[#faf7f2] px-4 py-8 sm:px-6 lg:px-8">
       <section className="mx-auto max-w-7xl">
         {/* HEADER BAR */}
-        <div className="flex flex-col gap-5 border-b border-[#ead8c7] pb-6 lg:flex-row lg:items-center lg:justify-between bg-white rounded-3xl p-6 shadow-sm border border-[#ead8c7]/30">
-          <div className="flex items-center gap-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 border-b border-[#ead8c7] pb-6 bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-[#ead8c7]/30">
+          <div className="flex items-center gap-3 sm:gap-4">
             <div className="p-1.5 bg-[#fdf9f6] border border-[#ead8c7]/50 rounded-full shadow-inner shrink-0">
-              <img src={logo} alt="Delassa Logo" className="w-16 h-16 object-contain rounded-full" />
+              <img src={logo} alt="Delassa Logo" className="w-12 h-12 sm:w-16 sm:h-16 object-contain rounded-full" />
             </div>
             <div>
-              <p className="text-[10px] font-black uppercase tracking-[3px] text-[#c38358]">
+              <p className="text-[8px] sm:text-[10px] font-black uppercase tracking-[2px] sm:tracking-[3px] text-[#c38358]">
                 DELASSA CONTROL CENTER
               </p>
-              <h1 className="text-2xl font-black text-[#2f221d] sm:text-3xl leading-tight">
+              <h1 className="text-xl sm:text-3xl font-black text-[#2f221d] leading-tight">
                 Dashboard Admin
               </h1>
               <p className="hidden sm:block text-xs text-[#7a6a62] mt-0.5">
@@ -279,36 +279,41 @@ const handleDeleteReview = async () => {
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="bg-[#fff9f5] border border-[#c38358]/30 rounded-2xl px-4 py-2 text-right">
-              <p className="text-[9px] uppercase tracking-wider text-gray-400 font-bold">Masuk Sebagai</p>
-              <p className="text-xs font-black text-[#2f221d]">{adminEmail || "Administrator"}</p>
+          <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-3">
+            <div className="bg-[#fff9f5] border border-[#c38358]/30 rounded-xl sm:rounded-2xl px-3 py-1.5 sm:px-4 sm:py-2 text-left xs:text-right">
+              <p className="text-[8px] sm:text-[9px] uppercase tracking-wider text-gray-400 font-bold">Masuk Sebagai</p>
+              <p className="text-[11px] sm:text-xs font-black text-[#2f221d] truncate max-w-[200px]">{adminEmail || "Administrator"}</p>
             </div>
+            
+            <div className="flex gap-2 w-full xs:w-auto">
+              <button
+                type="button"
+                onClick={refreshAllData}
+                disabled={loading || loadingOrders}
+                className="flex-1 xs:flex-none flex items-center justify-center gap-1.5 rounded-xl sm:rounded-2xl border border-[#c38358] bg-white px-3 sm:px-4 py-2.5 text-xs font-bold text-[#c38358] transition hover:bg-[#fff5ef] disabled:opacity-60 cursor-pointer shadow-sm active:scale-[0.98]"
+                title="Refresh Data"
+              >
+                <RefreshCw size={13} className={(loading || loadingOrders) ? "animate-spin" : ""} />
+                <span>Refresh</span>
+              </button>
 
-            <button
-              type="button"
-              onClick={refreshAllData}
-              disabled={loading || loadingOrders}
-              className="flex items-center gap-2 rounded-2xl border border-[#c38358] bg-white px-4 py-2.5 text-xs font-bold text-[#c38358] transition hover:bg-[#fff5ef] disabled:opacity-60 cursor-pointer shadow-sm active:scale-[0.98]"
-              title="Refresh Data"
-            >
-              <RefreshCw size={14} className={(loading || loadingOrders) ? "animate-spin" : ""} />
-              Refresh
-            </button>
-
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="flex items-center gap-2 rounded-2xl bg-red-500 px-4 py-2.5 text-xs font-bold text-white hover:bg-red-600 transition cursor-pointer shadow-md shadow-red-100 active:scale-[0.98]"
-            >
-              <LogOut size={14} />
-              Logout
-            </button>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="flex-1 xs:flex-none flex items-center justify-center gap-1.5 rounded-xl sm:rounded-2xl bg-red-500 px-3 sm:px-4 py-2.5 text-xs font-bold text-white hover:bg-red-600 transition cursor-pointer shadow-md shadow-red-100 active:scale-[0.98]"
+              >
+                <LogOut size={13} />
+                <span>Logout</span>
+              </button>
+            </div>
           </div>
         </div>
 
         {/* TABS HEADER */}
-        <div className="flex bg-[#f2e7dd]/40 p-1.5 rounded-2xl mt-8 gap-1.5 max-w-2xl border border-[#ead8c7]/40 shadow-inner">
+        <div 
+          className="flex overflow-x-auto whitespace-nowrap bg-[#f2e7dd]/40 p-1.5 rounded-2xl mt-8 gap-1.5 max-w-2xl border border-[#ead8c7]/40 shadow-inner"
+          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+        >
           {[
             { id: "overview", label: "Ringkasan Toko", icon: <LayoutDashboard size={15} /> },
             { id: "reviews", label: "Moderasi Ulasan", icon: <MessageSquare size={15} /> },
@@ -318,14 +323,14 @@ const handleDeleteReview = async () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center justify-center gap-2 flex-1 px-4 py-3 text-xs font-bold rounded-xl transition-all duration-300 cursor-pointer ${
+              className={`flex items-center justify-center gap-2 shrink-0 px-4 py-3 text-xs font-bold rounded-xl transition-all duration-300 cursor-pointer ${
                 activeTab === tab.id
                   ? "bg-white text-[#2f221d] shadow-md border-b-2 border-[#c38358]"
                   : "text-[#7a6a62] hover:text-[#c38358] hover:bg-white/40"
               }`}
             >
               {tab.icon}
-              {tab.label}
+              <span>{tab.label}</span>
             </button>
           ))}
         </div>

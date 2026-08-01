@@ -301,7 +301,7 @@ export default function Testimoni() {
       {/* FORM INPUT */}
       <div className="bg-white rounded-[30px] sm:rounded-[35px] p-6 sm:p-10 shadow-lg mt-16 sm:mt-28 max-w-3xl mx-auto border border-[#ead8c7]/40">
         <h3 className="text-2xl sm:text-3xl font-black text-[#3b2b26]">
-          Beri Review Kamu 🤎
+          Beri Review Kamu
         </h3>
         <p className="text-gray-500 text-xs sm:text-sm mt-1.5">
           Tulis ulasan jujur untuk membantu kami meningkatkan kualitas produk Delassa.
@@ -381,7 +381,7 @@ export default function Testimoni() {
             disabled={submitting}
             className="bg-[#3b2b26] hover:bg-black text-white py-4 rounded-xl font-bold transition shadow-md hover:shadow-lg disabled:opacity-50 cursor-pointer mt-2 text-sm sm:text-base"
           >
-            {submitting ? "Sedang mengirim..." : "Kirim Ulasan 🚀"}
+            {submitting ? "Sedang mengirim..." : "Kirim Ulasan"}
           </button>
         </div>
       </div>

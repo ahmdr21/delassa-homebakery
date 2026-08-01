@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import { encodeOrderToUrl } from "../../utils/supabase";
 import type { DBOrderLog, DBOrderItem } from "../../utils/supabase";
 import { formatCurrency } from "../../utils/format";
-import { DollarSign, ShoppingBag, TrendingUp, Calendar, Search, Trash2, Eye, Printer, Copy, Save } from "lucide-react";
+import { DollarSign, ShoppingBag, TrendingUp, Calendar, Search, Trash2, Eye, Printer, Copy, Save, Download } from "lucide-react";
 import { showToast } from "../../components/Toast";
 import delassaLogo from "../../assets/delassa.webp";
 
@@ -34,6 +34,96 @@ export default function AdminOverviewTab({
       setLocalStatus(selectedOrder.status);
     }
   }, [selectedOrder]);
+
+  const [datePreset, setDatePreset] = useState<"7days" | "30days" | "custom">("7days");
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
+
+  useEffect(() => {
+    const today = new Date();
+    const todayStr = today.toISOString().split("T")[0];
+    
+    if (datePreset === "7days") {
+      const past = new Date();
+      past.setDate(today.getDate() - 6);
+      setStartDate(past.toISOString().split("T")[0]);
+      setEndDate(todayStr);
+    } else if (datePreset === "30days") {
+      const past = new Date();
+      past.setDate(today.getDate() - 29);
+      setStartDate(past.toISOString().split("T")[0]);
+      setEndDate(todayStr);
+    }
+  }, [datePreset]);
+
+  // Date filtered order logs used globally in dashboard views
+  const dateFilteredOrders = useMemo(() => {
+    if (!startDate || !endDate) return orderLogs;
+    return orderLogs.filter(o => {
+      if (!o.created_at) return false;
+      const orderDate = o.created_at.split("T")[0];
+      return orderDate >= startDate && orderDate <= endDate;
+    });
+  }, [orderLogs, startDate, endDate]);
+
+  const handleExportToExcel = () => {
+    const headers = [
+      "No. Nota",
+      "Waktu Transaksi",
+      "Pelanggan",
+      "No WhatsApp",
+      "Pesanan",
+      "Subtotal (Rp)",
+      "Ongkos Kirim (Rp)",
+      "Total Pembayaran (Rp)",
+      "Status",
+      "Tanggal Pickup"
+    ];
+
+    const rows = filteredOrders.map(order => {
+      const notaId = `DEL-${order.id.slice(0, 8).toUpperCase()}`;
+      const dateStr = order.created_at ? new Date(order.created_at).toLocaleString("id-ID") : "-";
+      const itemsList = Array.isArray(order.items) 
+        ? order.items.map((it: DBOrderItem) => `${it.title} (x${it.qty})`).join(" | ")
+        : "";
+      const subtotal = (order.items || []).reduce((sum, item) => sum + (item.price * item.qty), 0);
+      const pickupDateStr = order.pickup_date ? new Date(order.pickup_date).toLocaleDateString("id-ID") : "-";
+      
+      return [
+        notaId,
+        dateStr,
+        order.customer_name,
+        order.phone || "-",
+        itemsList,
+        subtotal,
+        order.ongkir || 0,
+        order.total_amount || 0,
+        order.status.toUpperCase(),
+        pickupDateStr
+      ];
+    });
+
+    const csvContent = [
+      headers.join(";"),
+      ...rows.map(row => row.map(val => {
+        const str = String(val).replace(/"/g, '""');
+        return `"${str}"`;
+      }).join(";"))
+    ].join("\n");
+
+    const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    const dateRangeStr = `${startDate}_ke_${endDate}`;
+    link.setAttribute("href", url);
+    link.setAttribute("download", `Laporan_Penjualan_Delassa_${dateRangeStr}.csv`);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    showToast("Laporan penjualan berhasil diekspor ke Excel!", "success");
+  };
 
   const handleCopyWAText = () => {
     if (!selectedOrder) return;
@@ -73,7 +163,9 @@ Ongkir: ${formatCurrency(localOngkir)}
 *TOTAL TAGIHAN: ${formatCurrency(total)}*
 ----------------------------------------
 Silakan melakukan pembayaran transfer ke:
-🏦 *Bank BCA: 123456789* a/n *Delassa Home Bakery*
+👤 *a/n Marsela Istanti*
+🏦 *BCA: 5681946307*
+🏦 *BRI: 669001005993536*
 
 *Link Struk Digital:*
 Buka link ini untuk mengunduh/melihat struk Anda:
@@ -251,26 +343,26 @@ Terima kasih sudah memesan di Delassa! ✨`;
   // 1. STATS CALCULATIONS
   const stats = useMemo(() => {
     // Estimasi omset dihitung dari semua pesanan KECUALI yang statusnya cancelled
-    const validOrders = orderLogs.filter(o => o.status !== "cancelled");
+    const validOrders = dateFilteredOrders.filter(o => o.status !== "cancelled");
     const totalRevenue = validOrders.reduce((sum, o) => sum + Number(o.total_amount || 0), 0);
-    const totalTransactions = orderLogs.length;
+    const totalTransactions = dateFilteredOrders.length;
     const avgOrderValue = totalTransactions > 0 ? totalRevenue / totalTransactions : 0;
 
     const counts = {
-      pending: orderLogs.filter(o => o.status === "pending").length,
-      confirmed: orderLogs.filter(o => o.status === "confirmed").length,
-      completed: orderLogs.filter(o => o.status === "completed").length,
-      cancelled: orderLogs.filter(o => o.status === "cancelled").length,
+      pending: dateFilteredOrders.filter(o => o.status === "pending").length,
+      confirmed: dateFilteredOrders.filter(o => o.status === "confirmed").length,
+      completed: dateFilteredOrders.filter(o => o.status === "completed").length,
+      cancelled: dateFilteredOrders.filter(o => o.status === "cancelled").length,
     };
 
     return { totalRevenue, totalTransactions, avgOrderValue, counts };
-  }, [orderLogs]);
+  }, [dateFilteredOrders]);
 
   // 2. BEST SELLERS CALCULATIONS
   const bestSellers = useMemo(() => {
     const itemMap: Record<string, number> = {};
     // Hitung qty dari pesanan valid saja
-    orderLogs.filter(o => o.status !== "cancelled").forEach(o => {
+    dateFilteredOrders.filter(o => o.status !== "cancelled").forEach(o => {
       const itemsList = Array.isArray(o.items) ? o.items : [];
       itemsList.forEach((item: DBOrderItem) => {
         const title = item.title.split(" (")[0]; // Clean name
@@ -281,22 +373,27 @@ Terima kasih sudah memesan di Delassa! ✨`;
     const list = Object.entries(itemMap).map(([title, qty]) => ({ title, qty }));
     list.sort((a, b) => b.qty - a.qty);
     return list.slice(0, 5); // Ambil top 5
-  }, [orderLogs]);
+  }, [dateFilteredOrders]);
 
-  // 3. 7-DAYS CHART TREND CALCULATIONS
+  // 3. CHART TREND CALCULATIONS
   const chartData = useMemo(() => {
     const days: Array<{ dateStr: string; label: string; amount: number; count: number }> = [];
-    const dateObj = new Date();
-    // Tarik 7 hari ke belakang
-    for (let i = 6; i >= 0; i--) {
-      const d = new Date();
-      d.setDate(dateObj.getDate() - i);
-      const dateStr = d.toISOString().split("T")[0]; // YYYY-MM-DD
-      const label = d.toLocaleDateString("id-ID", { weekday: "short", day: "numeric" });
+    if (!startDate || !endDate) return [];
+    
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    
+    if (isNaN(start.getTime()) || isNaN(end.getTime()) || start > end) return [];
+    
+    let curr = new Date(start);
+    while (curr <= end) {
+      const dateStr = curr.toISOString().split("T")[0];
+      const label = curr.toLocaleDateString("id-ID", { day: "numeric", month: "short" });
       days.push({ dateStr, label, amount: 0, count: 0 });
+      curr.setDate(curr.getDate() + 1);
     }
 
-    orderLogs.filter(o => o.status !== "cancelled").forEach(o => {
+    dateFilteredOrders.filter(o => o.status !== "cancelled").forEach(o => {
       if (!o.created_at) return;
       const orderDate = o.created_at.split("T")[0];
       const match = days.find(day => day.dateStr === orderDate);
@@ -307,12 +404,12 @@ Terima kasih sudah memesan di Delassa! ✨`;
     });
 
     return days;
-  }, [orderLogs]);
+  }, [dateFilteredOrders, startDate, endDate]);
 
   // 4. FILTERED ORDER LOGS FOR TIMELINE
   const filteredOrders = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
-    return orderLogs.filter(o => {
+    return dateFilteredOrders.filter(o => {
       const matchesStatus = statusFilter === "all" || o.status === statusFilter;
 
       const itemsStr = Array.isArray(o.items)
@@ -328,7 +425,7 @@ Terima kasih sudah memesan di Delassa! ✨`;
       const matchesSearch = !normalizedQuery || haystack.includes(normalizedQuery);
       return matchesStatus && matchesSearch;
     });
-  }, [orderLogs, searchQuery, statusFilter]);
+  }, [dateFilteredOrders, searchQuery, statusFilter]);
 
   // 5. SVG CHART RENDERING DETAILS
   const svgParams = useMemo(() => {
@@ -356,6 +453,71 @@ Terima kasih sudah memesan di Delassa! ✨`;
 
   return (
     <div className="space-y-6 mt-6">
+      {/* FILTER PERIODE LAPORAN */}
+      <div className="bg-white p-5 rounded-3xl border border-[#ead8c7]/40 shadow-sm flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-col gap-2">
+          <p className="text-[10px] font-black uppercase tracking-wider text-[#c38358]">Periode Laporan & Analitik</p>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={() => setDatePreset("7days")}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
+                datePreset === "7days" ? "bg-[#c38358] text-white" : "bg-[#fdf9f6] text-[#7a6a62] border border-[#ead8c7]/45 hover:bg-[#fff5ef]"
+              }`}
+            >
+              7 Hari Terakhir
+            </button>
+            <button
+              onClick={() => setDatePreset("30days")}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
+                datePreset === "30days" ? "bg-[#c38358] text-white" : "bg-[#fdf9f6] text-[#7a6a62] border border-[#ead8c7]/45 hover:bg-[#fff5ef]"
+              }`}
+            >
+              30 Hari Terakhir
+            </button>
+            <button
+              onClick={() => setDatePreset("custom")}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
+                datePreset === "custom" ? "bg-[#c38358] text-white" : "bg-[#fdf9f6] text-[#7a6a62] border border-[#ead8c7]/45 hover:bg-[#fff5ef]"
+              }`}
+            >
+              Rentang Manual
+            </button>
+          </div>
+        </div>
+
+        {/* Custom Date Picker Inputs */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
+          <div className="flex items-center gap-2 flex-grow sm:flex-grow-0">
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => {
+                setDatePreset("custom");
+                setStartDate(e.target.value);
+              }}
+              className="bg-[#fdf9f6] border border-[#ead8c7]/60 rounded-xl px-3 py-2 text-xs font-bold outline-none focus:border-[#c38358] text-[#2f221d] w-full sm:w-auto"
+            />
+            <span className="text-xs text-gray-400 font-bold text-center shrink-0">s/d</span>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => {
+                setDatePreset("custom");
+                setEndDate(e.target.value);
+              }}
+              className="bg-[#fdf9f6] border border-[#ead8c7]/60 rounded-xl px-3 py-2 text-xs font-bold outline-none focus:border-[#c38358] text-[#2f221d] w-full sm:w-auto"
+            />
+          </div>
+
+          <button
+            onClick={handleExportToExcel}
+            className="flex items-center justify-center gap-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 text-xs font-bold shadow-md transition shrink-0 cursor-pointer w-full sm:w-auto"
+          >
+            <Download size={14} />
+            <span>Ekspor Excel</span>
+          </button>
+        </div>
+      </div>
       {/* 1. STATS PANEL */}
       <div className="grid gap-4 sm:grid-cols-3">
         {/* REVENUE CARD */}
@@ -396,7 +558,10 @@ Terima kasih sudah memesan di Delassa! ✨`;
       </div>
 
       {/* STATUS FILTER PILLS */}
-      <div className="flex flex-wrap gap-2 bg-[#f2e7dd]/20 p-2 rounded-2xl border border-[#ead8c7]/30 max-w-fit">
+      <div 
+        className="flex overflow-x-auto whitespace-nowrap gap-2 bg-[#f2e7dd]/20 p-2 rounded-2xl border border-[#ead8c7]/30 w-full md:max-w-fit"
+        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+      >
         {[
           { id: "all", label: "Semua", count: orderLogs.length, color: "bg-gray-100 text-gray-700" },
           { id: "pending", label: "Pending", count: stats.counts.pending, color: "bg-amber-50 text-amber-700 border border-amber-100" },
@@ -407,7 +572,7 @@ Terima kasih sudah memesan di Delassa! ✨`;
           <button
             key={item.id}
             onClick={() => setStatusFilter(item.id as any)}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shrink-0 ${
               statusFilter === item.id
                 ? "bg-[#c38358] text-white shadow-sm"
                 : "bg-white text-[#7a6a62] hover:bg-[#fff5ef]"
@@ -475,9 +640,20 @@ Terima kasih sudah memesan di Delassa! ✨`;
           </div>
 
           <div className="flex justify-between border-t border-gray-100 pt-3 text-[10px] font-bold text-gray-400 px-2 mt-2">
-            {chartData.map((d, i) => (
-              <span key={i} className="text-center">{d.label}</span>
-            ))}
+            {chartData.map((d, i) => {
+              const totalDays = chartData.length;
+              let showLabel = true;
+              if (totalDays > 10) {
+                // Show approx 5 labels evenly spaced
+                const interval = Math.ceil(totalDays / 5);
+                showLabel = i === 0 || i === totalDays - 1 || i % interval === 0;
+              }
+              return (
+                <span key={i} className="text-center min-w-[30px]" style={{ visibility: showLabel ? "visible" : "hidden" }}>
+                  {d.label}
+                </span>
+              );
+            })}
           </div>
         </div>
 
@@ -549,7 +725,8 @@ Terima kasih sudah memesan di Delassa! ✨`;
               Tidak ada histori transaksi yang cocok.
             </div>
           ) : (
-            <table className="w-full text-left border-collapse text-xs">
+            <>
+            <table className="hidden sm:table w-full text-left border-collapse text-xs">
               <thead>
                 <tr className="border-b border-gray-100 text-[#7a6a62] font-black uppercase tracking-wider text-[10px]">
                   <th className="py-3 px-4">Waktu</th>
@@ -631,6 +808,89 @@ Terima kasih sudah memesan di Delassa! ✨`;
                 })}
               </tbody>
             </table>
+
+            {/* MOBILE LAYOUT CARDS */}
+            <div className="sm:hidden space-y-3.5">
+              {filteredOrders.map((order) => {
+                const dateStr = order.created_at
+                  ? new Date(order.created_at).toLocaleString("id-ID", {
+                      month: "short",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit"
+                    })
+                  : "-";
+                const itemsList = Array.isArray(order.items) ? order.items : [];
+                return (
+                  <div key={order.id} className="bg-[#fffaf5]/40 border border-[#ead8c7]/50 rounded-2xl p-4 space-y-3 shadow-sm">
+                    {/* Header: Date & Actions */}
+                    <div className="flex justify-between items-center text-[10px] text-gray-400 font-bold border-b border-[#ead8c7]/20 pb-2">
+                      <span>{dateStr}</span>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => setSelectedOrder(order)}
+                          className="p-1 hover:bg-[#fff5ef] rounded-lg text-gray-500 hover:text-[#2f221d] transition cursor-pointer"
+                          title="Detail Lengkap"
+                        >
+                          <Eye size={16} />
+                        </button>
+                        <button
+                          onClick={() => onDelete(order.id)}
+                          className="p-1 hover:bg-red-50 rounded-lg text-red-400 hover:text-red-600 transition cursor-pointer"
+                          title="Hapus Transaksi"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Customer Info */}
+                    <div>
+                      <p className="font-black text-[#2f221d] text-sm">{order.customer_name}</p>
+                      <p className="text-[10px] text-gray-400 font-bold mt-0.5">{order.phone || "No HP -"}</p>
+                    </div>
+
+                    {/* Ordered Items */}
+                    <div className="flex flex-wrap gap-1">
+                      {itemsList.map((it: DBOrderItem, idx) => (
+                        <span key={idx} className="inline-block bg-[#f2e7dd]/50 text-[#3b2b26] px-2 py-0.5 rounded-lg text-[9px] font-bold">
+                          {it.title} <b className="text-[#c38358]">x{it.qty}</b>
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Footer: Price & Status */}
+                    <div className="flex justify-between items-center pt-2 border-t border-[#ead8c7]/20">
+                      <div>
+                        <p className="text-[8px] uppercase tracking-wider text-gray-400 font-bold">Total Pembayaran</p>
+                        <p className="font-black text-[#2f221d] text-xs mt-0.5">{formatCurrency(order.total_amount)}</p>
+                      </div>
+                      <div>
+                        <select
+                          value={order.status}
+                          onChange={(e) => onUpdateOrder(order.id, { status: e.target.value as any })}
+                          className={`rounded-lg border px-2 py-1 text-[10px] font-black cursor-pointer outline-none transition ${
+                            order.status === "pending"
+                              ? "bg-amber-50 text-amber-700 border-amber-200"
+                              : order.status === "confirmed"
+                              ? "bg-blue-50 text-blue-700 border-blue-200"
+                              : order.status === "completed"
+                              ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                              : "bg-red-50 text-red-700 border-red-200"
+                          }`}
+                        >
+                          <option value="pending">Pending</option>
+                          <option value="confirmed">Confirmed</option>
+                          <option value="completed">Completed</option>
+                          <option value="cancelled">Cancelled</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            </>
           )}
         </div>
       </div>
