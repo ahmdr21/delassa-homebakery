@@ -720,3 +720,23 @@ export async function deleteOrderLog(id: string): Promise<void> {
     throw error;
   }
 }
+
+// Ambil log order berdasarkan ID (untuk struk digital publik)
+export async function getOrderLogById(id: string): Promise<DBOrderLog | null> {
+  if (!supabase) {
+    console.warn("Supabase is not configured.");
+    return null;
+  }
+  const { data, error } = await supabase
+    .from("order_logs")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error) {
+    console.error("Get Order Log By ID Error:", error);
+    throw error;
+  }
+
+  return data as DBOrderLog | null;
+}

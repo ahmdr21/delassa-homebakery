@@ -2,6 +2,9 @@ import { useState, useMemo, useEffect } from "react";
 import type { DBOrderLog, DBOrderItem } from "../../utils/supabase";
 import { formatCurrency } from "../../utils/format";
 import { DollarSign, ShoppingBag, TrendingUp, Calendar, Search, Trash2, Eye, Printer, Copy, Save } from "lucide-react";
+import { showToast } from "../../components/Toast";
+import delassaLogo from "../../assets/delassa.webp";
+
 
 interface AdminOverviewTabProps {
   orderLogs: DBOrderLog[];
@@ -51,6 +54,8 @@ export default function AdminOverviewTab({
         })
       : "-";
 
+    const shareableUrl = `${window.location.origin}/struk/${selectedOrder.id}`;
+
     const text = `🧾 *STRUK DIGITAL - DELASSA HOME BAKERY*
 ----------------------------------------
 Nomor Nota: #${notaId}
@@ -68,20 +73,153 @@ Ongkir: ${formatCurrency(localOngkir)}
 Silakan melakukan pembayaran transfer ke:
 🏦 *Bank BCA: 123456789* a/n *Delassa Home Bakery*
 
+*Link Struk Digital:*
+Buka link ini untuk mengunduh/melihat struk Anda:
+${shareableUrl}
+
 Harap kirimkan bukti transfer ke WhatsApp ini setelah melakukan pembayaran.
 Terima kasih sudah memesan di Delassa! ✨`;
 
     navigator.clipboard.writeText(text);
-    alert("Format teks WhatsApp berhasil disalin ke clipboard!");
+    showToast("Format teks WhatsApp + Link Struk berhasil disalin!", "success");
   };
 
   const handlePrint = (notaId: string) => {
-    const originalTitle = document.title;
-    document.title = `Struk-Delassa-${notaId}`;
-    window.print();
-    setTimeout(() => {
-      document.title = originalTitle;
-    }, 1000);
+    const printContent = document.getElementById("receipt-print-area")?.innerHTML;
+    if (!printContent) return;
+
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) {
+      showToast("Gagal membuka jendela cetak. Izinkan pop-up di browser.", "error");
+      return;
+    }
+
+    const logoSrc = window.location.origin + delassaLogo;
+
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Struk-Delassa-${notaId}</title>
+          <style>
+            @page {
+              size: A5 portrait;
+              margin: 10mm;
+            }
+            body {
+              font-family: system-ui, -apple-system, sans-serif;
+              margin: 0;
+              padding: 0;
+              background: white;
+              color: #3b2b26;
+              font-size: 11px;
+              line-height: 1.4;
+            }
+            .flex { display: flex; }
+            .flex-col { flex-direction: column; }
+            .items-center { align-items: center; }
+            .text-center { text-align: center; }
+            .justify-between { justify-content: space-between; }
+            .font-serif { font-family: Georgia, Cambria, "Times New Roman", Times, serif; }
+            .font-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+            .font-semibold { font-weight: 600; }
+            .font-bold { font-weight: bold; }
+            .font-black { font-weight: 900; }
+            .text-sm { font-size: 13px; }
+            .text-xs { font-size: 10px; }
+            .text-lg { font-size: 16px; }
+            .text-xl { font-size: 18px; }
+            .text-[10px] { font-size: 9px; }
+            .text-[11px] { font-size: 10px; }
+            .tracking-wide { letter-spacing: 0.025em; }
+            .tracking-widest { letter-spacing: 0.1em; }
+            .uppercase { text-transform: uppercase; }
+            .italic { font-style: italic; }
+            
+            /* Spacing & Borders */
+            .border-b { border-bottom: 1px dashed #ead8c7; }
+            .border-t { border-top: 1px dashed #ead8c7; }
+            .border-dotted { border-top: 1px dotted #ead8c7; }
+            .pb-3 { padding-bottom: 12px; }
+            .py-3 { padding-top: 12px; padding-bottom: 12px; }
+            .py-5 { padding-top: 20px; padding-bottom: 20px; }
+            .py-6 { padding-top: 24px; padding-bottom: 24px; }
+            .pt-6 { padding-top: 24px; }
+            .pb-2 { padding-bottom: 8px; }
+            .mt-0\\.5 { margin-top: 2px; }
+            .mt-1 { margin-top: 4px; }
+            .mt-1\\.5 { margin-top: 6px; }
+            .my-1 { margin-top: 4px; margin-bottom: 4px; }
+            .mb-1\\.5 { margin-bottom: 6px; }
+            .mb-2 { margin-bottom: 8px; }
+            .mb-3 { margin-bottom: 12px; }
+            
+            /* Layout grids */
+            .grid { display: grid; }
+            .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .gap-y-3 { row-gap: 12px; }
+            .gap-x-4 { column-gap: 16px; }
+            
+            /* Tables / Rows */
+            .space-y-2\\.5 > * + * { margin-top: 10px; }
+            .space-y-3\\.5 > * + * { margin-top: 14px; }
+            .space-y-2 > * + * { margin-top: 8px; }
+            .p-3 { padding: 12px; }
+            .p-4 { padding: 16px; }
+            .p-2\\.5 { padding: 10px; }
+            .rounded-xl { border-radius: 12px; }
+            .rounded-2xl { border-radius: 16px; }
+            .bg-\\[\\#fffaf5\\] { background-color: #fffaf5; }
+            .bg-\\[\\#fcfaf7\\] { background-color: #fcfaf7; }
+            .text-gray-400 { color: #9ca3af; }
+            .text-gray-500 { color: #6b7280; }
+            .text-green-500 { color: #22c55e; }
+            .text-\\[\\#c38358\\] { color: #c38358; }
+            .text-\\[\\#2f221d\\] { color: #2f221d; }
+            .text-\\[\\#3b2b26\\] { color: #3b2b26; }
+            .text-\\[\\#8e7b72\\] { color: #8e7b72; }
+            .text-\\[\\#6d5b52\\] { color: #6d5b52; }
+            
+            /* Status Badges */
+            .bg-green-100 { background-color: #dcfce7; color: #166534; }
+            .bg-blue-100 { background-color: #dbeafe; color: #1e40af; }
+            .bg-red-100 { background-color: #fee2e2; color: #991b1b; }
+            .bg-yellow-100 { background-color: #fef9c3; color: #854d0e; }
+            .px-2\\.5 { padding-left: 10px; padding-right: 10px; }
+            .py-1 { padding-top: 4px; padding-bottom: 4px; }
+            .rounded-full { border-radius: 9999px; }
+            
+            /* Hide scrollbar */
+            ::-webkit-scrollbar { display: none; }
+            img.logo-print {
+              width: 50px;
+              height: 50px;
+              border-radius: 50%;
+              object-fit: cover;
+              border: 1px solid #ead8c7;
+              margin-bottom: 8px;
+            }
+          </style>
+        </head>
+        <body>
+          <div style="width: 100%;">
+            ${printContent}
+          </div>
+          <script>
+            // Pastikan gambar logo ter-render dengan src yang benar saat cetak
+            const imgEl = document.querySelector('img');
+            if (imgEl) imgEl.src = "${logoSrc}";
+
+            window.onload = function() {
+              window.print();
+              setTimeout(function() {
+                window.close();
+              }, 1000);
+            };
+          </script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
   };
 
   const handleSaveOrder = async () => {
@@ -99,10 +237,10 @@ Terima kasih sudah memesan di Delassa! ✨`;
       
       await onUpdateOrder(selectedOrder.id, updates);
       setSelectedOrder(prev => prev ? { ...prev, ...updates } : null);
-      alert("Pesanan berhasil disimpan & diperbarui!");
+      showToast("Pesanan berhasil disimpan & diperbarui!", "success");
     } catch (err) {
       console.error(err);
-      alert("Gagal memperbarui data pesanan.");
+      showToast("Gagal memperbarui data pesanan.", "error");
     } finally {
       setIsSaving(false);
     }
@@ -651,34 +789,39 @@ Terima kasih sudah memesan di Delassa! ✨`;
                   {/* Digital Receipt Container */}
                   <div
                     id="receipt-print-area"
-                    className="w-full bg-white rounded-2xl border border-dashed border-[#ead8c7] p-5 sm:p-6 shadow-sm max-w-[380px] text-[12px] text-[#3b2b26] font-mono leading-relaxed"
+                    className="w-full bg-white rounded-2xl border border-[#ead8c7] p-6 shadow-sm max-w-[380px] text-[12px] text-[#3b2b26] leading-relaxed relative print:shadow-none print:border-none print:p-0"
                   >
                     {/* Brand Header */}
-                    <div className="text-center space-y-1 pb-3 border-b border-dashed border-gray-300">
-                      <h4 className="text-sm font-bold tracking-wider text-[#2f221d] uppercase font-sans">Delassa Home Bakery</h4>
-                      <p className="text-[10px] text-gray-400 font-sans">Bekasi, Indonesia</p>
-                      <p className="text-[9px] text-gray-400 font-sans">WhatsApp: +62 877-1544-3313</p>
+                    <div className="flex flex-col items-center text-center pb-4 border-b border-dashed border-gray-300">
+                      <img
+                        src={delassaLogo}
+                        alt="Delassa Home Bakery"
+                        className="w-12 h-12 rounded-full object-cover border border-[#fff5ef] shadow-sm mb-2"
+                      />
+                      <h4 className="text-sm font-bold tracking-wider text-[#2f221d] uppercase font-serif">Delassa Home Bakery</h4>
+                      <p className="text-[10px] text-gray-400">Bekasi, Indonesia</p>
+                      <p className="text-[9px] text-gray-400">WhatsApp: +62 877-1544-3313</p>
                     </div>
 
                     {/* Meta info */}
-                    <div className="py-3 space-y-1.5 border-b border-dashed border-gray-300">
+                    <div className="py-4 space-y-1.5 border-b border-dashed border-gray-300 text-xs">
                       <div className="flex justify-between">
-                        <span>No. Nota:</span>
-                        <span className="font-bold">#{notaId}</span>
+                        <span className="text-gray-400 uppercase text-[9px] font-bold tracking-wider">No. Nota:</span>
+                        <span className="font-mono font-bold text-[#c38358]">#{notaId}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Pelanggan:</span>
-                        <span>{selectedOrder.customer_name}</span>
+                        <span className="text-gray-400 uppercase text-[9px] font-bold tracking-wider">Pelanggan:</span>
+                        <span className="font-semibold">{selectedOrder.customer_name}</span>
                       </div>
                       {selectedOrder.phone && (
                         <div className="flex justify-between">
-                          <span>No. HP:</span>
-                          <span>{selectedOrder.phone}</span>
+                          <span className="text-gray-400 uppercase text-[9px] font-bold tracking-wider">No. HP:</span>
+                          <span className="font-semibold">{selectedOrder.phone}</span>
                         </div>
                       )}
                       <div className="flex justify-between">
-                        <span>Tgl Pickup:</span>
-                        <span>
+                        <span className="text-gray-400 uppercase text-[9px] font-bold tracking-wider">Tgl Pickup:</span>
+                        <span className="font-semibold">
                           {selectedOrder.pickup_date
                             ? new Date(selectedOrder.pickup_date).toLocaleDateString("id-ID", {
                                 year: "numeric",
@@ -691,14 +834,14 @@ Terima kasih sudah memesan di Delassa! ✨`;
                     </div>
 
                     {/* Items table */}
-                    <div className="py-3 border-b border-dashed border-gray-300">
-                      <p className="font-bold mb-2">RINCIAN ITEM</p>
-                      <div className="space-y-1.5">
+                    <div className="py-4 border-b border-dashed border-gray-300 text-xs">
+                      <p className="text-gray-400 uppercase text-[9px] font-bold tracking-wider mb-2">Rincian Item</p>
+                      <div className="space-y-2">
                         {(selectedOrder.items || []).map((item, idx) => (
                           <div key={idx} className="flex justify-between items-start gap-3">
-                            <span className="truncate flex-grow">{item.title}</span>
+                            <span className="truncate flex-grow font-semibold">{item.title}</span>
                             <span className="shrink-0 text-gray-400">x{item.qty}</span>
-                            <span className="shrink-0 text-right min-w-[70px]">
+                            <span className="shrink-0 text-right font-medium min-w-[70px]">
                               {item.price === 0 ? "Gratis" : formatCurrency(item.price * item.qty)}
                             </span>
                           </div>
@@ -707,28 +850,28 @@ Terima kasih sudah memesan di Delassa! ✨`;
                     </div>
 
                     {/* Total billing */}
-                    <div className="py-3 space-y-1.5 border-b border-dashed border-gray-300">
-                      <div className="flex justify-between">
+                    <div className="py-4 space-y-1.5 border-b border-dashed border-gray-300 text-xs">
+                      <div className="flex justify-between text-gray-500">
                         <span>Subtotal:</span>
-                        <span>{formatCurrency(subtotal)}</span>
+                        <span className="font-medium">{formatCurrency(subtotal)}</span>
                       </div>
-                      <div className="flex justify-between">
+                      <div className="flex justify-between text-gray-500">
                         <span>Ongkos Kirim:</span>
-                        <span>{formatCurrency(localOngkir)}</span>
+                        <span className="font-medium">{formatCurrency(localOngkir)}</span>
                       </div>
-                      <div className="flex justify-between text-[13px] font-bold border-t border-dotted border-gray-300 pt-1.5">
+                      <div className="flex justify-between text-sm font-bold text-[#2f221d] bg-[#fffaf5] p-2.5 rounded-xl border border-[#ead8c7]/40 mt-1">
                         <span>TOTAL TAGIHAN:</span>
-                        <span>{formatCurrency(total)}</span>
+                        <span className="text-[#c38358]">{formatCurrency(total)}</span>
                       </div>
                     </div>
 
                     {/* Payment Instruction */}
-                    <div className="pt-3 text-center space-y-1 font-sans">
-                      <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Metode Pembayaran</p>
-                      <p className="text-[11px] font-black text-[#2f221d] mt-1">Transfer Bank BCA</p>
-                      <p className="text-sm font-black text-[#c38358] tracking-wider leading-none">123456789</p>
+                    <div className="pt-4 text-center space-y-1">
+                      <p className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Metode Pembayaran</p>
+                      <p className="text-[11px] font-bold text-[#2f221d]">Transfer Bank BCA</p>
+                      <p className="text-sm font-black text-[#c38358] tracking-widest leading-none">123456789</p>
                       <p className="text-[9px] text-gray-400">a/n Delassa Home Bakery</p>
-                      <p className="text-[9px] text-[#c38358] font-bold mt-2 leading-tight">Terima kasih atas pesanan Anda! ✨</p>
+                      <p className="text-[10px] text-[#c38358] font-bold mt-2 leading-tight">Terima kasih atas pesanan Anda! ✨</p>
                     </div>
                   </div>
 
@@ -747,6 +890,18 @@ Terima kasih sudah memesan di Delassa! ✨`;
                     >
                       <Copy size={14} />
                       <span>Salin Struk WA</span>
+                    </button>
+                    
+                    <button
+                      onClick={() => {
+                        const link = `${window.location.origin}/struk/${selectedOrder.id}`;
+                        navigator.clipboard.writeText(link);
+                        showToast("Link struk digital berhasil disalin!", "success");
+                      }}
+                      className="col-span-2 flex items-center justify-center gap-1.5 bg-[#c38358] hover:bg-[#a96d45] text-white rounded-xl py-2.5 font-bold text-xs shadow-sm transition cursor-pointer border border-[#c38358]"
+                    >
+                      <Copy size={14} />
+                      <span>Salin Link Struk (Bagi ke Pembeli)</span>
                     </button>
                   </div>
 

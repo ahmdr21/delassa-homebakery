@@ -18,6 +18,7 @@ const Testimoni = lazy(() => import("./pages/Testimoni"));
 const Contact = lazy(() => import("./pages/Contact"));
 const AdminReviews = lazy(() => import("./pages/AdminReviews"));
 const AdminLogin = lazy(() => import("./pages/AdminLogin"));
+const DigitalReceipt = lazy(() => import("./pages/DigitalReceipt"));
 
 import { Analytics } from "@vercel/analytics/react";
 import Maintenance from "./components/Maintenance";
@@ -26,13 +27,13 @@ function AppContent() {
   const { cartOpen, setCartOpen } = useCart();
   const location = useLocation();
 
-  // Semua halaman admin tidak memakai Navbar & Footer
-  const isAdminPage = location.pathname.startsWith("/admin");
+  // Semua halaman admin & struk tidak memakai Navbar & Footer global
+  const isNoLayoutPage = location.pathname.startsWith("/admin") || location.pathname.startsWith("/struk");
 
   return (
     <>
       <div className="bg-[#fdf7f2] text-[#3b2b26] overflow-x-hidden min-h-screen">
-        {!isAdminPage && <Navbar />}
+        {!isNoLayoutPage && <Navbar />}
 
         <AnimatePresence mode="wait">
           <Suspense fallback={
@@ -47,6 +48,9 @@ function AppContent() {
               <Route path="/menu" element={<Menu />} />
               <Route path="/testimoni" element={<Testimoni />} />
               <Route path="/contact" element={<Contact />} />
+
+              {/* Public Digital Receipt */}
+              <Route path="/struk/:orderId" element={<DigitalReceipt />} />
 
               {/* Admin Login */}
               <Route path="/admin/login" element={<AdminLogin />} />
@@ -64,9 +68,9 @@ function AppContent() {
           </Suspense>
         </AnimatePresence>
 
-        {!isAdminPage && <Footer />}
+        {!isNoLayoutPage && <Footer />}
 
-        {!isAdminPage && (
+        {!isNoLayoutPage && (
           <a
             href="https://wa.me/6287715443313?text=Halo%20Delassa%20Home%20Bakery,%20saya%20ingin%20melakukan%20pemesanan%20brownies.%0A%0ANama:%20%0ATanggal%20Pickup:%20%0AVarian%20Menu:%20%0AJumlah%20Order:%20%0ARequest%20Tambahan:%20"
             target="_blank"
