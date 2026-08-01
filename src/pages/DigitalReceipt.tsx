@@ -134,7 +134,7 @@ export default function DigitalReceipt() {
             className="w-16 h-16 rounded-full object-cover border-2 border-[#fff5ef] shadow-sm mb-3"
           />
           <h1 className="text-xl font-bold font-serif text-[#2f221d] tracking-wide">DELASSA HOME BAKERY</h1>
-          <p className="text-[11px] text-[#8e7b72] font-semibold mt-1">Premium Homemade Bakery & Pastry</p>
+          <p className="text-[11px] text-[#8e7b72] font-semibold mt-1">Premium Homemade Bakery</p>
           <p className="text-[10px] text-gray-400 mt-0.5">Bekasi, Indonesia • WhatsApp: +62 877-1544-3313</p>
         </div>
 
