@@ -1,24 +1,107 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import type { DBOrderLog, DBOrderItem } from "../../utils/supabase";
 import { formatCurrency } from "../../utils/format";
-import { DollarSign, ShoppingBag, TrendingUp, Calendar, Search, Trash2, Eye } from "lucide-react";
+import { DollarSign, ShoppingBag, TrendingUp, Calendar, Search, Trash2, Eye, Printer, Copy, Save } from "lucide-react";
 
 interface AdminOverviewTabProps {
   orderLogs: DBOrderLog[];
   loading: boolean;
-  onUpdateStatus: (id: string, status: DBOrderLog["status"]) => Promise<void>;
+  onUpdateOrder: (id: string, updates: Partial<Omit<DBOrderLog, "id" | "created_at">>) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
 }
 
 export default function AdminOverviewTab({
   orderLogs,
   loading,
-  onUpdateStatus,
+  onUpdateOrder,
   onDelete
 }: AdminOverviewTabProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | DBOrderLog["status"]>("all");
   const [selectedOrder, setSelectedOrder] = useState<DBOrderLog | null>(null);
+
+  const [localOngkir, setLocalOngkir] = useState(0);
+  const [localStatus, setLocalStatus] = useState<DBOrderLog["status"]>("pending");
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    if (selectedOrder) {
+      setLocalOngkir(selectedOrder.ongkir || 0);
+      setLocalStatus(selectedOrder.status);
+    }
+  }, [selectedOrder]);
+
+  const handleCopyWAText = () => {
+    if (!selectedOrder) return;
+    const subtotal = (selectedOrder.items || []).reduce((sum, item) => sum + (item.price * item.qty), 0);
+    const total = subtotal + Number(localOngkir);
+    
+    let itemsText = "";
+    (selectedOrder.items || []).forEach(item => {
+      itemsText += `• ${item.title} x${item.qty} (${item.price === 0 ? "Gratis" : formatCurrency(item.price * item.qty)})\n`;
+    });
+
+    const notaId = `DEL-${selectedOrder.id.slice(0, 8).toUpperCase()}`;
+    const dateStr = selectedOrder.pickup_date
+      ? new Date(selectedOrder.pickup_date).toLocaleDateString("id-ID", {
+          weekday: "short",
+          year: "numeric",
+          month: "long",
+          day: "numeric"
+        })
+      : "-";
+
+    const text = `🧾 *STRUK DIGITAL - DELASSA HOME BAKERY*
+----------------------------------------
+Nomor Nota: #${notaId}
+Pelanggan: ${selectedOrder.customer_name}
+No. HP: ${selectedOrder.phone || "-"}
+Tanggal Pickup: ${dateStr}
+
+*Rincian Pesanan:*
+${itemsText}
+----------------------------------------
+Subtotal: ${formatCurrency(subtotal)}
+Ongkir: ${formatCurrency(localOngkir)}
+*TOTAL TAGIHAN: ${formatCurrency(total)}*
+----------------------------------------
+Silakan melakukan pembayaran transfer ke:
+🏦 *Bank BCA: 123456789* a/n *Delassa Home Bakery*
+
+Harap kirimkan bukti transfer ke WhatsApp ini setelah melakukan pembayaran.
+Terima kasih sudah memesan di Delassa! ✨`;
+
+    navigator.clipboard.writeText(text);
+    alert("Format teks WhatsApp berhasil disalin ke clipboard!");
+  };
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const handleSaveOrder = async () => {
+    if (!selectedOrder) return;
+    setIsSaving(true);
+    try {
+      const subtotal = (selectedOrder.items || []).reduce((sum, item) => sum + (item.price * item.qty), 0);
+      const newTotal = subtotal + Number(localOngkir);
+      
+      const updates = {
+        status: localStatus,
+        ongkir: Number(localOngkir),
+        total_amount: newTotal
+      };
+      
+      await onUpdateOrder(selectedOrder.id, updates);
+      setSelectedOrder(prev => prev ? { ...prev, ...updates } : null);
+      alert("Pesanan berhasil disimpan & diperbarui!");
+    } catch (err) {
+      console.error(err);
+      alert("Gagal memperbarui data pesanan.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   // 1. STATS CALCULATIONS
   const stats = useMemo(() => {
@@ -363,7 +446,7 @@ export default function AdminOverviewTab({
                       <td className="py-4 px-4">
                         <select
                           value={order.status}
-                          onChange={(e) => onUpdateStatus(order.id, e.target.value as any)}
+                          onChange={(e) => onUpdateOrder(order.id, { status: e.target.value as any })}
                           className={`rounded-lg border px-2 py-1 text-[10px] font-black cursor-pointer outline-none transition ${
                             order.status === "pending"
                               ? "bg-amber-50 text-amber-700 border-amber-200"
@@ -408,106 +491,273 @@ export default function AdminOverviewTab({
       </div>
 
       {/* 4. DETAIL POPUP MODAL */}
-      {selectedOrder && (
-        <div className="fixed inset-0 z-[10000] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="w-full max-w-md bg-[#fffaf5] rounded-[32px] border border-[#ead8c7]/50 shadow-2xl p-6 relative">
-            <button
-              onClick={() => setSelectedOrder(null)}
-              className="absolute right-5 top-5 h-8 w-8 rounded-full bg-[#3b2b26] text-white hover:bg-black transition cursor-pointer text-sm font-bold flex items-center justify-center"
-            >
-              ×
-            </button>
+      {selectedOrder && (() => {
+        const subtotal = (selectedOrder.items || []).reduce((sum, item) => sum + (item.price * item.qty), 0);
+        const total = subtotal + Number(localOngkir);
+        const notaId = `DEL-${selectedOrder.id.slice(0, 8).toUpperCase()}`;
 
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-[2px] text-[#c38358]">DETAIL TRANSAKSI</p>
-              <h3 className="text-lg font-black text-[#2f221d] mt-1">Pesanan {selectedOrder.customer_name}</h3>
-            </div>
+        return (
+          <div className="fixed inset-0 z-[10000] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+            <style dangerouslySetInnerHTML={{__html: `
+              @media print {
+                body * {
+                  visibility: hidden !important;
+                }
+                #receipt-print-area, #receipt-print-area * {
+                  visibility: visible !important;
+                }
+                #receipt-print-area {
+                  position: absolute !important;
+                  left: 0 !important;
+                  top: 0 !important;
+                  width: 100% !important;
+                  max-width: 450px !important;
+                  margin: 0 auto !important;
+                  padding: 16px !important;
+                  border: none !important;
+                  box-shadow: none !important;
+                  background: white !important;
+                  color: black !important;
+                  font-family: monospace !important;
+                }
+                .no-print {
+                  display: none !important;
+                }
+              }
+            `}} />
 
-            <div className="mt-5 space-y-4 text-xs">
-              {/* Pickup & Phone */}
-              <div className="grid grid-cols-2 gap-4 border-b border-[#ead8c7]/30 pb-3">
-                <div>
-                  <p className="text-gray-400 font-bold">No WhatsApp / HP</p>
-                  <p className="font-black text-[#2f221d] mt-0.5">{selectedOrder.phone || "-"}</p>
-                </div>
-                <div>
-                  <p className="text-gray-400 font-bold">Tanggal Pickup</p>
-                  <p className="font-black text-[#2f221d] mt-0.5">
-                    {selectedOrder.pickup_date
-                      ? new Date(selectedOrder.pickup_date).toLocaleDateString("id-ID", {
-                          weekday: "short",
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric"
-                        })
-                      : "-"}
-                  </p>
-                </div>
-              </div>
-
-              {/* Items Table */}
-              <div>
-                <p className="text-[#c38358] font-black mb-2">Item Belanja</p>
-                <div className="bg-white rounded-2xl border border-[#ead8c7]/40 p-4 space-y-2.5">
-                  {(selectedOrder.items || []).map((item, idx) => (
-                    <div key={idx} className="flex justify-between font-semibold text-[#3b2b26]">
-                      <span>{item.title} <b className="text-[#c38358]">x{item.qty}</b></span>
-                      <span>{item.price === 0 ? "Gratis" : formatCurrency(item.price * item.qty)}</span>
-                    </div>
-                  ))}
-                  <div className="border-t border-dashed border-[#ead8c7] pt-2.5 flex justify-between font-black text-[#2f221d]">
-                    <span>Total Pembayaran</span>
-                    <span>{formatCurrency(selectedOrder.total_amount)}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Notes */}
-              <div>
-                <p className="text-gray-400 font-bold">Catatan Pembeli</p>
-                <div className="bg-white/50 rounded-xl p-3 border border-[#ead8c7]/20 mt-1 font-semibold text-[#3b2b26] min-h-[60px] leading-relaxed">
-                  {selectedOrder.notes || "(Tidak ada catatan)"}
-                </div>
-              </div>
-
-              {/* Status Selector in Modal */}
-              <div className="flex items-center justify-between border-t border-[#ead8c7]/30 pt-3">
-                <span className="font-bold text-gray-500">Status Pesanan</span>
-                <select
-                  value={selectedOrder.status}
-                  onChange={(e) => {
-                    onUpdateStatus(selectedOrder.id, e.target.value as any);
-                    setSelectedOrder(prev => prev ? { ...prev, status: e.target.value as any } : null);
-                  }}
-                  className={`rounded-xl border px-3 py-1.5 font-black cursor-pointer outline-none transition ${
-                    selectedOrder.status === "pending"
-                      ? "bg-amber-50 text-amber-700 border-amber-200"
-                      : selectedOrder.status === "confirmed"
-                      ? "bg-blue-50 text-blue-700 border-blue-200"
-                      : selectedOrder.status === "completed"
-                      ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                      : "bg-red-50 text-red-700 border-red-200"
-                  }`}
-                >
-                  <option value="pending">Pending</option>
-                  <option value="confirmed">Confirmed</option>
-                  <option value="completed">Completed</option>
-                  <option value="cancelled">Cancelled</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="mt-6">
+            <div className="w-full max-w-4xl bg-[#fffaf5] rounded-[32px] border border-[#ead8c7]/50 shadow-2xl p-6 relative my-8">
               <button
                 onClick={() => setSelectedOrder(null)}
-                className="w-full bg-[#3b2b26] hover:bg-black text-white rounded-2xl py-3 font-bold text-xs shadow-md transition cursor-pointer text-center"
+                className="absolute right-5 top-5 h-8 w-8 rounded-full bg-[#3b2b26] text-white hover:bg-black transition cursor-pointer text-sm font-bold flex items-center justify-center no-print"
               >
-                Tutup Detail
+                ×
               </button>
+
+              <div className="no-print">
+                <p className="text-[10px] font-black uppercase tracking-[2px] text-[#c38358]">DETAIL & CETAK NOTA</p>
+                <h3 className="text-lg font-black text-[#2f221d] mt-1">Kelola Pesanan #{notaId}</h3>
+              </div>
+
+              {/* Grid 2 Column */}
+              <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                
+                {/* Left Side: Edit & Info Form */}
+                <div className="space-y-4 text-xs no-print">
+                  {/* Customer Info */}
+                  <div className="bg-white rounded-2xl border border-[#ead8c7]/40 p-4 space-y-3">
+                    <p className="text-[#c38358] font-black uppercase tracking-wider text-[10px]">Informasi Pembeli</p>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <p className="text-gray-400 font-bold">Nama Pelanggan</p>
+                        <p className="font-black text-[#2f221d] text-sm mt-0.5">{selectedOrder.customer_name}</p>
+                      </div>
+                      <div>
+                        <p className="text-gray-400 font-bold">No WhatsApp / HP</p>
+                        <p className="font-black text-[#2f221d] text-sm mt-0.5">{selectedOrder.phone || "-"}</p>
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-gray-400 font-bold">Tanggal Pickup</p>
+                      <p className="font-black text-[#2f221d] mt-0.5 text-sm">
+                        {selectedOrder.pickup_date
+                          ? new Date(selectedOrder.pickup_date).toLocaleDateString("id-ID", {
+                              weekday: "short",
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric"
+                            })
+                          : "-"}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Edit Status & Ongkir */}
+                  <div className="bg-white rounded-2xl border border-[#ead8c7]/40 p-4 space-y-4">
+                    <p className="text-[#c38358] font-black uppercase tracking-wider text-[10px]">Edit Pengiriman & Status</p>
+                    
+                    {/* Status select */}
+                    <div className="flex flex-col gap-1.5">
+                      <label className="font-bold text-gray-500">Status Pesanan</label>
+                      <select
+                        value={localStatus}
+                        onChange={(e) => setLocalStatus(e.target.value as any)}
+                        className={`rounded-xl border px-3 py-2 font-black cursor-pointer outline-none transition w-full ${
+                          localStatus === "pending"
+                            ? "bg-amber-50 text-amber-700 border-amber-200"
+                            : localStatus === "confirmed"
+                            ? "bg-blue-50 text-blue-700 border-blue-200"
+                            : localStatus === "completed"
+                            ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                            : "bg-red-50 text-red-700 border-red-200"
+                        }`}
+                      >
+                        <option value="pending">Pending (Menunggu Ongkir)</option>
+                        <option value="confirmed">Confirmed (Terkonfirmasi)</option>
+                        <option value="completed">Completed (Selesai)</option>
+                        <option value="cancelled">Cancelled (Dibatalkan)</option>
+                      </select>
+                    </div>
+
+                    {/* Ongkir input */}
+                    <div className="flex flex-col gap-1.5">
+                      <label className="font-bold text-gray-500">Biaya Ongkir (Rp)</label>
+                      <div className="relative">
+                        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 font-bold text-gray-400">Rp</span>
+                        <input
+                          type="number"
+                          value={localOngkir}
+                          onChange={(e) => setLocalOngkir(Number(e.target.value) || 0)}
+                          placeholder="Masukkan tarif ongkir"
+                          className="w-full pl-9 pr-4 py-2 border border-[#ead8c7] rounded-xl outline-none focus:border-[#c38358] bg-[#fffaf5] text-sm font-semibold"
+                        />
+                      </div>
+                      <p className="text-[10px] text-gray-400">Total Tagihan otomatis terupdate menjadi {formatCurrency(total)}</p>
+                    </div>
+
+                    {/* Save Button */}
+                    <button
+                      onClick={handleSaveOrder}
+                      disabled={isSaving}
+                      className="w-full flex items-center justify-center gap-2 bg-[#c38358] hover:bg-[#a96d45] text-white rounded-xl py-2.5 font-bold shadow-md transition cursor-pointer disabled:opacity-50"
+                    >
+                      <Save size={16} />
+                      <span>{isSaving ? "Menyimpan..." : "Simpan Perubahan"}</span>
+                    </button>
+                  </div>
+
+                  {/* Notes */}
+                  <div>
+                    <p className="text-gray-400 font-bold mb-1">Catatan Pembeli</p>
+                    <div className="bg-white/50 rounded-xl p-3 border border-[#ead8c7]/20 font-semibold text-[#3b2b26] min-h-[50px] leading-relaxed">
+                      {selectedOrder.notes || "(Tidak ada catatan)"}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Side: Struk Digital Preview & Print Actions */}
+                <div className="flex flex-col items-center">
+                  
+                  {/* Digital Receipt Container */}
+                  <div
+                    id="receipt-print-area"
+                    className="w-full bg-white rounded-2xl border border-dashed border-[#ead8c7] p-5 sm:p-6 shadow-sm max-w-[380px] text-[12px] text-[#3b2b26] font-mono leading-relaxed"
+                  >
+                    {/* Brand Header */}
+                    <div className="text-center space-y-1 pb-3 border-b border-dashed border-gray-300">
+                      <h4 className="text-sm font-bold tracking-wider text-[#2f221d] uppercase font-sans">Delassa Home Bakery</h4>
+                      <p className="text-[10px] text-gray-400 font-sans">Bekasi, Indonesia</p>
+                      <p className="text-[9px] text-gray-400 font-sans">WhatsApp: +62 877-1544-3313</p>
+                    </div>
+
+                    {/* Meta info */}
+                    <div className="py-3 space-y-1.5 border-b border-dashed border-gray-300">
+                      <div className="flex justify-between">
+                        <span>No. Nota:</span>
+                        <span className="font-bold">#{notaId}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Pelanggan:</span>
+                        <span>{selectedOrder.customer_name}</span>
+                      </div>
+                      {selectedOrder.phone && (
+                        <div className="flex justify-between">
+                          <span>No. HP:</span>
+                          <span>{selectedOrder.phone}</span>
+                        </div>
+                      )}
+                      <div className="flex justify-between">
+                        <span>Tgl Pickup:</span>
+                        <span>
+                          {selectedOrder.pickup_date
+                            ? new Date(selectedOrder.pickup_date).toLocaleDateString("id-ID", {
+                                year: "numeric",
+                                month: "2-digit",
+                                day: "2-digit"
+                              })
+                            : "-"}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Items table */}
+                    <div className="py-3 border-b border-dashed border-gray-300">
+                      <p className="font-bold mb-2">RINCIAN ITEM</p>
+                      <div className="space-y-1.5">
+                        {(selectedOrder.items || []).map((item, idx) => (
+                          <div key={idx} className="flex justify-between items-start gap-3">
+                            <span className="truncate flex-grow">{item.title}</span>
+                            <span className="shrink-0 text-gray-400">x{item.qty}</span>
+                            <span className="shrink-0 text-right min-w-[70px]">
+                              {item.price === 0 ? "Gratis" : formatCurrency(item.price * item.qty)}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Total billing */}
+                    <div className="py-3 space-y-1.5 border-b border-dashed border-gray-300">
+                      <div className="flex justify-between">
+                        <span>Subtotal:</span>
+                        <span>{formatCurrency(subtotal)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Ongkos Kirim:</span>
+                        <span>{formatCurrency(localOngkir)}</span>
+                      </div>
+                      <div className="flex justify-between text-[13px] font-bold border-t border-dotted border-gray-300 pt-1.5">
+                        <span>TOTAL TAGIHAN:</span>
+                        <span>{formatCurrency(total)}</span>
+                      </div>
+                    </div>
+
+                    {/* Payment Instruction */}
+                    <div className="pt-3 text-center space-y-1 font-sans">
+                      <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Metode Pembayaran</p>
+                      <p className="text-[11px] font-black text-[#2f221d] mt-1">Transfer Bank BCA</p>
+                      <p className="text-sm font-black text-[#c38358] tracking-wider leading-none">123456789</p>
+                      <p className="text-[9px] text-gray-400">a/n Delassa Home Bakery</p>
+                      <p className="text-[9px] text-[#c38358] font-bold mt-2 leading-tight">Terima kasih atas pesanan Anda! ✨</p>
+                    </div>
+                  </div>
+
+                  {/* Actions underneath the receipt (no-print) */}
+                  <div className="w-full max-w-[380px] mt-4 grid grid-cols-2 gap-3 no-print">
+                    <button
+                      onClick={handlePrint}
+                      className="flex items-center justify-center gap-1.5 bg-white border border-[#c38358] text-[#c38358] hover:bg-[#fff5ef] rounded-xl py-2.5 font-bold text-xs shadow-sm transition cursor-pointer"
+                    >
+                      <Printer size={14} />
+                      <span>Cetak Struk (PDF)</span>
+                    </button>
+                    <button
+                      onClick={handleCopyWAText}
+                      className="flex items-center justify-center gap-1.5 bg-[#25D366] hover:bg-[#20ba5a] text-white rounded-xl py-2.5 font-bold text-xs shadow-sm transition cursor-pointer border border-[#25D366]"
+                    >
+                      <Copy size={14} />
+                      <span>Salin Struk WA</span>
+                    </button>
+                  </div>
+
+                </div>
+
+              </div>
+
+              {/* Close detail footer */}
+              <div className="mt-6 border-t border-[#ead8c7]/30 pt-4 text-right no-print">
+                <button
+                  onClick={() => setSelectedOrder(null)}
+                  className="bg-[#3b2b26] hover:bg-black text-white rounded-xl px-6 py-2.5 font-bold text-xs shadow-md transition cursor-pointer"
+                >
+                  Tutup Detail
+                </button>
+              </div>
+
             </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
     </div>
   );
 }

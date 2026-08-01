@@ -646,6 +646,7 @@ export interface DBOrderLog {
   status: "pending" | "confirmed" | "completed" | "cancelled";
   notes: string | null;
   created_at: string;
+  ongkir?: number;
 }
 
 // Log order baru ke database saat checkout
@@ -662,6 +663,7 @@ export async function logOrder(order: Omit<DBOrderLog, "id" | "created_at">): Pr
     total_amount: order.total_amount,
     status: order.status,
     notes: order.notes,
+    ongkir: order.ongkir || 0,
   });
 
   if (error) {
@@ -688,16 +690,19 @@ export async function getOrderLogs(): Promise<DBOrderLog[]> {
   return data ?? [];
 }
 
-// Update status log order (oleh admin)
-export async function updateOrderLogStatus(id: string, status: DBOrderLog["status"]): Promise<void> {
+// Update data log order secara fleksibel (oleh admin)
+export async function updateOrderLog(
+  id: string,
+  updates: Partial<Omit<DBOrderLog, "id" | "created_at">>
+): Promise<void> {
   if (!supabase) throw new Error("Supabase is not configured.");
   const { error } = await supabase
     .from("order_logs")
-    .update({ status })
+    .update(updates)
     .eq("id", id);
 
   if (error) {
-    console.error("Update Order Status Error:", error);
+    console.error("Update Order Log Error:", error);
     throw error;
   }
 }

@@ -13,7 +13,7 @@ import {
   deleteProductReview,
   getProducts,
   getOrderLogs,
-  updateOrderLogStatus,
+  updateOrderLog,
   deleteOrderLog,
 } from "../utils/supabase";
 import type {
@@ -334,15 +334,15 @@ const handleDeleteReview = async () => {
           <AdminOverviewTab
             orderLogs={orderLogs}
             loading={loadingOrders}
-            onUpdateStatus={async (id, status) => {
+            onUpdateOrder={async (id, updates) => {
               try {
-                await updateOrderLogStatus(id, status);
+                await updateOrderLog(id, updates);
                 setOrderLogs((prev) =>
-                  prev.map((log) => (log.id === id ? { ...log, status } : log))
+                  prev.map((log) => (log.id === id ? { ...log, ...updates } : log))
                 );
-                showToast("Status pesanan diperbarui!", "success");
+                showToast("Data pesanan berhasil diperbarui!", "success");
               } catch (err) {
-                showToast("Gagal memperbarui status.", "error");
+                showToast("Gagal memperbarui data pesanan.", "error");
               }
             }}
             onDelete={async (id) => {
