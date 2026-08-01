@@ -91,19 +91,7 @@ export default function DigitalReceipt() {
   const total = subtotal + (order.ongkir || 0);
   const notaId = `DEL-${order.id.slice(0, 8).toUpperCase()}`;
 
-  // Helper untuk badge status
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "completed":
-        return <span className="bg-green-100 text-green-800 text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-full uppercase">Selesai</span>;
-      case "confirmed":
-        return <span className="bg-blue-100 text-blue-800 text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-full uppercase">Dikonfirmasi</span>;
-      case "cancelled":
-        return <span className="bg-red-100 text-red-800 text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-full uppercase">Batal</span>;
-      default:
-        return <span className="bg-yellow-100 text-yellow-800 text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-full uppercase">Diproses</span>;
-    }
-  };
+
 
   return (
     <div className="min-h-screen bg-[#fdf8f4] py-8 px-4 sm:px-6 lg:px-8 flex flex-col items-center">
@@ -157,8 +145,18 @@ export default function DigitalReceipt() {
             <p className="font-mono font-bold text-sm text-[#c38358] mt-0.5">{notaId}</p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Status</p>
-            <div className="mt-1">{getStatusBadge(order.status)}</div>
+            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Waktu Transaksi</p>
+            <p className="font-semibold mt-0.5">
+              {order.created_at
+                ? new Date(order.created_at).toLocaleDateString("id-ID", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit"
+                  }).replace(/\./g, ":")
+                : "-"}
+            </p>
           </div>
           <div>
             <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Pelanggan</p>
@@ -178,25 +176,11 @@ export default function DigitalReceipt() {
             </p>
           </div>
           {order.phone && (
-            <div>
+            <div className="col-span-2">
               <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">No. WhatsApp</p>
               <p className="font-semibold mt-0.5">{order.phone}</p>
             </div>
           )}
-          <div className="text-right">
-            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Waktu Transaksi</p>
-            <p className="font-semibold mt-0.5">
-              {order.created_at
-                ? new Date(order.created_at).toLocaleDateString("id-ID", {
-                    year: "numeric",
-                    month: "2-digit",
-                    day: "2-digit",
-                    hour: "2-digit",
-                    minute: "2-digit"
-                  }).replace(/\./g, ":")
-                : "-"}
-            </p>
-          </div>
         </div>
 
         {/* Items Table */}

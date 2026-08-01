@@ -82,7 +82,16 @@ export default function AdminOverviewTab({
 
     const rows = filteredOrders.map(order => {
       const notaId = `DEL-${order.id.slice(0, 8).toUpperCase()}`;
-      const dateStr = order.created_at ? new Date(order.created_at).toLocaleString("id-ID") : "-";
+      const dateStr = order.created_at 
+        ? new Date(order.created_at).toLocaleString("id-ID", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit"
+          }).replace(/\./g, ":")
+        : "-";
       const itemsList = Array.isArray(order.items) 
         ? order.items.map((it: DBOrderItem) => `${it.title} (x${it.qty})`).join(" | ")
         : "";
