@@ -477,10 +477,18 @@ export async function uploadProductImage(file: File, fileName: string): Promise<
    PROMOS (SISTEM PROMO DINAMIS)
    ===================================================== */
 
+// Helper to get local date string YYYY-MM-DD
+function getLocalDateString(d: Date = new Date()): string {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const date = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${date}`;
+}
+
 // Cek apakah promo aktif hari ini
 function isPromoActiveToday(promo: DBPromo): boolean {
   const today = new Date();
-  const todayStr = today.toISOString().split("T")[0]; // YYYY-MM-DD
+  const todayStr = getLocalDateString(today); // YYYY-MM-DD
 
   // Cek tanggal range
   if (todayStr < promo.start_date || todayStr > promo.end_date) return false;
@@ -512,7 +520,7 @@ function buildRelAndPriceMaps(relations: Array<{ promo_id: string; product_id: s
 export async function getActivePromos(): Promise<DBPromoWithProducts[]> {
   if (!supabase) return [];
 
-  const today = new Date().toISOString().split("T")[0];
+  const today = getLocalDateString();
   const { data: promos, error } = await supabase
     .from("promos")
     .select("*")
