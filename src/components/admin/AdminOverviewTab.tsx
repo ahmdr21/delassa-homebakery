@@ -795,7 +795,7 @@ Terima kasih sudah memesan di Delassa! ✨`;
                         </select>
                       </td>
                       <td className="py-4 px-4 text-right whitespace-nowrap">
-                        <div className="flex items-center justify-end gap-2">
+                        <div className="flex items-center justify-end gap-5">
                           <button
                             onClick={() => setSelectedOrder(order)}
                             className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-500 hover:text-[#2f221d] transition cursor-pointer"
@@ -835,7 +835,7 @@ Terima kasih sudah memesan di Delassa! ✨`;
                     {/* Header: Date & Actions */}
                     <div className="flex justify-between items-center text-[10px] text-gray-400 font-bold border-b border-[#ead8c7]/20 pb-2">
                       <span>{dateStr}</span>
-                      <div className="flex gap-2">
+                      <div className="flex gap-4">
                         <button
                           onClick={() => setSelectedOrder(order)}
                           className="p-1 hover:bg-[#fff5ef] rounded-lg text-gray-500 hover:text-[#2f221d] transition cursor-pointer"
