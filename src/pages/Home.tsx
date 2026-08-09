@@ -41,6 +41,7 @@ import mix2 from "../assets/mixtopping2.webp";
 
 import aren from "../assets/aren.webp";
 import { isBundlePromoActive, calculateBundlePrice } from "../data/promos";
+import PromoMerdeka from "../components/PromoMerdeka";
 
 /* ====================================================== */
 /* DATA */
@@ -652,11 +653,14 @@ export default function Home() {
 
       </section>
 
+      {/* PROMO MERDEKA DELASSA */}
+      <PromoMerdeka />
+
       {/* ====================================================== */}
       {/* ABOUT */}
       {/* ====================================================== */}
 
-      <section className="pt-14 sm:pt-24 px-5 sm:px-8">
+      <section className="pt-6 px-5 sm:px-8">
 
         <div className="max-w-[1200px] mx-auto text-center">
 

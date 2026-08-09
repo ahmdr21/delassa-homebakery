@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { compressImage } from "./imageCompressor";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -450,13 +451,24 @@ export async function deleteCategory(id: string): Promise<void> {
 }
 
 
-// IMAGE UPLOAD FUNCTION FOR STORAGE
+// IMAGE UPLOAD FUNCTION FOR STORAGE WITH AUTOMATIC COMPRESSION
 export async function uploadProductImage(file: File, fileName: string): Promise<string> {
   if (!supabase) throw new Error("Supabase is not configured.");
-  const cleanFileName = `${Date.now()}-${fileName.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
+
+  // Kompres gambar secara otomatis di sisi client sebelum diunggah
+  let fileToUpload = file;
+  try {
+    fileToUpload = await compressImage(file);
+  } catch (err) {
+    console.warn("Gagal mengompres gambar produk, mengunggah file asli:", err);
+  }
+
+  const ext = fileToUpload.name.split(".").pop() || "webp";
+  const cleanFileName = `${Date.now()}-${fileName.replace(/[^a-zA-Z0-9.-]/g, "_")}.${ext}`;
+
   const { data, error } = await supabase.storage
     .from("products")
-    .upload(cleanFileName, file, {
+    .upload(cleanFileName, fileToUpload, {
       cacheControl: "3600",
       upsert: true,
     });
@@ -788,8 +800,140 @@ export function decodeOrderFromUrl(base64Str: string): DBOrderLog | null {
       notes: shortOrder.no || null,
       created_at: new Date().toISOString()
     };
-  } catch (err) {
+    } catch (err) {
     console.error("Decode Order Error:", err);
     return null;
   }
+}
+
+/* =====================================================
+   ARTICLES DATABASE TYPES & OPERATIONS
+===================================================== */
+
+export interface DBArticle {
+  id: string;
+  title: string;
+  content: string;
+  slug: string;
+  cover_image: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export async function getArticles(onlyActive = true): Promise<DBArticle[]> {
+  if (!supabase) return [];
+  let query = supabase.from("articles").select("*");
+  if (onlyActive) {
+    query = query.eq("is_active", true);
+  }
+  const { data, error } = await query.order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Get Articles Error:", error);
+    throw error;
+  }
+  return data ?? [];
+}
+
+export async function getArticleBySlug(slug: string): Promise<DBArticle | null> {
+  if (!supabase) return null;
+  const { data, error } = await supabase
+    .from("articles")
+    .select("*")
+    .eq("slug", slug)
+    .maybeSingle();
+
+  if (error) {
+    console.error("Get Article By Slug Error:", error);
+    throw error;
+  }
+  return data;
+}
+
+export async function createArticle(
+  article: Omit<DBArticle, "id" | "created_at" | "updated_at">
+): Promise<DBArticle> {
+  if (!supabase) throw new Error("Supabase is not configured.");
+  const { data, error } = await supabase
+    .from("articles")
+    .insert(article)
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Create Article Error:", error);
+    throw error;
+  }
+  return data;
+}
+
+export async function updateArticle(
+  id: string,
+  updates: Partial<Omit<DBArticle, "id" | "created_at" | "updated_at">>
+): Promise<DBArticle> {
+  if (!supabase) throw new Error("Supabase is not configured.");
+  const { data, error } = await supabase
+    .from("articles")
+    .update({
+      ...updates,
+      updated_at: new Date().toISOString()
+    })
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Update Article Error:", error);
+    throw error;
+  }
+  return data;
+}
+
+export async function deleteArticle(id: string): Promise<void> {
+  if (!supabase) throw new Error("Supabase is not configured.");
+  const { error } = await supabase
+    .from("articles")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    console.error("Delete Article Error:", error);
+    throw error;
+  }
+}
+
+// IMAGE UPLOAD FUNCTION FOR ARTICLES WITH AUTOMATIC COMPRESSION
+export async function uploadArticleImage(file: File, fileName: string): Promise<string> {
+  if (!supabase) throw new Error("Supabase is not configured.");
+  
+  // Kompres gambar secara otomatis di sisi client sebelum diunggah
+  let fileToUpload = file;
+  try {
+    fileToUpload = await compressImage(file);
+  } catch (err) {
+    console.warn("Gagal mengompres gambar artikel, mengunggah file asli:", err);
+  }
+
+  // Nama file baru menggunakan ekstensi fileToUpload (.webp jika terkompresi)
+  const ext = fileToUpload.name.split(".").pop() || "webp";
+  const cleanFileName = `${Date.now()}-${fileName.replace(/[^a-zA-Z0-9.-]/g, "_")}.${ext}`;
+
+  const { data, error } = await supabase.storage
+    .from("articles")
+    .upload(cleanFileName, fileToUpload, {
+      cacheControl: "3600",
+      upsert: true,
+    });
+
+  if (error) {
+    console.error("Upload Article Image Error:", error);
+    throw error;
+  }
+
+  const { data: publicData } = supabase.storage
+    .from("articles")
+    .getPublicUrl(data.path);
+
+  return publicData.publicUrl;
 }

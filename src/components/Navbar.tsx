@@ -32,15 +32,11 @@ Request Tambahan:
 Terima kasih`);
 
   const menus = [
-
     { name: "Home", path: "/" },
-
     { name: "About", path: "/about" },
-
     { name: "Menu", path: "/menu" },
-
+    { name: "Artikel", path: "/artikel" },
     { name: "Contact", path: "/contact" },
-
   ];
 
   /* LOCK BODY */

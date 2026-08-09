@@ -572,7 +572,7 @@ Terima kasih sudah memesan di Delassa! ✨`;
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         {[
-          { id: "all", label: "Semua", count: orderLogs.length, color: "bg-gray-100 text-gray-700" },
+          { id: "all", label: "Semua", count: dateFilteredOrders.length, color: "bg-gray-100 text-gray-700" },
           { id: "pending", label: "Pending", count: stats.counts.pending, color: "bg-amber-50 text-amber-700 border border-amber-100" },
           { id: "confirmed", label: "Dikonfirmasi", count: stats.counts.confirmed, color: "bg-blue-50 text-blue-700 border border-blue-100" },
           { id: "completed", label: "Selesai", count: stats.counts.completed, color: "bg-emerald-50 text-emerald-700 border border-emerald-100" },

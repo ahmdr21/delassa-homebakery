@@ -19,6 +19,8 @@ const Contact = lazy(() => import("./pages/Contact"));
 const AdminReviews = lazy(() => import("./pages/AdminReviews"));
 const AdminLogin = lazy(() => import("./pages/AdminLogin"));
 const DigitalReceipt = lazy(() => import("./pages/DigitalReceipt"));
+const Articles = lazy(() => import("./pages/Articles"));
+const ArticleDetail = lazy(() => import("./pages/ArticleDetail"));
 
 import { Analytics } from "@vercel/analytics/react";
 import Maintenance from "./components/Maintenance";
@@ -48,6 +50,8 @@ function AppContent() {
               <Route path="/menu" element={<Menu />} />
               <Route path="/testimoni" element={<Testimoni />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/artikel" element={<Articles />} />
+              <Route path="/artikel/:slug" element={<ArticleDetail />} />
 
               {/* Public Digital Receipt */}
               <Route path="/struk/:orderId" element={<DigitalReceipt />} />

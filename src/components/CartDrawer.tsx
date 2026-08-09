@@ -3,6 +3,8 @@ import { useCart } from "../context/CartContext";
 import { formatCurrency } from "../utils/format";
 import { getProducts, getActivePromos, logOrder } from "../utils/supabase";
 import type { DBProduct, DBPromoWithProducts } from "../utils/supabase";
+import { getVoucherDetails } from "../data/promos";
+import type { Voucher } from "../data/promos";
 
 type CheckoutFormData = {
   customerName: string;
@@ -44,6 +46,73 @@ export default function CartDrawer({ onClose }: { onClose: () => void }) {
   });
 
   const { customerName, phone, address, location, notes, pickupDate } = checkoutForm;
+
+  // Voucher states
+  const [voucherInput, setVoucherInput] = useState("");
+  const [appliedVoucher, setAppliedVoucher] = useState<Voucher | null>(null);
+  const [voucherError, setVoucherError] = useState<string | null>(null);
+
+  // Invalidate voucher if total amount falls below minSubtotal or if they won the same voucher in this transaction
+  useEffect(() => {
+    if (appliedVoucher) {
+      if (totalAmount < (appliedVoucher.minSubtotal ?? 0)) {
+        setAppliedVoucher(null);
+        setVoucherInput("");
+        setVoucherError("Voucher dihapus karena total belanja tidak memenuhi syarat.");
+      } else {
+        const isJustWon = cart.some(
+          (item) => item.title.includes(`(Kode: ${appliedVoucher.code})`) && item.title.includes("Next Order")
+        );
+        if (isJustWon) {
+          setAppliedVoucher(null);
+          setVoucherInput("");
+          setVoucherError("Voucher ini baru dapat digunakan pada transaksi berikutnya.");
+        }
+      }
+    }
+  }, [totalAmount, appliedVoucher, cart]);
+
+  const handleApplyVoucher = () => {
+    const codeClean = voucherInput.trim().toUpperCase();
+    if (!codeClean) return;
+
+    // Block immediate use of a voucher won in this order
+    const isJustWon = cart.some(
+      (item) => item.title.includes(`(Kode: ${codeClean})`) && item.title.includes("Next Order")
+    );
+    if (isJustWon) {
+      setVoucherError("Voucher ini baru dapat digunakan pada transaksi berikutnya.");
+      setAppliedVoucher(null);
+      return;
+    }
+
+    const found = getVoucherDetails(codeClean);
+    if (!found) {
+      setVoucherError("Kode voucher tidak valid.");
+      setAppliedVoucher(null);
+      return;
+    }
+
+    if (totalAmount < (found.minSubtotal ?? 0)) {
+      setVoucherError(`Minimal belanja untuk voucher ini adalah ${formatCurrency(found.minSubtotal ?? 0)}.`);
+      setAppliedVoucher(null);
+      return;
+    }
+
+    setAppliedVoucher(found);
+    setVoucherError(null);
+  };
+
+  const handleRemoveVoucher = () => {
+    setAppliedVoucher(null);
+    setVoucherInput("");
+    setVoucherError(null);
+  };
+
+  const finalTotalAmount = useMemo(() => {
+    const discount = appliedVoucher ? appliedVoucher.discountAmount : 0;
+    return Math.max(0, totalAmount - discount);
+  }, [totalAmount, appliedVoucher]);
   
   const isCustomerDataComplete = [customerName, phone, address, pickupDate].every(
     (value) => value.trim().length > 0
@@ -109,6 +178,8 @@ export default function CartDrawer({ onClose }: { onClose: () => void }) {
     return gifts;
   }, [cart, dbProducts, activePromos]);
 
+
+
   useEffect(() => {
     try {
       localStorage.setItem(CHECKOUT_FORM_STORAGE_KEY, JSON.stringify(checkoutForm));
@@ -136,13 +207,22 @@ export default function CartDrawer({ onClose }: { onClose: () => void }) {
         price: item.price,
       }));
 
-      // Log order to database
+      // Append voucher line if applied
+      if (appliedVoucher) {
+        orderItems.push({
+          title: `🎟️ [Voucher] ${appliedVoucher.code} (${appliedVoucher.description})`,
+          qty: 1,
+          price: -appliedVoucher.discountAmount,
+        });
+      }
+
+      // Log order to database (with finalTotalAmount)
       await logOrder({
         customer_name: customerName.trim(),
         phone: phone.trim() || null,
         pickup_date: pickupDate || null,
         items: orderItems,
-        total_amount: totalAmount,
+        total_amount: finalTotalAmount,
         status: "pending",
         notes: notes.trim() || null,
       });
@@ -179,10 +259,10 @@ ${[...cart, ...freeGifts]
     (item) => `· ${item.title} x${item.qty} (${item.price === 0 ? "Gratis" : formatCurrency(item.price * item.qty)})`
   )
   .join("\n")}
-
+${appliedVoucher ? `· 🎟️ [Voucher] ${appliedVoucher.code}: -${formatCurrency(appliedVoucher.discountAmount)}\n` : ""}
 Subtotal: ${formatCurrency(totalAmount)}
-Ongkir: Dihitung admin
-Total Sementara: ${formatCurrency(totalAmount)}
+${appliedVoucher ? `Potongan Voucher: -${formatCurrency(appliedVoucher.discountAmount)}\n` : ""}Ongkir: Dihitung admin
+Total Sementara: ${formatCurrency(finalTotalAmount)}
 Tanggal Pickup: ${pickupDate}
 
 Nama: ${customerName}
@@ -322,6 +402,47 @@ Admin akan menghitung ongkir dan mengirim total pembayaran setelah konfirmasi.`;
               </div>
             </div>
 
+            {/* VOUCHER CODE INPUT */}
+            <div className="mt-6 rounded-[24px] border border-[#ead8c7] bg-white p-5">
+              <p className="text-[16px] font-bold text-[#2f221d]">Kode Voucher</p>
+              <div className="mt-3 flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Contoh: MERDEKA10K"
+                  value={voucherInput}
+                  onChange={(e) => {
+                    setVoucherInput(e.target.value);
+                    setVoucherError(null);
+                  }}
+                  disabled={appliedVoucher !== null}
+                  className="flex-1 rounded-[18px] border border-[#ead8c7] bg-[#fffaf5] px-4 py-2.5 text-sm text-[#3b2b26] uppercase outline-none focus:border-[#c38358] disabled:opacity-50"
+                />
+                {appliedVoucher ? (
+                  <button
+                    onClick={handleRemoveVoucher}
+                    className="rounded-[18px] border border-red-200 bg-red-50 px-4 py-2 text-xs font-bold text-red-600 hover:bg-red-100 cursor-pointer transition active:scale-95"
+                  >
+                    Hapus
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleApplyVoucher}
+                    className="rounded-[18px] bg-[#b08769] hover:bg-[#9d7453] px-5 py-2 text-xs font-bold text-white cursor-pointer shadow transition active:scale-95"
+                  >
+                    Pasang
+                  </button>
+                )}
+              </div>
+              {voucherError && (
+                <p className="mt-2 text-xs text-red-500 font-semibold">{voucherError}</p>
+              )}
+              {appliedVoucher && (
+                <p className="mt-2 text-xs text-emerald-600 font-semibold flex items-center gap-1">
+                  ✓ {appliedVoucher.description} (Potongan {formatCurrency(appliedVoucher.discountAmount)})
+                </p>
+              )}
+            </div>
+
             <div className="mt-6 rounded-[24px] border border-[#ead8c7] bg-white p-5">
               <div className="mb-4 border-b border-dashed border-[#ead8c7] pb-4">
                 <p className="text-[12px] font-bold uppercase tracking-[1px] text-[#7a6a62] mb-3">Detail Pesanan</p>
@@ -348,13 +469,19 @@ Admin akan menghitung ongkir dan mengirim total pembayaran setelah konfirmasi.`;
                 <span>Subtotal</span>
                 <span>{formatCurrency(totalAmount)}</span>
               </div>
+              {appliedVoucher && (
+                <div className="mt-3 flex items-center justify-between text-sm text-emerald-600 font-semibold">
+                  <span>Potongan Voucher ({appliedVoucher.code})</span>
+                  <span>-{formatCurrency(appliedVoucher.discountAmount)}</span>
+                </div>
+              )}
               <div className="mt-3 flex items-center justify-between text-sm text-[#6d5b52]">
                 <span>Ongkir</span>
                 <span>Dihitung admin</span>
               </div>
               <div className="mt-4 flex items-center justify-between text-base font-bold text-[#2f221d] border-t border-[#ead8c7] pt-4">
                 <span>Total Sementara</span>
-                <span>{formatCurrency(totalAmount)}</span>
+                <span>{formatCurrency(finalTotalAmount)}</span>
               </div>
             </div>
 

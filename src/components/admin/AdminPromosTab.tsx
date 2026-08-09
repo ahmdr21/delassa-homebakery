@@ -35,6 +35,51 @@ export default function AdminPromosTab() {
   const [showModal, setShowModal] = useState(false);
   const [editingPromo, setEditingPromo] = useState<DBPromoWithProducts | null>(null);
 
+  // Simulasi Promo Merdeka
+  const [simulatedActive, setSimulatedActive] = useState(() => {
+    try {
+      return localStorage.getItem("simulatedPromoMerdeka") === "true";
+    } catch {
+      return false;
+    }
+  });
+
+  const toggleSimulation = () => {
+    setSimulatedActive((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem("simulatedPromoMerdeka", String(next));
+      } catch (err) {
+        console.error(err);
+      }
+      return next;
+    });
+  };
+
+  const resetEnvelopeTest = () => {
+    try {
+      // 1. Clear envelope state
+      localStorage.removeItem("delassa_merdeka_envelope");
+      
+      // 2. Remove any prize from current cart in localStorage
+      const cartKey = "delassaCart";
+      const cartData = localStorage.getItem(cartKey);
+      if (cartData) {
+        const cartItems = JSON.parse(cartData);
+        const filtered = cartItems.filter((item: any) => !item.title.includes("🎁 [Amplop Merdeka]"));
+        localStorage.setItem(cartKey, JSON.stringify(filtered));
+        
+        // Dispatch storage event so open page updates cart instantly!
+        window.dispatchEvent(new Event("storage"));
+      }
+
+      showToast("Undian Merdeka berhasil direset! Silakan buka halaman Beranda untuk menguji kembali.", "success");
+    } catch (err) {
+      console.error(err);
+      showToast("Gagal melakukan reset undian.", "error");
+    }
+  };
+
   // --- Form fields ---
   const [title, setTitle] = useState("");
   const [promoType, setPromoType] = useState<DBPromo["promo_type"]>("diskon_langsung");
@@ -236,6 +281,39 @@ export default function AdminPromosTab() {
 
   return (
     <div className="mt-6">
+      {/* SECTION SIMULASI PROMO MERDEKA */}
+      <div className="mb-8 p-5 rounded-2xl bg-red-50 border border-red-200 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex items-start gap-3">
+          <div className="p-2 bg-red-100 rounded-xl text-red-600 shrink-0">
+            <Gift size={20} />
+          </div>
+          <div>
+            <h3 className="text-sm font-bold text-red-950">Simulasi / Uji Coba Promo Merdeka (16 - 22 Agustus)</h3>
+            <p className="text-xs text-red-700/80 mt-1 max-w-xl">
+              Aktifkan opsi ini untuk memaksa keaktifan Promo Merdeka di browser Anda saat ini. Ini membantu untuk menguji widget Bundle Builder dan mini-game Amplop Merdeka pada halaman beranda sebelum tanggal peluncuran resmi (16-22 Agustus).
+            </p>
+          </div>
+        </div>
+        <div className="flex flex-col sm:flex-row gap-2 shrink-0 w-full sm:w-auto">
+          <button
+            onClick={toggleSimulation}
+            className={`px-4 py-2.5 rounded-xl font-bold text-xs shadow-sm transition active:scale-95 cursor-pointer ${
+              simulatedActive
+                ? "bg-red-600 hover:bg-red-700 text-white"
+                : "bg-white hover:bg-gray-50 text-red-600 border border-red-300"
+            }`}
+          >
+            {simulatedActive ? "Nonaktifkan Simulasi" : "Aktifkan Simulasi"}
+          </button>
+          
+          <button
+            onClick={resetEnvelopeTest}
+            className="px-4 py-2.5 rounded-xl font-bold text-xs shadow-sm bg-amber-600 hover:bg-amber-700 text-white transition active:scale-95 cursor-pointer flex items-center justify-center gap-1"
+          >
+            <span>🔄 Reset Undian</span>
+          </button>
+        </div>
+      </div>
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
         <div>
           <h2 className="text-xl font-bold text-[#2f221d]">Daftar Promo</h2>

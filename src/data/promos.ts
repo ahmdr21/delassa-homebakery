@@ -88,3 +88,109 @@ export function calculateBundlePrice(
   };
 }
 
+export interface PromoMerdekaConfig {
+  id: string;
+  title: string;
+  startDate: string; // YYYY-MM-DD
+  endDate: string;   // YYYY-MM-DD
+  minAmount: number;
+}
+
+export const PROMO_MERDEKA_CONFIG: PromoMerdekaConfig = {
+  id: "promo-merdeka",
+  title: "🇮🇩 PROMO MERDEKA DELASSA",
+  startDate: "2026-08-16",
+  endDate: "2026-08-22",
+  minAmount: 50000,
+};
+
+export function isPromoMerdekaActive(simulatedActive?: boolean): boolean {
+  if (simulatedActive) return true;
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const date = String(now.getDate()).padStart(2, "0");
+  const todayStr = `${year}-${month}-${date}`;
+  return todayStr >= PROMO_MERDEKA_CONFIG.startDate && todayStr <= PROMO_MERDEKA_CONFIG.endDate;
+}
+
+export interface Voucher {
+  code: string;
+  discountAmount: number;
+  description: string;
+  minSubtotal?: number;
+}
+
+const SECRET_SALT = "delassa-secret-key-17agustus-2026";
+
+function generateChecksum(input: string): string {
+  let hash = 0;
+  for (let i = 0; i < input.length; i++) {
+    const char = input.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash;
+  }
+  return Math.abs(hash).toString(16).toUpperCase().padStart(4, "0").slice(0, 4);
+}
+
+export function generateVoucherCode(): string {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let randStr = "";
+  for (let i = 0; i < 5; i++) {
+    randStr += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  const checksum = generateChecksum(randStr + SECRET_SALT);
+  return `MDK-${randStr}-${checksum}`;
+}
+
+export function verifyVoucherCode(code: string): boolean {
+  const cleanCode = code.trim().toUpperCase();
+  const parts = cleanCode.split("-");
+  if (parts.length !== 3 || parts[0] !== "MDK") return false;
+  const randStr = parts[1];
+  const signature = parts[2];
+  const expectedChecksum = generateChecksum(randStr + SECRET_SALT);
+  return signature === expectedChecksum;
+}
+
+export function generateVoucher5kCode(): string {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let randStr = "";
+  for (let i = 0; i < 5; i++) {
+    randStr += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  const checksum = generateChecksum(randStr + SECRET_SALT + "5K");
+  return `M5K-${randStr}-${checksum}`;
+}
+
+export function verifyVoucher5kCode(code: string): boolean {
+  const cleanCode = code.trim().toUpperCase();
+  const parts = cleanCode.split("-");
+  if (parts.length !== 3 || parts[0] !== "M5K") return false;
+  const randStr = parts[1];
+  const signature = parts[2];
+  const expectedChecksum = generateChecksum(randStr + SECRET_SALT + "5K");
+  return signature === expectedChecksum;
+}
+
+export function getVoucherDetails(code: string): Voucher | null {
+  const cleanCode = code.trim().toUpperCase();
+
+  if (cleanCode === "DELASSA5K") {
+    return { code: "DELASSA5K", discountAmount: 5000, description: "Voucher Pelanggan Baru Rp5.000", minSubtotal: 0 };
+  }
+
+  if (verifyVoucherCode(cleanCode)) {
+    return { code: cleanCode, discountAmount: 10000, description: "Voucher Kemerdekaan Rp10.000", minSubtotal: 0 };
+  }
+
+  if (verifyVoucher5kCode(cleanCode)) {
+    return { code: cleanCode, discountAmount: 5000, description: "Voucher Kemerdekaan Rp5.000", minSubtotal: 0 };
+  }
+
+  return null;
+}
+
+
+
+

@@ -5,8 +5,9 @@ import { useEffect, useMemo, useState } from "react";
 import AdminProductsTab from "../components/admin/AdminProductsTab";
 import AdminPromosTab from "../components/admin/AdminPromosTab";
 import AdminOverviewTab from "../components/admin/AdminOverviewTab";
+import AdminArticlesTab from "../components/admin/AdminArticlesTab";
 import logo from "../assets/delassa.webp";
-import { MessageSquare, Package, Tag, LogOut, RefreshCw, Trash2, Search, ShieldCheck, EyeOff, LayoutDashboard } from "lucide-react";
+import { MessageSquare, Package, Tag, LogOut, RefreshCw, Trash2, Search, ShieldCheck, EyeOff, LayoutDashboard, BookOpen } from "lucide-react";
 import {
   getAllReviewsForAdmin,
   updateProductReview,
@@ -41,7 +42,7 @@ const emptyReview: Review = {
 };
 
 export default function AdminReviews() {
-  const [activeTab, setActiveTab] = useState<"overview" | "reviews" | "products" | "promos">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "reviews" | "products" | "promos" | "articles">("overview");
   const [productsList, setProductsList] = useState<string[]>([
     "Umum / Bakery",
     "Brownies Classic",
@@ -311,14 +312,15 @@ const handleDeleteReview = async () => {
 
         {/* TABS HEADER */}
         <div 
-          className="flex overflow-x-auto whitespace-nowrap bg-[#f2e7dd]/40 p-1.5 rounded-2xl mt-8 gap-1.5 max-w-2xl border border-[#ead8c7]/40 shadow-inner"
+          className="flex overflow-x-auto whitespace-nowrap bg-[#f2e7dd]/40 p-1.5 rounded-2xl mt-8 gap-1.5 w-full border border-[#ead8c7]/40 shadow-inner"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           {[
             { id: "overview", label: "Ringkasan Toko", icon: <LayoutDashboard size={15} /> },
             { id: "reviews", label: "Moderasi Ulasan", icon: <MessageSquare size={15} /> },
             { id: "products", label: "Kelola Produk", icon: <Package size={15} /> },
-            { id: "promos", label: "Kelola Promo", icon: <Tag size={15} /> }
+            { id: "promos", label: "Kelola Promo", icon: <Tag size={15} /> },
+            { id: "articles", label: "Kelola Artikel", icon: <BookOpen size={15} /> }
           ].map((tab) => (
             <button
               key={tab.id}
@@ -625,6 +627,7 @@ const handleDeleteReview = async () => {
 
         {activeTab === "products" && <AdminProductsTab />}
         {activeTab === "promos" && <AdminPromosTab />}
+        {activeTab === "articles" && <AdminArticlesTab />}
       </section>
     </main>
   );
