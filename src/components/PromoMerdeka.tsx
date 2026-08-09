@@ -118,6 +118,18 @@ export default function PromoMerdeka() {
   const [showRunnerGameOver, setShowRunnerGameOver] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const lastMilestoneRef = useRef(0);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  
+  const getAudioContext = () => {
+    if (!audioCtxRef.current) {
+      audioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+    }
+    if (audioCtxRef.current.state === "suspended") {
+      audioCtxRef.current.resume();
+    }
+    return audioCtxRef.current;
+  };
+
   const gameStateRef = useRef<{
     isPlaying: boolean;
     score: number;
@@ -340,7 +352,7 @@ export default function PromoMerdeka() {
 
   const playJumpSound = () => {
     try {
-      const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const ctx = getAudioContext();
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.connect(gain);
@@ -358,7 +370,7 @@ export default function PromoMerdeka() {
 
   const playDuckSound = () => {
     try {
-      const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const ctx = getAudioContext();
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.connect(gain);
@@ -376,7 +388,7 @@ export default function PromoMerdeka() {
 
   const playGameOverSound = () => {
     try {
-      const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const ctx = getAudioContext();
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = "sawtooth";
@@ -395,7 +407,7 @@ export default function PromoMerdeka() {
 
   const playMilestoneSound = () => {
     try {
-      const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const ctx = getAudioContext();
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = "sine";
@@ -709,7 +721,7 @@ export default function PromoMerdeka() {
     };
   }, [showGameModal, envelopeState.revealed]);
 
-  // Dino Game Loop
+  // Dino Game Loop with 60 FPS Throttling
   useEffect(() => {
     if (!showGameModal || envelopeState.revealed) return;
 
@@ -724,121 +736,130 @@ export default function PromoMerdeka() {
     let animationId: number;
     const state = gameStateRef.current;
 
-    const gameLoop = () => {
-      ctx.fillStyle = "#fffaf5";
-      ctx.fillRect(0, 0, 400, 200);
+    let lastTime = performance.now();
+    const fpsInterval = 1000 / 60; // 60 FPS (~16.67ms per frame)
 
-      ctx.strokeStyle = "#ead8c7";
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(0, 160);
-      ctx.lineTo(400, 160);
-      ctx.stroke();
+    const gameLoop = (currentTime: number) => {
+      animationId = requestAnimationFrame(gameLoop);
 
-      if (!state.isPlaying) {
-        ctx.fillStyle = "#2f221d";
-        ctx.font = "bold 15px sans-serif";
-        ctx.textAlign = "center";
-        ctx.fillText("DELASSA RUNNER", 200, 85);
-        ctx.font = "bold 10px sans-serif";
-        ctx.fillStyle = "#7a6a62";
-        ctx.fillText("Ketuk atau Tekan SPASI Untuk Mulai", 200, 115);
+      const elapsed = currentTime - lastTime;
 
-        drawPlayer(ctx, 40, 136, 0);
-      } else if (state.isGameOver) {
-        ctx.fillStyle = "#ef4444";
-        ctx.font = "bold 16px sans-serif";
-        ctx.textAlign = "center";
-        ctx.fillText("GAME OVER!", 200, 75);
-        ctx.fillStyle = "#2f221d";
-        ctx.font = "bold 12px sans-serif";
-        ctx.fillText(`Skor Akhir: ${state.score}`, 200, 105);
-        ctx.font = "italic 9px sans-serif";
-        ctx.fillStyle = "#7a6a62";
-        ctx.fillText(isRunnerMode ? "Gila keren! Ingin latih refleksmu lagi?" : "Mengundi kupon keberuntunganmu...", 200, 130);
+      if (elapsed >= fpsInterval) {
+        lastTime = currentTime - (elapsed % fpsInterval);
 
-        drawPlayer(ctx, 40, state.playerY, state.frameCount, true);
+        ctx.fillStyle = "#fffaf5";
+        ctx.fillRect(0, 0, 400, 200);
 
-        state.obstacles.forEach((obs) => {
-          drawObstacle(ctx, obs.x, obs.width, obs.height, obs.type, state.frameCount);
-        });
-      } else {
-        state.frameCount++;
-        state.score = Math.floor(state.frameCount / 5);
+        ctx.strokeStyle = "#ead8c7";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(0, 160);
+        ctx.lineTo(400, 160);
+        ctx.stroke();
 
-        if (state.score > 0 && state.score % 100 === 0 && lastMilestoneRef.current !== state.score) {
-          lastMilestoneRef.current = state.score;
-          playMilestoneSound();
-        }
+        if (!state.isPlaying) {
+          ctx.fillStyle = "#2f221d";
+          ctx.font = "bold 15px sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText("DELASSA RUNNER", 200, 85);
+          ctx.font = "bold 10px sans-serif";
+          ctx.fillStyle = "#7a6a62";
+          ctx.fillText("Ketuk atau Tekan SPASI Untuk Mulai", 200, 115);
 
-        if (state.isDucking) {
-          state.playerY = 146;
-          state.playerVy = 0;
-          state.isJumping = false;
+          drawPlayer(ctx, 40, 136, 0);
+        } else if (state.isGameOver) {
+          ctx.fillStyle = "#ef4444";
+          ctx.font = "bold 16px sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText("GAME OVER!", 200, 75);
+          ctx.fillStyle = "#2f221d";
+          ctx.font = "bold 12px sans-serif";
+          ctx.fillText(`Skor Akhir: ${state.score}`, 200, 105);
+          ctx.font = "italic 9px sans-serif";
+          ctx.fillStyle = "#7a6a62";
+          ctx.fillText(isRunnerMode ? "Gila keren! Ingin latih refleksmu lagi?" : "Mengundi kupon keberuntunganmu...", 200, 130);
+
+          drawPlayer(ctx, 40, state.playerY, state.frameCount, true);
+
+          state.obstacles.forEach((obs) => {
+            drawObstacle(ctx, obs.x, obs.width, obs.height, obs.type, state.frameCount);
+          });
         } else {
-          state.playerVy += 0.45;
-          state.playerY += state.playerVy;
+          state.frameCount++;
+          state.score = Math.floor(state.frameCount / 5);
 
-          if (state.playerY >= 136) {
-            state.playerY = 136;
+          if (state.score > 0 && state.score % 100 === 0 && lastMilestoneRef.current !== state.score) {
+            lastMilestoneRef.current = state.score;
+            playMilestoneSound();
+          }
+
+          if (state.isDucking) {
+            state.playerY = 146;
             state.playerVy = 0;
             state.isJumping = false;
-          }
-        }
+          } else {
+            state.playerVy += 0.45;
+            state.playerY += state.playerVy;
 
-        if (state.frameCount % 120 === 0 || (state.frameCount > 600 && state.frameCount % 90 === 0)) {
-          const isFlying = Math.random() > 0.65;
-          state.obstacles.push({
-            x: 400,
-            width: isFlying ? 18 : 14,
-            height: isFlying ? 16 : (Math.random() > 0.5 ? 26 : 18),
-            type: isFlying ? "flying_egg" : "rolling_pin",
-            speed: 3 + Math.min(state.score / 200, 2),
-          });
-        }
-
-        state.obstacles.forEach((obs) => {
-          obs.x -= obs.speed;
-          drawObstacle(ctx, obs.x, obs.width, obs.height, obs.type, state.frameCount);
-
-          const playerLeft = 40;
-          const playerRight = 64;
-          const playerHeight = state.isDucking ? 14 : 24;
-          const playerTop = state.isDucking ? 146 : state.playerY;
-          const playerBottom = playerTop + playerHeight;
-
-          const obsLeft = obs.x;
-          const obsRight = obs.x + obs.width;
-          const obsTop = obs.type === "flying_egg" ? 115 : (160 - obs.height);
-          const obsBottom = obs.type === "flying_egg" ? (115 + obs.height) : 160;
-
-          if (
-            playerRight > obsLeft + 2 &&
-            playerLeft < obsRight - 2 &&
-            playerBottom > obsTop + 2 &&
-            playerTop < obsBottom - 2
-          ) {
-            state.isGameOver = true;
-            playGameOverSound();
-            if (isRunnerMode) {
-              setShowRunnerGameOver(true);
-            } else {
-              triggerPrizeDraw(state.score);
+            if (state.playerY >= 136) {
+              state.playerY = 136;
+              state.playerVy = 0;
+              state.isJumping = false;
             }
           }
-        });
 
-        state.obstacles = state.obstacles.filter((obs) => obs.x > -50);
+          if (state.frameCount % 120 === 0 || (state.frameCount > 600 && state.frameCount % 90 === 0)) {
+            const isFlying = Math.random() > 0.65;
+            state.obstacles.push({
+              x: 400,
+              width: isFlying ? 18 : 14,
+              height: isFlying ? 16 : (Math.random() > 0.5 ? 26 : 18),
+              type: isFlying ? "flying_egg" : "rolling_pin",
+              speed: 3 + Math.min(state.score / 200, 2),
+            });
+          }
 
-        drawPlayer(ctx, 40, state.playerY, state.frameCount);
+          state.obstacles.forEach((obs) => {
+            obs.x -= obs.speed;
+            drawObstacle(ctx, obs.x, obs.width, obs.height, obs.type, state.frameCount);
 
-        ctx.fillStyle = "#2f221d";
-        ctx.font = "bold 11px font-mono, sans-serif";
-        ctx.textAlign = "right";
-        ctx.fillText(`SKOR: ${state.score}`, 380, 25);
+            const playerLeft = 40;
+            const playerRight = 64;
+            const playerHeight = state.isDucking ? 14 : 24;
+            const playerTop = state.isDucking ? 146 : state.playerY;
+            const playerBottom = playerTop + playerHeight;
+
+            const obsLeft = obs.x;
+            const obsRight = obs.x + obs.width;
+            const obsTop = obs.type === "flying_egg" ? 115 : (160 - obs.height);
+            const obsBottom = obs.type === "flying_egg" ? (115 + obs.height) : 160;
+
+            if (
+              playerRight > obsLeft + 2 &&
+              playerLeft < obsRight - 2 &&
+              playerBottom > obsTop + 2 &&
+              playerTop < obsBottom - 2
+            ) {
+              state.isGameOver = true;
+              playGameOverSound();
+              if (isRunnerMode) {
+                setShowRunnerGameOver(true);
+              } else {
+                triggerPrizeDraw(state.score);
+              }
+            }
+          });
+
+          state.obstacles = state.obstacles.filter((obs) => obs.x > -50);
+
+          drawPlayer(ctx, 40, state.playerY, state.frameCount);
+
+          ctx.fillStyle = "#2f221d";
+          ctx.font = "bold 11px font-mono, sans-serif";
+          ctx.textAlign = "right";
+          ctx.fillText(`SKOR: ${state.score}`, 380, 25);
+        }
       }
-
-      animationId = requestAnimationFrame(gameLoop);
     };
 
     animationId = requestAnimationFrame(gameLoop);
