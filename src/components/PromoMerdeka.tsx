@@ -330,6 +330,17 @@ export default function PromoMerdeka() {
 
   // Keep envelope state in sync if prize is removed from cart outside
   useEffect(() => {
+    // Reset state immediately if the cart is cleared (e.g. on checkout)
+    if (cart.length === 0) {
+      setEnvelopeState({
+        selectedIdx: null,
+        revealed: false,
+        prize: null,
+        claimed: false,
+      });
+      return;
+    }
+
     if (!claimedPrize && envelopeState.claimed) {
       // Check if localStorage still has the key
       const saved = localStorage.getItem("delassa_merdeka_envelope");
@@ -355,7 +366,7 @@ export default function PromoMerdeka() {
         }
       }
     }
-  }, [claimedPrize, envelopeState.claimed]);
+  }, [cart.length, claimedPrize, envelopeState.claimed]);
 
   // Exploit protection: restore locked prize when subtotal goes back above threshold
   useEffect(() => {

@@ -231,10 +231,12 @@ export default function CartDrawer({ onClose }: { onClose: () => void }) {
       const hasMerdekaPrize = cart.some((item) => item.title.includes("🎁 [Amplop Merdeka]"));
       if (hasMerdekaPrize) {
         localStorage.setItem("delassa_merdeka_cooldown", Date.now().toString());
-        localStorage.removeItem("delassa_merdeka_envelope");
-        localStorage.removeItem("delassa_merdeka_locked_prize");
-        window.dispatchEvent(new Event("storage"));
       }
+
+      // Always clear the draw states on checkout so they can draw a new prize next time
+      localStorage.removeItem("delassa_merdeka_envelope");
+      localStorage.removeItem("delassa_merdeka_locked_prize");
+      window.dispatchEvent(new Event("storage"));
     } catch (err: any) {
       console.error("Failed to log order to database:", err);
       alert("Gagal mencatat pesanan ke database: " + (err?.message || err));
