@@ -19,6 +19,7 @@ import type { Review, DBProduct, DBBundlePromo, DBPromoWithProducts } from "../u
 /* ====================================================== */
 
 /* HERO BANNERS */
+import bannerMerdeka from "../assets/bannermerdeka.webp";
 import banner1 from "../assets/bannerdesktop13.webp";
 import banner2 from "../assets/bannerdesktop14.webp";
 import banner3 from "../assets/bannerdesktop15.webp";
@@ -48,6 +49,7 @@ import PromoMerdeka from "../components/PromoMerdeka";
 /* ====================================================== */
 
 const banners = [
+  bannerMerdeka,
   banner5,
   banner4,
   banner1,

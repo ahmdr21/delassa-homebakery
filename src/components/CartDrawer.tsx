@@ -226,6 +226,15 @@ export default function CartDrawer({ onClose }: { onClose: () => void }) {
         status: "pending",
         notes: notes.trim() || null,
       });
+
+      // Save Merdeka Cooldown to localStorage if they claimed an Amplop Merdeka prize
+      const hasMerdekaPrize = cart.some((item) => item.title.includes("🎁 [Amplop Merdeka]"));
+      if (hasMerdekaPrize) {
+        localStorage.setItem("delassa_merdeka_cooldown", Date.now().toString());
+        localStorage.removeItem("delassa_merdeka_envelope");
+        localStorage.removeItem("delassa_merdeka_locked_prize");
+        window.dispatchEvent(new Event("storage"));
+      }
     } catch (err: any) {
       console.error("Failed to log order to database:", err);
       alert("Gagal mencatat pesanan ke database: " + (err?.message || err));

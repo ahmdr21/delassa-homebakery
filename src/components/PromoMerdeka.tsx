@@ -205,6 +205,46 @@ export default function PromoMerdeka() {
   // Bundle Builder State (starts empty by default)
   const [selectedProduct, setSelectedProduct] = useState("");
   const [selectedDrink, setSelectedDrink] = useState("");
+  const [bundleQty, setBundleQty] = useState(1);
+
+  const [cooldownActive, setCooldownActive] = useState(() => {
+    try {
+      const saved = localStorage.getItem("delassa_merdeka_cooldown");
+      if (saved) {
+        const timestamp = parseInt(saved, 10);
+        if (!isNaN(timestamp)) {
+          const diff = Date.now() - timestamp;
+          return diff < 5 * 60 * 1000;
+        }
+      }
+    } catch {}
+    return false;
+  });
+
+  useEffect(() => {
+    const checkCooldown = () => {
+      try {
+        const saved = localStorage.getItem("delassa_merdeka_cooldown");
+        if (saved) {
+          const timestamp = parseInt(saved, 10);
+          if (!isNaN(timestamp)) {
+            const diff = Date.now() - timestamp;
+            setCooldownActive(diff < 5 * 60 * 1000);
+            return;
+          }
+        }
+      } catch {}
+      setCooldownActive(false);
+    };
+
+    checkCooldown();
+    window.addEventListener("storage", checkCooldown);
+    const interval = setInterval(checkCooldown, 10000);
+    return () => {
+      window.removeEventListener("storage", checkCooldown);
+      clearInterval(interval);
+    };
+  }, []);
 
   // Calculate pricing for selected bundle
   const bundlePricing = useMemo(() => {
@@ -227,9 +267,9 @@ export default function PromoMerdeka() {
 
   // Dynamic subtotal: Cart subtotal (after discounts) + current bundle selection (discounted price)
   const dynamicSubtotal = useMemo(() => {
-    const selectionDiscounted = (selectedProduct && selectedDrink) ? bundlePricing.price : 0;
+    const selectionDiscounted = (selectedProduct && selectedDrink) ? (bundlePricing.price * bundleQty) : 0;
     return regularSubtotal + selectionDiscounted;
-  }, [regularSubtotal, selectedProduct, selectedDrink, bundlePricing]);
+  }, [regularSubtotal, selectedProduct, selectedDrink, bundlePricing, bundleQty]);
 
   // Check if a prize is already claimed in the cart
   const claimedPrize = useMemo(() => {
@@ -255,6 +295,20 @@ export default function PromoMerdeka() {
         claimed: true,
       };
     }
+
+    // Check if there is a locked prize (exploit protection)
+    try {
+      const locked = localStorage.getItem("delassa_merdeka_locked_prize");
+      if (locked) {
+        return {
+          selectedIdx: 0,
+          revealed: true,
+          prize: JSON.parse(locked),
+          claimed: false,
+          drawnSubtotal: 50000,
+        };
+      }
+    } catch {}
 
     // Check localStorage for a persistent locked draw result
     try {
@@ -303,14 +357,37 @@ export default function PromoMerdeka() {
     }
   }, [claimedPrize, envelopeState.claimed]);
 
+  // Exploit protection: restore locked prize when subtotal goes back above threshold
+  useEffect(() => {
+    if (regularSubtotal >= 50000 && !envelopeState.prize) {
+      try {
+        const locked = localStorage.getItem("delassa_merdeka_locked_prize");
+        if (locked) {
+          const lockedPrize = JSON.parse(locked);
+          setEnvelopeState({
+            selectedIdx: 0,
+            revealed: true,
+            prize: lockedPrize,
+            claimed: false,
+            drawnSubtotal: regularSubtotal,
+          });
+        }
+      } catch (e) {
+        console.error("Failed to restore locked prize:", e);
+      }
+    }
+  }, [regularSubtotal, envelopeState.prize]);
+
   // Game Modal State
   const [showGameModal, setShowGameModal] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   const handleCloseModal = () => {
     setShowGameModal(false);
     setGameScore(0);
     setIsRunnerMode(false);
     setShowRunnerGameOver(false);
+    setShowConfetti(false);
     const state = gameStateRef.current;
     state.isPlaying = false;
     state.isGameOver = false;
@@ -333,6 +410,18 @@ export default function PromoMerdeka() {
             claimed: true,
           };
         }
+        try {
+          const locked = localStorage.getItem("delassa_merdeka_locked_prize");
+          if (locked) {
+            return {
+              selectedIdx: 0,
+              revealed: true,
+              prize: JSON.parse(locked),
+              claimed: false,
+              drawnSubtotal: 50000,
+            };
+          }
+        } catch {}
         try {
           const saved = localStorage.getItem("delassa_merdeka_envelope");
           if (saved) {
@@ -593,6 +682,7 @@ export default function PromoMerdeka() {
     if (!isDemoMode) {
       try {
         localStorage.setItem("delassa_merdeka_envelope", JSON.stringify({ ...newState, revealed: true }));
+        localStorage.setItem("delassa_merdeka_locked_prize", JSON.stringify(prizeWithCode));
       } catch (e) {
         console.error("Failed to write envelope localStorage:", e);
       }
@@ -601,6 +691,7 @@ export default function PromoMerdeka() {
     // Reveal after brief animation delay
     setTimeout(() => {
       setEnvelopeState((prev) => ({ ...prev, revealed: true }));
+      setShowConfetti(true);
     }, 1200);
   };
 
@@ -630,6 +721,7 @@ export default function PromoMerdeka() {
     if (!isDemoMode) {
       try {
         localStorage.setItem("delassa_merdeka_envelope", JSON.stringify({ ...newState, revealed: true }));
+        localStorage.setItem("delassa_merdeka_locked_prize", JSON.stringify(prizeWithCode));
       } catch (e) {
         console.error("Failed to write envelope localStorage:", e);
       }
@@ -638,6 +730,7 @@ export default function PromoMerdeka() {
     // Delay showing the prize by 1.5 seconds to show the game over state
     setTimeout(() => {
       setEnvelopeState((prev) => ({ ...prev, revealed: true }));
+      setShowConfetti(true);
     }, 1500);
   };
 
@@ -876,15 +969,16 @@ export default function PromoMerdeka() {
     addToCart({
       title,
       price: bundlePricing.price,
-      qty: 1,
+      qty: bundleQty,
     });
     setSelectedProduct("");
     setSelectedDrink("");
+    setBundleQty(1);
   };
 
   // Confetti Animation Particles
   const particles = useMemo(() => {
-    if (!envelopeState.revealed || envelopeState.claimed) return [];
+    if (!showConfetti) return [];
     return Array.from({ length: 60 }).map((_, i) => ({
       id: i,
       left: Math.random() * 100,
@@ -918,7 +1012,7 @@ export default function PromoMerdeka() {
       `}</style>
 
       {/* Confetti Overlay */}
-      {envelopeState.revealed && !envelopeState.claimed && (
+      {showConfetti && (
         <div className="fixed inset-0 pointer-events-none z-[9999] overflow-hidden">
           {particles.map((p) => (
             <div
@@ -1070,25 +1164,51 @@ export default function PromoMerdeka() {
 
                 {/* Price Calculation Card */}
                 {selectedProduct && selectedDrink ? (
-                  <div className="bg-[#fffaf5] border border-[#ead8c7] rounded-2xl p-4 mb-6 animate-fadeIn">
-                    <div className="flex items-center justify-between text-xs text-[#7a6a62] font-semibold mb-2">
-                      <span>Harga Normal</span>
-                      <span className="line-through">
-                        {formatCurrency(bundlePricing.originalPrice)}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-xs font-extrabold text-red-500 uppercase tracking-wider">Harga Bundle</p>
-                        <p className="text-2xl font-black text-[#2f221d] mt-0.5">
-                          {formatCurrency(bundlePricing.price)}
-                        </p>
+                  <>
+                    <div className="bg-[#fffaf5] border border-[#ead8c7] rounded-2xl p-4 mb-3 animate-fadeIn">
+                      <div className="flex items-center justify-between text-xs text-[#7a6a62] font-semibold mb-2">
+                        <span>Harga Normal</span>
+                        <span className="line-through">
+                          {formatCurrency(bundlePricing.originalPrice)}
+                        </span>
                       </div>
-                      <span className="bg-red-100 text-red-600 font-extrabold text-[11px] px-2.5 py-1.5 rounded-xl border border-red-200">
-                        Hemat {formatCurrency(bundlePricing.originalPrice - bundlePricing.price)}!
-                      </span>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-xs font-extrabold text-red-500 uppercase tracking-wider">Harga Bundle</p>
+                          <p className="text-2xl font-black text-[#2f221d] mt-0.5">
+                            {formatCurrency(bundlePricing.price)}
+                          </p>
+                        </div>
+                        <span className="bg-red-100 text-red-600 font-extrabold text-[11px] px-2.5 py-1.5 rounded-xl border border-red-200">
+                          Hemat {formatCurrency(bundlePricing.originalPrice - bundlePricing.price)}!
+                        </span>
+                      </div>
                     </div>
-                  </div>
+
+                    {/* Quantity Selector */}
+                    <div className="flex items-center justify-between bg-[#fffaf5] border border-[#ead8c7] rounded-2xl p-4 mb-6 animate-fadeIn">
+                      <span className="text-[#6d5b52] text-xs font-bold">Jumlah Porsi Bundle</span>
+                      <div className="flex items-center gap-3 bg-[#f3e5d8] px-2.5 py-1 rounded-full">
+                        <button
+                          type="button"
+                          onClick={() => setBundleQty((prev) => Math.max(1, prev - 1))}
+                          className="flex h-7 w-7 items-center justify-center rounded-full bg-[#c38358] text-md font-bold text-white shadow-sm cursor-pointer hover:bg-[#a96d45] transition"
+                        >
+                          -
+                        </button>
+                        <span className="text-[13px] sm:text-[14px] font-extrabold text-[#2f221d] w-5 text-center">
+                          {bundleQty}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setBundleQty((prev) => prev + 1)}
+                          className="flex h-7 w-7 items-center justify-center rounded-full bg-[#c38358] text-md font-bold text-white shadow-sm cursor-pointer hover:bg-[#a96d45] transition"
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  </>
                 ) : (
                   <div className="bg-[#fffaf5]/50 border border-dashed border-[#ead8c7] rounded-2xl p-6 text-center text-xs font-bold text-[#7a6a62] mb-6">
                     Silakan pilih menu utama & minuman untuk melihat harga hemat!
@@ -1096,7 +1216,7 @@ export default function PromoMerdeka() {
                 )}
               </div>
 
-              {(!selectedProduct || !selectedDrink || dynamicSubtotal < 50000 || envelopeState.claimed) && (
+              {(!selectedProduct || !selectedDrink || dynamicSubtotal < 50000 || envelopeState.claimed || cooldownActive) && (
                 <button
                   onClick={handleAddBundle}
                   disabled={!selectedProduct || !selectedDrink}
@@ -1111,107 +1231,124 @@ export default function PromoMerdeka() {
                 </button>
               )}
 
-              {/* Progress & Upsell section (visible when subtotal < 50k) */}
-              {regularSubtotal < 50000 && (
-                <div className="mt-6 pt-5 border-t border-dashed border-[#ead8c7] animate-fadeIn">
-                  <div className="flex justify-between text-[11px] font-bold text-[#7a6a62] mb-1.5">
-                    <span className="flex items-center gap-1">Progres Amplop Merdeka:</span>
-                    <span>{formatCurrency(dynamicSubtotal)} / Rp50k</span>
+              {/* Progress / Play / Claim sections or Cooldown message */}
+              {cooldownActive ? (
+                <div className="mt-6 pt-5 border-t border-dashed border-[#ead8c7] text-center animate-fadeIn">
+                  <div className="bg-emerald-50 border border-emerald-200 rounded-[24px] p-5 flex items-start gap-3 text-left">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-emerald-800 text-xs font-bold">PARTISIPASI BERHASIL 🎉</p>
+                      <p className="text-emerald-700 text-[11px] font-medium mt-0.5 leading-normal">
+                        Terima kasih! Anda telah berpartisipasi mengeklaim hadiah Promo Merdeka baru-baru ini. Undian hadiah hanya dapat diikuti sekali per transaksi.
+                      </p>
+                    </div>
                   </div>
-                  <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden border border-gray-200/50">
-                    <div
-                      className="h-full bg-gradient-to-r from-red-500 to-red-600 transition-all duration-500"
-                      style={{ width: `${Math.min((dynamicSubtotal / 50000) * 100, 100)}%` }}
-                    ></div>
-                  </div>
-                  <p className="mt-2 text-[11px] font-bold text-center">
-                    {dynamicSubtotal >= 50000 ? (
-                      <span className="text-emerald-600 flex items-center justify-center gap-1 animate-pulse">
-                        Selamat! Syarat belanja minimal Rp50.000 telah terpenuhi.
-                      </span>
-                    ) : (
-                      <span className="text-[#c38358]">
-                        Belanja {formatCurrency(50000 - dynamicSubtotal)} lagi untuk membuka Amplop Merdeka!
-                      </span>
-                    )}
-                  </p>
+                </div>
+              ) : (
+                <>
+                  {/* Progress & Upsell section (visible when subtotal < 50k) */}
+                  {regularSubtotal < 50000 && (
+                    <div className="mt-6 pt-5 border-t border-dashed border-[#ead8c7] animate-fadeIn">
+                      <div className="flex justify-between text-[11px] font-bold text-[#7a6a62] mb-1.5">
+                        <span className="flex items-center gap-1">Progres Amplop Merdeka:</span>
+                        <span>{formatCurrency(dynamicSubtotal)} / Rp50k</span>
+                      </div>
+                      <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden border border-gray-200/50">
+                        <div
+                          className="h-full bg-gradient-to-r from-red-500 to-red-600 transition-all duration-500"
+                          style={{ width: `${Math.min((dynamicSubtotal / 50000) * 100, 100)}%` }}
+                        ></div>
+                      </div>
+                      <p className="mt-2 text-[11px] font-bold text-center">
+                        {dynamicSubtotal >= 50000 ? (
+                          <span className="text-emerald-600 flex items-center justify-center gap-1 animate-pulse">
+                            Selamat! Syarat belanja minimal Rp50.000 telah terpenuhi.
+                          </span>
+                        ) : (
+                          <span className="text-[#c38358]">
+                            Belanja {formatCurrency(50000 - dynamicSubtotal)} lagi untuk membuka Amplop Merdeka!
+                          </span>
+                        )}
+                      </p>
 
-                  {dynamicSubtotal >= 50000 && !envelopeState.claimed && (
-                    <button
-                      onClick={() => {
-                        // Automatically commit the bundle to the cart if selected
-                        if (selectedProduct && selectedDrink) {
-                          handleAddBundle();
-                        }
-                        setShowGameModal(true);
-                      }}
-                      className="w-full mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-5 rounded-full text-xs shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 animate-pulse"
-                    >
-                      <span>Buka Amplop Merdeka & Checkout</span>
-                    </button>
+                      {dynamicSubtotal >= 50000 && !envelopeState.claimed && (
+                        <button
+                          onClick={() => {
+                            // Automatically commit the bundle to the cart if selected
+                            if (selectedProduct && selectedDrink) {
+                              handleAddBundle();
+                            }
+                            setShowGameModal(true);
+                          }}
+                          className="w-full mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-5 rounded-full text-xs shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 animate-pulse"
+                        >
+                          <span>Buka Amplop Merdeka & Checkout</span>
+                        </button>
+                      )}
+                      
+                      {/* Upsell Drinks */}
+                      {dynamicSubtotal > 0 && dynamicSubtotal < 50000 && upsellDrinks.length > 0 && (
+                        <div className="mt-4 bg-[#fffaf5] border border-dashed border-[#c38358] rounded-2xl p-4 text-center">
+                          <p className="text-[10px] uppercase font-black text-red-500 tracking-wider">
+                            ⚡ Dikit Lagi Dapat Amplop Merdeka!
+                          </p>
+                          <p className="text-[11px] font-semibold text-[#7a6a62] mt-0.5 leading-normal">
+                            Kurang <strong className="font-extrabold text-red-600">{formatCurrency(50000 - dynamicSubtotal)}</strong> lagi. Tambah rekomendasi minuman cepat ini:
+                          </p>
+                          <div className="mt-2.5 flex gap-2 justify-center">
+                            {upsellDrinks.map((p) => (
+                              <button
+                                key={p.id}
+                                onClick={() => {
+                                  addToCart({
+                                    title: p.title,
+                                    price: Number(p.price),
+                                    qty: 1,
+                                  });
+                                }}
+                                className="flex-1 flex items-center justify-between bg-white border border-[#ead8c7] hover:border-[#c38358] hover:bg-[#fffcf9] rounded-xl px-3 py-2 text-[9px] font-extrabold text-[#3b2b26] cursor-pointer transition active:scale-95 shadow-sm"
+                              >
+                                <span>+ {p.title}</span>
+                                <span className="text-[#9b6a50] font-bold ml-1">({formatCurrency(Number(p.price))})</span>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   )}
-                  
-                  {/* Upsell Drinks */}
-                  {dynamicSubtotal > 0 && dynamicSubtotal < 50000 && upsellDrinks.length > 0 && (
-                    <div className="mt-4 bg-[#fffaf5] border border-dashed border-[#c38358] rounded-2xl p-4 text-center">
-                      <p className="text-[10px] uppercase font-black text-red-500 tracking-wider">
-                        ⚡ Dikit Lagi Dapat Amplop Merdeka!
-                      </p>
-                      <p className="text-[11px] font-semibold text-[#7a6a62] mt-0.5 leading-normal">
-                        Kurang <strong className="font-extrabold text-red-600">{formatCurrency(50000 - dynamicSubtotal)}</strong> lagi. Tambah rekomendasi minuman cepat ini:
-                      </p>
-                      <div className="mt-2.5 flex gap-2 justify-center">
-                        {upsellDrinks.map((p) => (
-                          <button
-                            key={p.id}
-                            onClick={() => {
-                              addToCart({
-                                title: p.title,
-                                price: Number(p.price),
-                                qty: 1,
-                              });
-                            }}
-                            className="flex-1 flex items-center justify-between bg-white border border-[#ead8c7] hover:border-[#c38358] hover:bg-[#fffcf9] rounded-xl px-3 py-2 text-[9px] font-extrabold text-[#3b2b26] cursor-pointer transition active:scale-95 shadow-sm"
-                          >
-                            <span>+ {p.title}</span>
-                            <span className="text-[#9b6a50] font-bold ml-1">({formatCurrency(Number(p.price))})</span>
-                          </button>
-                        ))}
+
+                  {/* Success / Play Game section (visible when subtotal >= 50k and not claimed yet) */}
+                  {regularSubtotal >= 50000 && !envelopeState.claimed && (
+                    <div className="mt-6 pt-5 border-t border-dashed border-[#ead8c7] text-center animate-fadeIn">
+                      <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 mb-4 flex items-start gap-3 text-left">
+                        <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+                        <div>
+                          <p className="text-emerald-800 text-xs font-bold">TARGET BELANJA TERCAPAI! 🎉</p>
+                          <p className="text-emerald-700 text-[11px] font-medium mt-0.5">
+                            Belanja kamu sudah mencapai {formatCurrency(regularSubtotal)}. Kamu berhak memilih Amplop Merdeka!
+                          </p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => setShowGameModal(true)}
+                        className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-6 rounded-full text-xs shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
+                      >
+                        <span>Mainkan Amplop Merdeka</span>
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Claimed prize indicator (if already claimed) */}
+                  {envelopeState.claimed && (
+                    <div className="mt-6 pt-5 border-t border-dashed border-[#ead8c7] animate-fadeIn">
+                      <div className="bg-emerald-50 text-emerald-800 border border-emerald-200 py-3 px-4 rounded-full font-bold text-xs flex items-center justify-center gap-1.5 w-full">
+                        <CheckCircle2 size={14} />
+                        <span>Sukses! Hadiah Amplop ({envelopeState.prize?.text}) Masuk Keranjang!</span>
                       </div>
                     </div>
                   )}
-                </div>
-              )}
-
-              {/* Success / Play Game section (visible when subtotal >= 50k and not claimed yet) */}
-              {regularSubtotal >= 50000 && !envelopeState.claimed && (
-                <div className="mt-6 pt-5 border-t border-dashed border-[#ead8c7] text-center animate-fadeIn">
-                  <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 mb-4 flex items-start gap-3 text-left">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
-                    <div>
-                      <p className="text-emerald-800 text-xs font-bold">TARGET BELANJA TERCAPAI! 🎉</p>
-                      <p className="text-emerald-700 text-[11px] font-medium mt-0.5">
-                        Belanja kamu sudah mencapai {formatCurrency(regularSubtotal)}. Kamu berhak memilih Amplop Merdeka!
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => setShowGameModal(true)}
-                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-6 rounded-full text-xs shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
-                  >
-                    <span>Mainkan Amplop Merdeka</span>
-                  </button>
-                </div>
-              )}
-
-              {/* Claimed prize indicator (if already claimed) */}
-              {envelopeState.claimed && (
-                <div className="mt-6 pt-5 border-t border-dashed border-[#ead8c7] animate-fadeIn">
-                  <div className="bg-emerald-50 text-emerald-800 border border-emerald-200 py-3 px-4 rounded-full font-bold text-xs flex items-center justify-center gap-1.5 w-full">
-                    <CheckCircle2 size={14} />
-                    <span>Sukses! Hadiah Amplop ({envelopeState.prize?.text}) Masuk Keranjang!</span>
-                  </div>
-                </div>
+                </>
               )}
             </div>
           </div>
@@ -1413,7 +1550,7 @@ export default function PromoMerdeka() {
                               addToCart({
                                 title: bundleTitle,
                                 price: bundlePricing.price,
-                                qty: 1,
+                                qty: bundleQty,
                               });
                             }
 
@@ -1440,9 +1577,11 @@ export default function PromoMerdeka() {
                             }
                             setSelectedProduct("");
                             setSelectedDrink("");
+                            setBundleQty(1);
 
                             // 4. Close modal and open cart drawer
                             setShowGameModal(false);
+                            setShowConfetti(false);
                             setCartOpen(true);
                           }}
                           className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-5 rounded-full text-xs shadow-md transition flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
