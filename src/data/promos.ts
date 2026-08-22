@@ -88,32 +88,6 @@ export function calculateBundlePrice(
   };
 }
 
-export interface PromoMerdekaConfig {
-  id: string;
-  title: string;
-  startDate: string; // YYYY-MM-DD
-  endDate: string;   // YYYY-MM-DD
-  minAmount: number;
-}
-
-export const PROMO_MERDEKA_CONFIG: PromoMerdekaConfig = {
-  id: "promo-merdeka",
-  title: "🇮🇩 PROMO MERDEKA DELASSA",
-  startDate: "2026-08-16",
-  endDate: "2026-08-22",
-  minAmount: 50000,
-};
-
-export function isPromoMerdekaActive(simulatedActive?: boolean): boolean {
-  if (simulatedActive) return true;
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const date = String(now.getDate()).padStart(2, "0");
-  const todayStr = `${year}-${month}-${date}`;
-  return todayStr >= PROMO_MERDEKA_CONFIG.startDate && todayStr <= PROMO_MERDEKA_CONFIG.endDate;
-}
-
 export interface Voucher {
   code: string;
   discountAmount: number;
@@ -133,16 +107,6 @@ function generateChecksum(input: string): string {
   return Math.abs(hash).toString(16).toUpperCase().padStart(4, "0").slice(0, 4);
 }
 
-export function generateVoucherCode(): string {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  let randStr = "";
-  for (let i = 0; i < 5; i++) {
-    randStr += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  const checksum = generateChecksum(randStr + SECRET_SALT);
-  return `MDK-${randStr}-${checksum}`;
-}
-
 export function verifyVoucherCode(code: string): boolean {
   const cleanCode = code.trim().toUpperCase();
   const parts = cleanCode.split("-");
@@ -151,16 +115,6 @@ export function verifyVoucherCode(code: string): boolean {
   const signature = parts[2];
   const expectedChecksum = generateChecksum(randStr + SECRET_SALT);
   return signature === expectedChecksum;
-}
-
-export function generateVoucher5kCode(): string {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  let randStr = "";
-  for (let i = 0; i < 5; i++) {
-    randStr += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  const checksum = generateChecksum(randStr + SECRET_SALT + "5K");
-  return `M5K-${randStr}-${checksum}`;
 }
 
 export function verifyVoucher5kCode(code: string): boolean {
@@ -190,6 +144,7 @@ export function getVoucherDetails(code: string): Voucher | null {
 
   return null;
 }
+
 
 
 

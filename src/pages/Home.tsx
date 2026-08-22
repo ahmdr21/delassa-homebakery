@@ -19,7 +19,6 @@ import type { Review, DBProduct, DBBundlePromo, DBPromoWithProducts } from "../u
 /* ====================================================== */
 
 /* HERO BANNERS */
-import bannerMerdeka from "../assets/bannermerdeka.webp";
 import banner1 from "../assets/bannerdesktop13.webp";
 import banner2 from "../assets/bannerdesktop14.webp";
 import banner3 from "../assets/bannerdesktop15.webp";
@@ -42,14 +41,12 @@ import mix2 from "../assets/mixtopping2.webp";
 
 import aren from "../assets/aren.webp";
 import { isBundlePromoActive, calculateBundlePrice } from "../data/promos";
-import PromoMerdeka from "../components/PromoMerdeka";
 
 /* ====================================================== */
 /* DATA */
 /* ====================================================== */
 
 const banners = [
-  bannerMerdeka,
   banner5,
   banner4,
   banner1,
@@ -655,8 +652,7 @@ export default function Home() {
 
       </section>
 
-      {/* PROMO MERDEKA DELASSA */}
-      <PromoMerdeka />
+
 
       {/* ====================================================== */}
       {/* ABOUT */}

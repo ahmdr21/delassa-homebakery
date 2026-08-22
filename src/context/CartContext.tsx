@@ -1,7 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
-import { showToast } from "../components/Toast";
 
 type CartItem = {
   title: string;
@@ -51,39 +50,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, [cart]);
 
-  useEffect(() => {
-    const regularSubtotal = cart
-      .filter((item) => !item.title.includes("🎁 [Amplop Merdeka]"))
-      .reduce((sum, item) => sum + item.price * item.qty, 0);
-    const hasPrize = cart.some((item) => item.title.includes("🎁 [Amplop Merdeka]"));
-
-    if (hasPrize) {
-      let shouldReset = false;
-      try {
-        const saved = localStorage.getItem("delassa_merdeka_envelope");
-        if (saved) {
-          const state = JSON.parse(saved);
-          const drawnSubtotal = state.drawnSubtotal || 50000;
-          // If the customer downgrades below their drawn prize subtotal, cancel their draw
-          if (regularSubtotal < drawnSubtotal) {
-            shouldReset = true;
-          }
-        }
-      } catch (e) {
-        console.error("Failed to parse drawnSubtotal:", e);
-      }
-
-      if (shouldReset || regularSubtotal < 50000) {
-        // Remove the prize from cart
-        setCart((prev) => prev.filter((item) => !item.title.includes("🎁 [Amplop Merdeka]")));
-        // Clear draw state entirely so they must re-draw at their new lower tier
-        localStorage.removeItem("delassa_merdeka_envelope");
-        // Dispatch storage event so frontend component updates state in real-time
-        window.dispatchEvent(new Event("storage"));
-        showToast("Hadiah Amplop Merdeka dibatalkan karena nominal belanja berkurang. Silakan undi kembali!", "info");
-      }
-    }
-  }, [cart]);
 
   const addToCart = (product: { title: string; price: number; qty?: number }) => {
     setCart((prev) => {
